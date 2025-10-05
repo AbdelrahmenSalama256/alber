@@ -4,21 +4,45 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 
 class LocationsCard extends StatelessWidget {
-  const LocationsCard({super.key});
+  final String title;
+  final String description;
+  final String imagePath;
+  final String iconPath;
+  final Color titleColor;
+  final Color backgroundColor;
+
+  const LocationsCard({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.imagePath,
+    required this.iconPath,
+    this.titleColor = AppColors.textGrey,
+    this.backgroundColor = AppColors.white,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: EdgeInsets.only(bottom: 30.h),
       height: 195.75479125976585.h,
       decoration: BoxDecoration(
         color: AppColors.textGrey,
         borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withOpacity(0.2),
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Stack(
@@ -31,73 +55,75 @@ class LocationsCard extends StatelessWidget {
                 width: 169.8113403320319.w,
                 height: 39.15094757080093.h,
                 decoration: BoxDecoration(
-                  color: AppColors.textGrey,
+                  color: titleColor,
                   borderRadius: BorderRadiusDirectional.only(
                     bottomEnd: Radius.circular(12.r),
-                    topEnd: Radius.circular(0.r),
                   ),
                 ),
-                child: Center(
-                  child: Text(
-                    "data",
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      "assets/images/svg/badge-mark.svg",
                     ),
-                  ),
+                    SizedBox(
+                      width: 10.w,
+                    ),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
             PositionedDirectional(
               start: 0,
-              top: 30.h,
+              top: 40.h,
               end: 170.w,
-              child: Expanded(
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20.r),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20.r),
+                  ),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 25.w,
+                      height: 25.w,
+                      padding: EdgeInsets.all(5.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.3),
+                        shape: BoxShape.circle,
+                      ),
+                      child: SvgPicture.asset(iconPath),
                     ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 30.w,
-                        height: 30.w,
-                        padding: EdgeInsets.all(7.w),
-                        decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.3),
-                            shape: BoxShape.circle),
-                        child: SvgPicture.asset(
-                          "assets/images/svg/map-marker.svg",
+                    SizedBox(width: 10.w),
+                    Flexible(
+                      child: Text(
+                        description,
+                        style: TextStyle(
+                          color: const Color(0xff7E7E7E),
+                          fontSize: 9.sp,
+                          height: 2.3.h,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Expanded(
-                        child: Text(
-                          "اهلا بكم في المقر الرئيسي جدة شارع احمد العطاس تقاطع البترجي موازي مستشفى السعودي الالماني",
-                          style: TextStyle(
-                            color: Color(0xff7E7E7E),
-                            fontSize: 9.sp,
-                            height: 2.3.h,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-
             PositionedDirectional(
               end: 0,
               start: 170.w,
@@ -109,15 +135,13 @@ class LocationsCard extends StatelessWidget {
                   bottomStart: Radius.circular(94.34.r),
                 ),
                 child: Image.asset(
-                  'assets/images/png/cure-main.png',
+                  imagePath,
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            // SizedBox(height: 10.h),
-            // Text
           ],
         ),
       ),

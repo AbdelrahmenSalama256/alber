@@ -5,6 +5,7 @@ import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import 'package:qafeel/features/profile/views/about_us_screen.dart';
+import 'package:qafeel/features/profile/views/complaints_screen.dart';
 import 'package:qafeel/features/profile/views/our_locations_screen.dart';
 import 'package:qafeel/features/profile/views/terms_conditions_screen.dart';
 
@@ -64,7 +65,9 @@ class AboutAppScreeen extends StatelessWidget {
               ActionCard(
                 title: 'complaints_call_us'.tr(context),
                 svgAsset: "assets/images/svg/circle-question.svg",
-                onTap: () {},
+                onTap: () {
+                  navigateTo(context, ContactComplaintsScreen());
+                },
               ),
             ],
           ),

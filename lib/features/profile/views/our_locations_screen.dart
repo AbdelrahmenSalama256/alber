@@ -44,7 +44,33 @@ class OurLocationsScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 30.h),
-              LocationsCard(),
+              LocationsCard(
+                title: "المقر الرئيسي",
+                description:
+                    "اهلا بكم في المقر الرئيسي جدة شارع احمد العطاس تقاطع البترجي موازي مستشفى السعودي الالماني",
+                imagePath: "assets/images/png/map.png",
+                iconPath: "assets/images/svg/map-marker.svg",
+                titleColor: AppColors.primary, // optional
+                backgroundColor: AppColors.white, // optional
+              ),
+              LocationsCard(
+                title: "المقر الرئيسي",
+                description:
+                    "اهلا بكم في المقر الرئيسي جدة شارع احمد العطاس تقاطع البترجي موازي مستشفى السعودي الالماني",
+                imagePath: "assets/images/png/map.png",
+                iconPath: "assets/images/svg/map-marker.svg",
+                titleColor: AppColors.primary, // optional
+                backgroundColor: AppColors.white, // optional
+              ),
+              LocationsCard(
+                title: "المقر الرئيسي",
+                description:
+                    "اهلا بكم في المقر الرئيسي جدة شارع احمد العطاس تقاطع البترجي موازي مستشفى السعودي الالماني",
+                imagePath: "assets/images/png/map.png",
+                iconPath: "assets/images/svg/map-marker.svg",
+                titleColor: AppColors.primary, // optional
+                backgroundColor: AppColors.white, // optional
+              ),
             ],
           ),
         ),
