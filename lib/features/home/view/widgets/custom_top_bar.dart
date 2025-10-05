@@ -3,11 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/constants/navigation.dart';
+import 'package:qafeel/features/profile/views/dontation_cart_screen.dart';
 
 class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? isHome;
+  final bool? isCart;
+  final bool? isNotification;
   final VoidCallback? onBack;
-  const CustomTopBar({super.key, this.isHome = false, this.onBack});
+  const CustomTopBar(
+      {super.key,
+      this.isHome = false,
+      this.onBack,
+      this.isCart = false,
+      this.isNotification = false});
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +72,16 @@ class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
                   color: const Color(0xffCCCCCC),
                   size: 30.sp,
                 ),
-                SizedBox(width: 16.w),
-                _buildSvgIcon(
-                  "assets/images/svg/cart.svg",
-                  count: 12,
-                ),
+                if (!isCart!) ...[
+                  SizedBox(width: 16.w),
+                  _buildSvgIcon(
+                    "assets/images/svg/cart.svg",
+                    count: 12,
+                    onTap: () {
+                      navigateTo(context, DontationCartScreen());
+                    },
+                  ),
+                ],
                 SizedBox(width: 16.w),
                 _buildSvgIcon(
                   "assets/images/svg/notifications_active.svg",
@@ -81,37 +95,40 @@ class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildSvgIcon(String assetPath, {int? count}) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        SvgPicture.asset(
-          assetPath,
-          width: 28.w,
-          height: 28.h,
-          color: const Color(0xffCCCCCC),
-        ),
-        if (count != null)
-          PositionedDirectional(
-            top: -6.h,
-            start: -8.w,
-            child: Container(
-              padding: EdgeInsets.all(3.w),
-              decoration: const BoxDecoration(
-                color: Color(0xff5F5F5F),
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                '$count',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.bold,
+  Widget _buildSvgIcon(String assetPath, {int? count, VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          SvgPicture.asset(
+            assetPath,
+            width: 28.w,
+            height: 28.h,
+            color: const Color(0xffCCCCCC),
+          ),
+          if (count != null)
+            PositionedDirectional(
+              top: -6.h,
+              start: -8.w,
+              child: Container(
+                padding: EdgeInsets.all(3.w),
+                decoration: const BoxDecoration(
+                  color: Color(0xff5F5F5F),
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  '$count',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

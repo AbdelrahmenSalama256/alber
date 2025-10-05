@@ -7,6 +7,7 @@ import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 
 import '../../../../core/component/widgets/app_button.dart';
+import '../../../shared/widgets/qty_stepper.dart';
 
 class DonationCard extends StatefulWidget {
   final String title;
@@ -180,7 +181,7 @@ class _DonationCardState extends State<DonationCard> {
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500)),
                           SizedBox(height: 5.h),
-                          _QtyStepper(
+                          QtyStepper(
                             qty: _qty,
                             onChanged: (q) {
                               setState(() => _qty = q);
@@ -230,7 +231,7 @@ class _DonationCardState extends State<DonationCard> {
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500)),
                           SizedBox(height: 5.h),
-                          _QtyStepper(
+                          QtyStepper(
                             qty: _qty,
                             onChanged: (q) {
                               setState(() => _qty = q);
@@ -391,69 +392,6 @@ class _Segmented extends StatelessWidget {
             ),
           );
         }),
-      ),
-    );
-  }
-}
-
-class _QtyStepper extends StatelessWidget {
-  final int qty;
-  final ValueChanged<int> onChanged;
-  final Color accent;
-
-  const _QtyStepper(
-      {required this.qty, required this.onChanged, required this.accent});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 19.115312576293945.h,
-      padding: EdgeInsets.symmetric(horizontal: 3.w),
-      decoration: BoxDecoration(
-          color: AppColors.textSecondary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(6.r)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _IconBtn(
-              icon: Icons.add, onTap: () => onChanged(qty + 1), accent: accent),
-          SizedBox(width: 10.w),
-          Text("$qty",
-              style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.primary)),
-          SizedBox(width: 10.w),
-          _IconBtn(
-              icon: Icons.remove,
-              onTap: () => onChanged(qty > 1 ? qty - 1 : 1),
-              accent: accent),
-        ],
-      ),
-    );
-  }
-}
-
-class _IconBtn extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  final Color accent;
-
-  const _IconBtn(
-      {required this.icon, required this.onTap, required this.accent});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10.r),
-      child: Container(
-        width: 15.w,
-        height: 15.w,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-            color: AppColors.primary, shape: BoxShape.circle),
-        child: Icon(icon, size: 14.sp, color: AppColors.white),
       ),
     );
   }

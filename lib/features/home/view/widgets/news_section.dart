@@ -30,8 +30,8 @@ class NewsSection extends StatelessWidget {
         Text(
           headingSmall,
           style: TextStyle(
+            color: AppColors.textPrimary,
             fontSize: 12.sp,
-            color: AppColors.textGrey.withOpacity(.7),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -39,9 +39,9 @@ class NewsSection extends StatelessWidget {
         Text(
           headingBig,
           style: TextStyle(
-            fontSize: 18.sp,
-            color: AppColors.textGrey,
-            fontWeight: FontWeight.w800,
+            fontSize: 16.sp,
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w700,
           ),
         ),
         SizedBox(height: 12.h),

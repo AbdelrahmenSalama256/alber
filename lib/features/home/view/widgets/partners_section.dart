@@ -32,7 +32,7 @@ class PartnersSection extends StatelessWidget {
           smallHeading,
           style: TextStyle(
             fontSize: 12.sp,
-            color: AppColors.textGrey.withOpacity(.7),
+            color: AppColors.textPrimary,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -40,9 +40,9 @@ class PartnersSection extends StatelessWidget {
         Text(
           bigHeading,
           style: TextStyle(
-            fontSize: 18.sp,
-            color: AppColors.textGrey,
-            fontWeight: FontWeight.w800,
+            fontSize: 15.sp,
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w700,
           ),
         ),
         SizedBox(height: 12.h),

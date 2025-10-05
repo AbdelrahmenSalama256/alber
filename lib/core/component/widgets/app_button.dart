@@ -18,6 +18,12 @@ class AppButton extends StatelessWidget {
   final Widget? suffixIcon;
   final TextStyle? textStyle;
 
+  /// ✅ خلفية قابلة للتغيير
+  final Color? backgroundColor; // لون عادي
+  final Gradient? backgroundGradient; // جريدينت
+  final DecorationImage? backgroundImage; // صورة كـ خلفية
+  final Color? customTextColor; // لون نص مخصّص (اختياري)
+
   const AppButton({
     super.key,
     required this.text,
@@ -25,13 +31,17 @@ class AppButton extends StatelessWidget {
     this.type = AppButtonType.primary,
     this.isLoading = false,
     this.isFullWidth = true,
-    this.height = 56, // نفس اللي في التصميم
+    this.height = 56,
     this.width,
     this.padding,
     this.borderRadius,
     this.prefixIcon,
     this.suffixIcon,
     this.textStyle,
+    this.backgroundColor,
+    this.backgroundGradient,
+    this.backgroundImage,
+    this.customTextColor,
   });
 
   @override
@@ -40,70 +50,68 @@ class AppButton extends StatelessWidget {
 
     switch (type) {
       case AppButtonType.primary:
-        return _buildPrimary(isDisabled);
+        return _buildBaseButton(
+          // defaults
+          fallbackBg: AppColors.primary,
+          fallbackText: Colors.white,
+          border: null,
+          isDisabled: isDisabled,
+        );
       case AppButtonType.outlined:
-        return _buildOutlined(isDisabled);
+        return _buildBaseButton(
+          fallbackBg: const Color(0x3030301A), // #3030301A
+          fallbackText: AppColors.primary,
+          border: Border.all(color: AppColors.primary, width: 1),
+          isDisabled: isDisabled,
+        );
       case AppButtonType.secondary:
-        return _buildSecondary(isDisabled);
+        return _buildBaseButton(
+          fallbackBg: const Color(0x80CCCCCC), // #CCCCCC80
+          fallbackText: AppColors.primary,
+          border: null,
+          isDisabled: isDisabled,
+        );
     }
   }
 
-  /// 🔘 Filled Button
-  Widget _buildPrimary(bool isDisabled) {
-    return _buildBaseButton(
-      backgroundColor: AppColors.primary,
-      textColor: Colors.white,
-      border: null,
-      isDisabled: isDisabled,
-    );
-  }
-
-  /// ⬜ Outlined Button
-  Widget _buildOutlined(bool isDisabled) {
-    return _buildBaseButton(
-      backgroundColor: const Color(0x3030301A), // #3030301A
-      textColor: AppColors.primary,
-      border: Border.all(color: AppColors.primary, width: 1),
-      isDisabled: isDisabled,
-    );
-  }
-
-  /// ⚪ Secondary Button
-  Widget _buildSecondary(bool isDisabled) {
-    return _buildBaseButton(
-      backgroundColor: const Color(0x80CCCCCC), // #CCCCCC80
-      textColor: AppColors.primary,
-      border: null,
-      isDisabled: isDisabled,
-    );
-  }
-
   Widget _buildBaseButton({
-    required Color backgroundColor,
-    required Color textColor,
+    required Color fallbackBg,
+    required Color fallbackText,
     required bool isDisabled,
     Border? border,
   }) {
+    // اختر لون النص النهائي
+    final Color finalTextColor =
+        customTextColor ?? (textStyle?.color ?? fallbackText);
+
     return SizedBox(
       width: isFullWidth ? double.infinity : width?.w,
       height: height.h,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: borderRadius ?? BorderRadius.circular(11.79.r),
-          border: border,
-        ),
-        child: ElevatedButton(
-          onPressed: isDisabled ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            padding: padding ?? EdgeInsets.symmetric(horizontal: 16.w),
-            shape: RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(11.79.r),
-            ),
+      child: Opacity(
+        opacity: isDisabled ? 0.7 : 1,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            // ✅ أولويّة: Gradient > Image > Color
+            color: (backgroundGradient == null && backgroundImage == null)
+                ? (backgroundColor ?? fallbackBg)
+                : null,
+            gradient: backgroundGradient,
+            image: backgroundImage,
+            borderRadius: borderRadius ?? BorderRadius.circular(11.79.r),
+            border: border,
           ),
-          child: _buildContent(textColor),
+          child: ElevatedButton(
+            onPressed: isDisabled ? null : onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              padding: padding ?? EdgeInsets.symmetric(horizontal: 16.w),
+              shape: RoundedRectangleBorder(
+                borderRadius: borderRadius ?? BorderRadius.circular(11.79.r),
+              ),
+            ),
+            child: _buildContent(finalTextColor),
+          ),
         ),
       ),
     );
@@ -127,12 +135,13 @@ class AppButton extends StatelessWidget {
         if (prefixIcon != null) ...[prefixIcon!, SizedBox(width: 8.w)],
         Text(
           text,
-          style: textStyle ??
-              TextStyle(
-                color: textColor,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w700,
-              ),
+          style: (textStyle ??
+                  TextStyle(
+                    color: textColor,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                  ))
+              .copyWith(color: textColor),
         ),
         if (suffixIcon != null) ...[SizedBox(width: 8.w), suffixIcon!],
       ],

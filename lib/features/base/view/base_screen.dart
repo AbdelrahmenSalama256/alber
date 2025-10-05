@@ -7,10 +7,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/features/bills/views/bills_screen.dart';
 import 'package:qafeel/features/home/view/home_screen.dart';
 import 'package:qafeel/features/services/views/services_screen.dart';
 
 import '../../../core/cubit/global_state.dart';
+import '../../profile/views/profile_screen.dart';
 
 class BaseScreen extends StatelessWidget {
   BaseScreen({super.key});
@@ -19,8 +21,8 @@ class BaseScreen extends StatelessWidget {
     const ServicesScreen(),
     const Center(child: Text('إهداء', style: TextStyle(fontSize: 24))),
     const HomeScreen(),
-    const Center(child: Text('الوثائق', style: TextStyle(fontSize: 24))),
-    const Center(child: Text('حساب', style: TextStyle(fontSize: 24))),
+    BillsScreen(),
+    ProfileScreen()
   ];
 
   @override
