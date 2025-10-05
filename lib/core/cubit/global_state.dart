@@ -1,0 +1,118 @@
+class GlobalState {}
+
+final class GlobalInitial extends GlobalState {}
+
+final class BottomNavChangeState extends GlobalState {}
+
+// Any Other State You May Need
+class LoadingState extends GlobalState {}
+
+class ErrorState extends GlobalState {
+  final String errorMessage;
+
+  ErrorState(this.errorMessage);
+}
+
+class LanguageChangeState extends GlobalState {}
+
+class UserTypeLoadedState extends GlobalState {}
+
+class UserTypeChangedState extends GlobalState {}
+
+class ProfileLoading extends GlobalState {}
+
+class ProfileLoaded extends GlobalState {}
+
+class ProfileError extends GlobalState {
+  final String message;
+
+  ProfileError({required this.message});
+}
+
+class LogoutLoading extends GlobalState {}
+
+class LogoutSuccess extends GlobalState {
+  final String message;
+
+  LogoutSuccess(this.message);
+}
+
+class LogoutError extends GlobalState {
+  final String message;
+
+  LogoutError(this.message);
+}
+
+class ProfileDataUpdated extends GlobalState {}
+
+class ProfileUpdated extends GlobalState {}
+
+class WishlistLoading extends GlobalState {}
+
+class WishlistSuccess extends GlobalState {
+  final String message;
+  WishlistSuccess(this.message);
+}
+
+class WishlistError extends GlobalState {
+  final String message;
+
+  WishlistError(this.message);
+}
+
+class GetAddressLoading extends GlobalState {}
+
+class GetAddressSuccess extends GlobalState {}
+
+class GetAddressError extends GlobalState {
+  final String message;
+
+  GetAddressError(this.message);
+}
+
+class AddressLoading extends GlobalState {}
+
+class AddressSuccess extends GlobalState {}
+
+class AddressError extends GlobalState {
+  final String message;
+  AddressError(this.message);
+}
+
+class LanguageChangingState extends GlobalState {}
+
+class LanguageChangedState extends GlobalState {}
+
+class GlobalTokenUpdated extends GlobalState {}
+
+class CartLoading extends GlobalState {}
+
+class CartLoaded extends GlobalState {
+  // final List<Cart> cartItems;
+
+  // CartLoaded({required this.cartItems});
+}
+
+class CartError extends GlobalState {
+  final String error;
+
+  CartError(this.error);
+}
+
+class RemoveWishlistLoading extends GlobalState {}
+
+class WishlistItemRemovedError extends GlobalState {
+  final String error;
+
+  WishlistItemRemovedError(this.error);
+}
+
+class WishlistItemRemovedSuccess extends GlobalState {
+  final String message;
+
+  WishlistItemRemovedSuccess(this.message);
+}
+
+class ProfileUpdating extends GlobalState {}
+
+class GlobalLocationUpdated extends GlobalState {} // Add this state
