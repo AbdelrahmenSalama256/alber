@@ -1,8 +1,5 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 
@@ -70,196 +67,287 @@ class _DonationCardState extends State<DonationCard> {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: widget.bg ?? Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border(
-            bottom: widget.bg == Colors.transparent
-                ? BorderSide(color: AppColors.primary, width: 1)
-                : BorderSide(),
-            top: widget.bg == Colors.transparent
-                ? BorderSide(color: AppColors.primary, width: 1)
-                : BorderSide()),
-        boxShadow: widget.bg == Colors.transparent
-            ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 12.r,
-                  offset: const Offset(0, 6),
-                ),
-              ]
-            : null,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: widget.bg == Colors.transparent
+              ? AppColors.primary
+              : Colors.transparent,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 16.r,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 139.1837615966797.w,
-            height: 139.1837615966797.w,
-            child: _DonutAvatar(
+          // Header Row with Title and Progress
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Smaller Image with Progress
+              _CompactDonutAvatar(
                 imageAsset: widget.imageAsset,
                 progress: _progress,
-                ringColor: widget.accent),
-          ),
-          SizedBox(width: 14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: Icon(
-                      Icons.more_horiz_rounded,
-                      size: 30.sp,
-                      color: AppColors.textSecondary,
-                    )),
-                Text(widget.title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textGrey)),
-                SizedBox(height: 8.h),
-                Text(
-                  "${'collected'.tr(context)} ${_money(widget.raised)} ${'from'.tr(context)} ${_money(widget.goal)}",
-                  style: TextStyle(
-                      fontSize: 8.sp,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w500),
-                ),
-                SizedBox(height: 10.h),
-                Row(
+                ringColor: widget.accent,
+              ),
+              SizedBox(width: 16.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: _Segmented(
-                        options: localOptions,
-                        selectedIndex: _freqIndex,
-                        onChanged: (i) => setState(() => _freqIndex = i),
-                        accent: widget.accent,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textGrey,
+                              height: 1.3,
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.more_horiz_rounded,
+                          size: 24.sp,
+                          color: AppColors.textSecondary,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12.h),
+                    // Progress Text
+                    Text(
+                      "${'collected'.tr(context)} ${_money(widget.raised)} ${'from'.tr(context)} ${_money(widget.goal)}",
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
                       ),
+                    ),
+                    SizedBox(height: 8.h),
+                    // Progress Bar
+                    LinearProgressIndicator(
+                      value: _progress,
+                      backgroundColor: AppColors.primary.withOpacity(0.2),
+                      valueColor: AlwaysStoppedAnimation<Color>(widget.accent),
+                      borderRadius: BorderRadius.circular(10.r),
+                      minHeight: 8.h,
                     ),
                   ],
                 ),
-                SizedBox(height: 10.h),
-                if (_freqIndex == 0)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('donate_amount'.tr(context),
-                              style: TextStyle(
-                                  fontSize: 8.sp,
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500)),
-                          SizedBox(height: 5.h),
-                          Container(
-                            height: 19.115312576293945.h,
-                            width: 52.567108154296875.w,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: AppColors.textSecondary.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(6.r)),
-                            child: Text("$_amount",
-                                style: TextStyle(
-                                    fontSize: 8.96.sp,
-                                    color: AppColors.textGrey,
-                                    fontWeight: FontWeight.w500)),
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: 10.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('quantity'.tr(context),
-                              style: TextStyle(
-                                  fontSize: 8.sp,
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500)),
-                          SizedBox(height: 5.h),
-                          QtyStepper(
-                            qty: _qty,
-                            onChanged: (q) {
-                              setState(() => _qty = q);
-                              widget.onQtyChanged?.call(q);
-                            },
-                            accent: widget.accent,
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                else
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('monthly_amount'.tr(context),
-                              style: TextStyle(
-                                  fontSize: 8.sp,
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500)),
-                          SizedBox(height: 5.h),
-                          Container(
-                            height: 19.115312576293945.h,
-                            width: 52.567108154296875.w,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: AppColors.textSecondary.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(6.r)),
-                            child: Text("$_amount",
-                                style: TextStyle(
-                                    fontSize: 8.96.sp,
-                                    color: AppColors.textGrey,
-                                    fontWeight: FontWeight.w500)),
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: 10.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('months_count'.tr(context),
-                              style: TextStyle(
-                                  fontSize: 8.sp,
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500)),
-                          SizedBox(height: 5.h),
-                          QtyStepper(
-                            qty: _qty,
-                            onChanged: (q) {
-                              setState(() => _qty = q);
-                              widget.onQtyChanged?.call(q);
-                            },
-                            accent: widget.accent,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                SizedBox(height: 10.h),
-                SizedBox(
-                  height: 40.h,
-                  child: AppButton(
-                    onPressed: widget.onDonate,
-                    text: 'donate_now'.tr(context),
-                    textStyle: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white),
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+
+          SizedBox(height: 20.h),
+
+          // Frequency Selection
+          _Segmented(
+            options: localOptions,
+            selectedIndex: _freqIndex,
+            onChanged: (i) => setState(() => _freqIndex = i),
+            accent: widget.accent,
+          ),
+
+          SizedBox(height: 20.h),
+
+          // Amount and Quantity Section
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: AppColors.textSecondary.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: _freqIndex == 0
+                ? _OneTimeDonationSection()
+                : _MonthlyDonationSection(),
+          ),
+
+          SizedBox(height: 20.h),
+
+          // Donate Button
+          SizedBox(
+            height: 52.h,
+            child: AppButton(
+              onPressed: widget.onDonate,
+              text: 'donate_now'.tr(context),
+              textStyle: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _OneTimeDonationSection() {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'donate_amount'.tr(context),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Container(
+                height: 50.h,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      _amount.toStringAsFixed(0),
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: AppColors.textGrey,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(width: 4.w),
+                    Text(
+                      'currency'.tr(context),
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.textGrey.withOpacity(0.7),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 16.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'quantity'.tr(context),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              QtyStepper(
+                qty: _qty,
+                onChanged: (q) {
+                  setState(() => _qty = q);
+                  widget.onQtyChanged?.call(q);
+                },
+                accent: widget.accent,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _MonthlyDonationSection() {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'monthly_amount'.tr(context),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Container(
+                height: 50.h,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      _amount.toStringAsFixed(0),
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: AppColors.textGrey,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(width: 4.w),
+                    Text(
+                      'currency'.tr(context),
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.textGrey.withOpacity(0.7),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 16.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'months_count'.tr(context),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              QtyStepper(
+                qty: _qty,
+                onChanged: (q) {
+                  setState(() => _qty = q);
+                  widget.onQtyChanged?.call(q);
+                },
+                accent: widget.accent,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -268,84 +356,93 @@ class _DonationCardState extends State<DonationCard> {
   }
 }
 
-class _DonutAvatar extends StatelessWidget {
+class _CompactDonutAvatar extends StatelessWidget {
   final String imageAsset;
   final double progress;
   final Color ringColor;
 
-  const _DonutAvatar(
-      {required this.imageAsset,
-      required this.progress,
-      required this.ringColor});
+  const _CompactDonutAvatar({
+    required this.imageAsset,
+    required this.progress,
+    required this.ringColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            CustomPaint(
-              painter: _DonutPainter(progress: progress, color: ringColor),
-              child: Padding(
-                padding: EdgeInsets.all(14.w),
-                child: ClipOval(
-                  child: Image.asset(imageAsset,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity),
+    return SizedBox(
+      width: 80.w,
+      height: 80.w,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          // Progress Circle
+          SizedBox(
+            width: 100.w,
+            height: 100.w,
+            child: CircularProgressIndicator(
+              value: progress,
+              backgroundColor: ringColor.withOpacity(0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(ringColor),
+              strokeWidth: 4.w,
+            ),
+          ),
+          // Image
+          Container(
+            width: 70.w,
+            height: 70.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white,
+                width: 2.w,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8.r,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: Image.asset(
+                imageAsset,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Percentage Badge
+          Positioned(
+            bottom: -2.h,
+            right: -2.w,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+              decoration: BoxDecoration(
+                color: ringColor,
+                borderRadius: BorderRadius.circular(10.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4.r,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: Text(
+                "${(progress * 100).round()}%",
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
                 ),
               ),
             ),
-            PositionedDirectional(
-              bottom: -5.h,
-              end: 0.w,
-              start: 0.w,
-              child: _PercentPin(
-                  text: "${(progress * 100).round()}%",
-                  fill: Colors.white,
-                  textColor: ringColor),
-            ),
-          ],
-        );
-      },
+          ),
+        ],
+      ),
     );
   }
-}
-
-class _DonutPainter extends CustomPainter {
-  final double progress;
-  final Color color;
-
-  _DonutPainter({required this.progress, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final stroke = 10.0.w;
-    final rect = Offset.zero & size;
-    final center = rect.center;
-    final radius = (size.shortestSide / 2) - stroke / 2;
-
-    final bgPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke
-      ..color = color.withOpacity(0.2)
-      ..strokeCap = StrokeCap.round;
-    final fgPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke
-      ..color = color
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
-        -90 * math.pi / 180, 2 * math.pi, false, bgPaint);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
-        -90 * math.pi / 180, 2 * math.pi * progress, false, fgPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _DonutPainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.color != color;
 }
 
 class _Segmented extends StatelessWidget {
@@ -354,20 +451,22 @@ class _Segmented extends StatelessWidget {
   final ValueChanged<int> onChanged;
   final Color accent;
 
-  const _Segmented(
-      {required this.options,
-      required this.selectedIndex,
-      required this.onChanged,
-      required this.accent});
+  const _Segmented({
+    required this.options,
+    required this.selectedIndex,
+    required this.onChanged,
+    required this.accent,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 30.h,
-      padding: EdgeInsets.all(4.w),
+      height: 48.h,
+      padding: EdgeInsets.all(6.w),
       decoration: BoxDecoration(
-          color: AppColors.textSecondary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(6.r)),
+        color: AppColors.textSecondary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
       child: Row(
         children: List.generate(options.length, (i) {
           final selected = i == selectedIndex;
@@ -375,58 +474,34 @@ class _Segmented extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onChanged(i),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
+                duration: const Duration(milliseconds: 200),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                    color: selected ? AppColors.primary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(5.r)),
+                  color: selected ? AppColors.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(8.r),
+                  boxShadow: selected
+                      ? [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.3),
+                            blurRadius: 8.r,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : null,
+                ),
                 child: Text(
                   options[i],
-                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 8.sp,
-                      fontWeight: FontWeight.w500,
-                      color: selected ? AppColors.white : AppColors.textGrey),
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: selected ? Colors.white : AppColors.textGrey,
+                  ),
                 ),
               ),
             ),
           );
         }),
-      ),
-    );
-  }
-}
-
-class _PercentPin extends StatelessWidget {
-  final String text;
-  final Color fill;
-  final Color textColor;
-
-  const _PercentPin(
-      {required this.text, required this.fill, required this.textColor});
-
-  @override
-  Widget build(BuildContext context) {
-    final w = 44.w;
-    final h = 44.h;
-    return SizedBox(
-      width: w,
-      height: h,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
-        children: [
-          SvgPicture.asset("assets/images/svg/pinshape.svg",
-              width: w, height: h),
-          Padding(
-            padding: EdgeInsets.only(bottom: 6.h),
-            child: Text(text,
-                style: TextStyle(
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w700,
-                    color: textColor)),
-          ),
-        ],
       ),
     );
   }

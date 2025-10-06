@@ -20,13 +20,23 @@ class SkeletonLoader extends StatelessWidget {
     final radius = isCircular ? BorderRadius.circular(width / 2) : borderRadius;
 
     return Shimmer.fromColors(
-      baseColor: const Color(0xFFE6E6E6), // base gray
-      highlightColor: const Color(0xFFF5F5F5), // highlight gray
+      baseColor: const Color(0xFFFFFFFF),
+      highlightColor: const Color(0xFFF2F2F2),
+      direction: ShimmerDirection.ltr,
+      period: const Duration(milliseconds: 1600),
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: const Color(0xFFE6E6E6),
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFFFFFFF),
+              Color(0xFFF2F2F2),
+              Color(0xFFFFFFFF),
+            ],
+          ),
           borderRadius: radius,
         ),
       ),

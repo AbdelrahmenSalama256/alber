@@ -270,15 +270,16 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             SizedBox(
-              height: 250.h,
+              height: 420.h,
               child: ListView.separated(
+                clipBehavior: Clip.none,
                 scrollDirection: Axis.horizontal,
                 itemCount: state.donations.length,
                 separatorBuilder: (_, __) => SizedBox(width: 12.w),
                 itemBuilder: (context, index) {
                   final d = state.donations[index];
                   return SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.86,
+                    width: MediaQuery.of(context).size.width * 0.96,
                     child: DonationCard(
                       title: d['title'],
                       imageAsset: d['image'],
