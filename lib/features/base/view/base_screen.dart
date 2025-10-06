@@ -8,6 +8,7 @@ import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/bills/views/bills_screen.dart';
+import 'package:qafeel/features/dedicate_donation/views/dedicate_donation_screen.dart';
 import 'package:qafeel/features/home/view/home_screen.dart';
 import 'package:qafeel/features/services/views/services_screen.dart';
 
@@ -18,9 +19,9 @@ class BaseScreen extends StatelessWidget {
   BaseScreen({super.key});
 
   final List<Widget> _pages = [
-    const ServicesScreen(),
-    const Center(child: Text('إهداء', style: TextStyle(fontSize: 24))),
-    const HomeScreen(),
+    ServicesScreen(),
+    DedicateDonationScreen(),
+    HomeScreen(),
     BillsScreen(),
     ProfileScreen()
   ];

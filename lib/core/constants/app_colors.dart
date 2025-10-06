@@ -23,7 +23,7 @@ class AppColors {
   static const Color error = Color(0xFFE53935);
   static const Color warning = Color(0xFFFFC107);
   static const Color info = Color(0xFF2196F3);
-  static const Color orange = Color(0xffFFB948);
+  static const Color orange = Color(0xffFE7E04);
   static const Color darkOrange = Color(0xffE59400);
   static const Color green = Color(0xff2FAE84);
   static const Color red = Color(0xffFF5A5F);

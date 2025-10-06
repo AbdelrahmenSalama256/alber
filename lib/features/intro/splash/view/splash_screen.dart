@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/constants/navigation.dart';
-import 'package:qafeel/features/base/view/base_screen.dart';
+import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,18 +15,15 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
-
   bool showSecondLogo = false;
 
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3000),
     );
-
     _fadeAnimation = Tween<double>(
       begin: 1.0,
       end: 0.0,
@@ -36,17 +33,16 @@ class _SplashScreenState extends State<SplashScreen>
         curve: Curves.easeInOut,
       ),
     );
-
     _controller.forward();
-
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
-          showSecondLogo = true; // بعد ما يخلص الفيد الأول يظهر الثاني
+          showSecondLogo = true;
         });
-
         Future.delayed(const Duration(seconds: 2), () {
-          navigateAndFinish(context, BaseScreen());
+          if (mounted) {
+            navigateAndFinish(context, PhoneConfirmScreen());
+          }
         });
       }
     });
@@ -68,8 +64,6 @@ class _SplashScreenState extends State<SplashScreen>
             "assets/images/png/splash.png",
             fit: BoxFit.cover,
           ),
-
-          // Container fading
           AnimatedBuilder(
             animation: _fadeAnimation,
             builder: (context, child) {
@@ -83,8 +77,6 @@ class _SplashScreenState extends State<SplashScreen>
               );
             },
           ),
-
-          // Logo Section
           Positioned(
             top: 0,
             bottom: 0,

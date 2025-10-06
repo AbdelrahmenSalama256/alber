@@ -10,7 +10,7 @@ import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import 'package:qafeel/features/profile/views/about_app_screen.dart';
 import 'package:qafeel/features/profile/views/donation_history_screen.dart';
-import 'package:qafeel/features/profile/views/dontation_cart_screen.dart';
+import 'package:qafeel/features/cart/views/dontation_cart_screen.dart';
 import 'package:qafeel/features/profile/views/edit_profile_screen.dart';
 import 'package:qafeel/features/profile/views/widgets/logout_button.dart';
 
