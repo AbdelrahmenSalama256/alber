@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
-import 'package:qafeel/core/constants/widgets/print_util.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/features/cart/views/add_donation_cart_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import 'package:qafeel/features/home/view/widgets/service_card.dart';
 import 'package:qafeel/features/news/views/news_screen.dart';
@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
             body: _buildBody(context, state),
             floatingActionButton: ExpandableQuickDonateFAB(
               onQuickDonate: () {
-                PrintUtil.debug("Quick donate tapped");
+                navigateTo(context, AddDonationCartScreen());
               },
             ),
             floatingActionButtonLocation:
@@ -238,7 +238,9 @@ class HomeScreen extends StatelessWidget {
                   imagePath: imagePath,
                   title: state.services[index]['title'],
                   borderColor: color,
-                  onTap: () {},
+                  onTap: () {
+                    navigateTo(context, ServicesScreen());
+                  },
                 );
               },
             ),
@@ -287,7 +289,9 @@ class HomeScreen extends StatelessWidget {
                       goal: d['goal'],
                       initialAmount: d['amount'],
                       initialQty: d['qty'],
-                      onDonate: () {},
+                      onDonate: () {
+                        navigateTo(context, AddDonationCartScreen());
+                      },
                     ),
                   );
                 },
@@ -320,7 +324,9 @@ class HomeScreen extends StatelessWidget {
                       badgeSvg: 'assets/images/png/cure.png',
                       amount: (d['amount'] as num).toDouble(),
                       initialQty: d['qty'] as int,
-                      onDonate: () {},
+                      onDonate: () {
+                        navigateTo(context, AddDonationCartScreen());
+                      },
                     ),
                   );
                 },

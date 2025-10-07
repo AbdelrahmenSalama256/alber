@@ -2,230 +2,225 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
-import 'package:qafeel/features/cart/views/dontation_cart_screen.dart';
 
 import '../../../core/component/widgets/app_button.dart';
 import '../../../core/component/widgets/app_text_field.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/navigation.dart';
+import '../../cart/views/dontation_cart_screen.dart';
+import '../../home/view/widgets/skeleton_loader.dart';
 import '../../profile/views/widgets/custom_field.dart';
+import './cubit/dedicate_donation_cubit.dart';
+import './cubit/dedicate_donation_state.dart';
 import 'widgets/mony_selector.dart';
 
-class SendDedicationDonationScreen extends StatefulWidget {
+class SendDedicationDonationScreen extends StatelessWidget {
   const SendDedicationDonationScreen({super.key});
-
-  @override
-  State<SendDedicationDonationScreen> createState() =>
-      _SendDedicationDonationScreenState();
-}
-
-class _SendDedicationDonationScreenState
-    extends State<SendDedicationDonationScreen> {
-  bool _showNextButton = false;
-  bool showAmountToRecipient = false;
-  bool sendCardToMyPhone = false;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) setState(() => _showNextButton = true);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       hasShape: false,
-      appBar: CustomTopBar(),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 40.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      appBar: const CustomTopBar(),
+      body: BlocBuilder<DedicateDonationCubit, DedicateDonationState>(
+        builder: (context, state) {
+          if (state is DedicateDonationLoading) {
+            return _loadingSkeleton(context);
+          }
+          if (state is! DedicateDonationLoaded) return const SizedBox();
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SvgPicture.asset(
-                      "assets/images/svg/nav/donation.svg",
-                      width: 25.w,
-                    ),
-                    SizedBox(width: 10.w),
-                    Text(
-                      "donation".tr(context),
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 15.h),
-                buildSectionTitle("gift_data".tr(context)),
-                SizedBox(height: 30.h),
-                CustomFieldWithSvgLabel(
-                  label: 'enter_recipient_name'.tr(context),
-                  svgAssetPath: "assets/images/svg/label.svg",
-                  fieldWidget: AppTextField(
-                    controller: TextEditingController(),
-                    hintText: 'name'.tr(context),
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                CustomFieldWithSvgLabel(
-                  label: 'phone_number'.tr(context),
-                  svgAssetPath: "assets/images/svg/label.svg",
-                  fieldWidget: AppTextField(
-                    controller: TextEditingController(),
-                    keyboardType: TextInputType.phone,
-                    hintText: 'phone_number'.tr(context),
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                buildSectionTitle("amount".tr(context)),
-                SizedBox(height: 20.h),
-                MoneySelector(),
-                SizedBox(height: 20.h),
-                CustomFieldWithSvgLabel(
-                  label: 'set_amount'.tr(context),
-                  svgAssetPath: "assets/images/svg/label.svg",
-                  fieldWidget: AppTextField(
-                    controller: TextEditingController(),
-                    keyboardType: TextInputType.text,
-                    hintText: 'amount_value'.tr(context),
-                    suffixIcon: Padding(
-                      padding: EdgeInsets.all(12.w),
-                      child: SvgPicture.asset(
-                        "assets/images/svg/currancy.svg",
-                        color: AppColors.textGrey,
-                        width: 20.w,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 25.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CheckboxListTile(
-                        activeColor: AppColors.primary,
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          "show_amount_to_recipient".tr(context),
+                    SizedBox(height: 40.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/images/svg/nav/donation.svg",
+                          width: 25.w,
+                        ),
+                        SizedBox(width: 10.w),
+                        Text(
+                          "donation".tr(context),
                           style: TextStyle(
-                            fontSize: 16.sp,
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
+                            color: AppColors.textSecondary,
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
-                        value: showAmountToRecipient,
-                        onChanged: (val) {
-                          setState(() => showAmountToRecipient = val ?? false);
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
+                      ],
+                    ),
+                    SizedBox(height: 15.h),
+                    _sectionTitle(context, "gift_data".tr(context)),
+                    SizedBox(height: 30.h),
+                    CustomFieldWithSvgLabel(
+                      label: 'enter_recipient_name'.tr(context),
+                      svgAssetPath: "assets/images/svg/label.svg",
+                      fieldWidget: AppTextField(
+                        controller: state.recipientNameC,
+                        hintText: 'name'.tr(context),
                       ),
                     ),
-                    Expanded(
-                      child: CheckboxListTile(
-                        activeColor: AppColors.primary,
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          "send_card_to_my_phone".tr(context),
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        value: sendCardToMyPhone,
-                        onChanged: (val) {
-                          setState(() => sendCardToMyPhone = val ?? false);
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
+                    SizedBox(height: 12.h),
+                    CustomFieldWithSvgLabel(
+                      label: 'phone_number'.tr(context),
+                      svgAssetPath: "assets/images/svg/label.svg",
+                      fieldWidget: AppTextField(
+                        controller: state.recipientPhoneC,
+                        keyboardType: TextInputType.phone,
+                        hintText: 'phone_number'.tr(context),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 200.h),
-              ],
-            ),
-          ),
-          if (_showNextButton)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: SafeArea(
-                top: false,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24.r),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 20.h),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.4),
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 12.r,
-                              offset: Offset(0, -4.h),
-                              color: AppColors.black.withOpacity(0.2),
-                            ),
-                          ],
-                          border: Border(
-                            top: BorderSide(
-                                color: AppColors.primary, width: 2.w),
+                    SizedBox(height: 20.h),
+                    _sectionTitle(context, "amount".tr(context)),
+                    SizedBox(height: 20.h),
+                    const MoneySelector(),
+                    SizedBox(height: 20.h),
+                    CustomFieldWithSvgLabel(
+                      label: 'set_amount'.tr(context),
+                      svgAssetPath: "assets/images/svg/label.svg",
+                      fieldWidget: AppTextField(
+                        controller: state.customAmountC,
+                        keyboardType: TextInputType.text,
+                        hintText: 'amount_value'.tr(context),
+                        suffixIcon: Padding(
+                          padding: EdgeInsets.all(12.w),
+                          child: SvgPicture.asset(
+                            "assets/images/svg/currancy.svg",
+                            color: AppColors.textGrey,
+                            width: 20.w,
                           ),
-                          borderRadius: BorderRadius.circular(24.r),
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              height: 52.h,
-                              child: AppButton(
-                                onPressed: () {
-                                  navigateTo(context, DontationCartScreen());
-                                },
-                                text: "continue_payment".tr(context),
-                                suffixIcon: Icon(
-                                  CupertinoIcons.chevron_back,
-                                  color: AppColors.white,
-                                  size: 25.sp,
-                                ),
-                                textStyle: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
+                      ),
+                    ),
+                    SizedBox(height: 25.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CheckboxListTile(
+                            activeColor: AppColors.primary,
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              "show_amount_to_recipient".tr(context),
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ],
+                            value: state.showAmountToRecipient,
+                            onChanged: (v) => context
+                                .read<DedicateDonationCubit>()
+                                .toggleShowAmount(v ?? false),
+                            controlAffinity: ListTileControlAffinity.leading,
+                          ),
+                        ),
+                        Expanded(
+                          child: CheckboxListTile(
+                            activeColor: AppColors.primary,
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              "send_card_to_my_phone".tr(context),
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            value: state.sendCardToMyPhone,
+                            onChanged: (v) => context
+                                .read<DedicateDonationCubit>()
+                                .toggleSendToMyPhone(v ?? false),
+                            controlAffinity: ListTileControlAffinity.leading,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 200.h),
+                  ],
+                ),
+              ),
+              if (state.showNextButton)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24.r),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                          child: Container(
+                            padding:
+                                EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 20.h),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.4),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 12.r,
+                                  offset: Offset(0, -4.h),
+                                  color: AppColors.black.withOpacity(0.2),
+                                ),
+                              ],
+                              border: Border(
+                                top: BorderSide(
+                                    color: AppColors.primary, width: 2.w),
+                              ),
+                              borderRadius: BorderRadius.circular(24.r),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 52.h,
+                                  child: AppButton(
+                                    onPressed: () {
+                                      navigateTo(
+                                          context, const DontationCartScreen());
+                                    },
+                                    text: "continue_payment".tr(context),
+                                    suffixIcon: Icon(
+                                      CupertinoIcons.chevron_back,
+                                      color: AppColors.white,
+                                      size: 25.sp,
+                                    ),
+                                    textStyle: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget buildSectionTitle(String title) {
+  Widget _sectionTitle(BuildContext context, String title) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.r),
       child: BackdropFilter(
@@ -250,6 +245,94 @@ class _SendDedicationDonationScreenState
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _loadingSkeleton(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 40.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SkeletonLoader(
+                  width: 25.w,
+                  height: 25.w,
+                  borderRadius: BorderRadius.circular(12.r)),
+              SizedBox(width: 10.w),
+              SkeletonLoader(
+                  width: 160.w,
+                  height: 22.h,
+                  borderRadius: BorderRadius.circular(6.r)),
+            ],
+          ),
+          SizedBox(height: 20.h),
+          SkeletonLoader(
+              width: 120.w,
+              height: 20.h,
+              borderRadius: BorderRadius.circular(6.r)),
+          SizedBox(height: 12.h),
+          SkeletonLoader(
+              width: double.infinity,
+              height: 60.h,
+              borderRadius: BorderRadius.circular(12.r)),
+          SizedBox(height: 12.h),
+          SkeletonLoader(
+              width: double.infinity,
+              height: 60.h,
+              borderRadius: BorderRadius.circular(12.r)),
+          SizedBox(height: 20.h),
+          SkeletonLoader(
+              width: 120.w,
+              height: 20.h,
+              borderRadius: BorderRadius.circular(6.r)),
+          SizedBox(height: 12.h),
+          SizedBox(
+            height: 56.h,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: 4,
+              separatorBuilder: (_, __) => SizedBox(width: 10.w),
+              itemBuilder: (_, __) => SkeletonLoader(
+                  width: 90.w,
+                  height: 56.h,
+                  borderRadius: BorderRadius.circular(10.r)),
+            ),
+          ),
+          SizedBox(height: 12.h),
+          SkeletonLoader(
+              width: double.infinity,
+              height: 60.h,
+              borderRadius: BorderRadius.circular(12.r)),
+          SizedBox(height: 24.h),
+          Row(
+            children: [
+              Expanded(
+                  child: SkeletonLoader(
+                      width: double.infinity,
+                      height: 48.h,
+                      borderRadius: BorderRadius.circular(10.r))),
+              SizedBox(width: 12.w),
+              Expanded(
+                  child: SkeletonLoader(
+                      width: double.infinity,
+                      height: 48.h,
+                      borderRadius: BorderRadius.circular(10.r))),
+            ],
+          ),
+          SizedBox(height: 120.h),
+          Center(
+            child: SkeletonLoader(
+                width: 220.w,
+                height: 52.h,
+                borderRadius: BorderRadius.circular(14.r)),
+          ),
+          SizedBox(height: 24.h),
+        ],
       ),
     );
   }

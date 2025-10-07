@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
+import 'package:qafeel/features/cart/views/add_donation_cart_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 
 import '../../home/view/widgets/donation_card.dart';
@@ -78,7 +80,9 @@ class ServiceDetailsScreen extends StatelessWidget {
                 goal: 400000,
                 initialAmount: 234,
                 initialQty: 1,
-                onDonate: () {},
+                onDonate: () {
+                  navigateTo(context, AddDonationCartScreen());
+                },
               ),
             ],
           ),

@@ -75,6 +75,16 @@ dependencies:
   geocoding: ^4.0.0
   http: ^1.5.0
   palette_generator: ^0.3.3+7
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/png/about.png
+  adaptive_icon_foreground: assets/images/png/about.png
+  adaptive_icon_background: "#FFFFFF"
+  min_sdk_android: 21
+  remove_alpha_ios: true
 
 dev_dependencies:
   flutter_test:

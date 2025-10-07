@@ -11,7 +11,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeLoading());
 
     try {
-      await Future.delayed(const Duration(seconds: 4));
+      await Future.delayed(const Duration(seconds: 2));
 
       final sliderImages = await _fetchSliderImages();
       final services = await _fetchServices();

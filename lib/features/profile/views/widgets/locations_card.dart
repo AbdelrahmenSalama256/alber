@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/locale/app_loacl.dart';
 
 class LocationsCard extends StatelessWidget {
   final String title;
@@ -10,6 +11,7 @@ class LocationsCard extends StatelessWidget {
   final String iconPath;
   final Color titleColor;
   final Color backgroundColor;
+  final VoidCallback? onTap;
 
   const LocationsCard({
     super.key,
@@ -17,129 +19,160 @@ class LocationsCard extends StatelessWidget {
     required this.description,
     required this.imagePath,
     required this.iconPath,
-    this.titleColor = AppColors.textGrey,
+    this.titleColor = AppColors.primary,
     this.backgroundColor = AppColors.white,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(bottom: 30.h),
-      height: 195.75479125976585.h,
-      decoration: BoxDecoration(
-        color: AppColors.textGrey,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withOpacity(0.2),
-            spreadRadius: 0,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return GestureDetector(
+      onTap: onTap,
       child: Container(
-        clipBehavior: Clip.hardEdge,
+        width: double.infinity,
+        margin: EdgeInsets.only(bottom: 24.h),
+        height: 160.h,
         decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.black.withOpacity(0.1),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Stack(
-          clipBehavior: Clip.hardEdge,
           children: [
-            PositionedDirectional(
-              start: 0,
-              top: 0,
-              child: Container(
-                width: 169.8113403320319.w,
-                height: 39.15094757080093.h,
-                decoration: BoxDecoration(
-                  color: titleColor,
-                  borderRadius: BorderRadiusDirectional.only(
-                    bottomEnd: Radius.circular(12.r),
-                  ),
-                ),
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      "assets/images/svg/badge-mark.svg",
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    Text(
-                      title,
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
+            // Background container
+            Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(16.r),
               ),
             ),
-            PositionedDirectional(
-              start: 0,
-              top: 40.h,
-              end: 170.w,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
-                decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20.r),
-                  ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 25.w,
-                      height: 25.w,
-                      padding: EdgeInsets.all(5.w),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.3),
-                        shape: BoxShape.circle,
-                      ),
-                      child: SvgPicture.asset(iconPath),
+
+            // Content row
+            Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Row(
+                children: [
+                  // Text content section
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title badge
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 6.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: titleColor,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(
+                                "assets/images/svg/badge-mark.svg",
+                                width: 16.w,
+                                height: 16.w,
+                              ),
+                              SizedBox(width: 6.w),
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        // Description with icon
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 32.w,
+                              height: 32.w,
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: titleColor.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: SvgPicture.asset(
+                                iconPath,
+                                color: titleColor,
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Text(
+                                description,
+                                style: TextStyle(
+                                  color: AppColors.textGrey,
+                                  fontSize: 12.sp,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        Spacer(),
+
+                        // Optional: Add a call-to-action button
+                        if (onTap != null)
+                          Row(
+                            children: [
+                              Text(
+                                'view_details'.tr(context),
+                                style: TextStyle(
+                                  color: titleColor,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(width: 4.w),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 12.w,
+                                color: titleColor,
+                              ),
+                            ],
+                          ),
+                      ],
                     ),
-                    SizedBox(width: 10.w),
-                    Flexible(
-                      child: Text(
-                        description,
-                        style: TextStyle(
-                          color: const Color(0xff7E7E7E),
-                          fontSize: 9.sp,
-                          height: 2.3.h,
-                          fontWeight: FontWeight.w700,
+                  ),
+
+                  SizedBox(width: 16.w),
+
+                  // Image section
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        image: DecorationImage(
+                          image: AssetImage(imagePath),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            PositionedDirectional(
-              end: 0,
-              start: 170.w,
-              top: 4.h,
-              bottom: 4.h,
-              child: ClipRRect(
-                borderRadius: BorderRadiusDirectional.only(
-                  topStart: Radius.circular(94.34.r),
-                  bottomStart: Radius.circular(94.34.r),
-                ),
-                child: Image.asset(
-                  imagePath,
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                  ),
+                ],
               ),
             ),
           ],

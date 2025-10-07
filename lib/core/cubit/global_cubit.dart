@@ -20,7 +20,7 @@ class GlobalCubit extends Cubit<GlobalState> {
         "User type is ${sl<CacheHelper>().getDataString(key: AppConstants.userType)}");
     PrintUtil.success(
         "${sl<CacheHelper>().getDataString(key: AppConstants.token)}");
-    getCurrentLocation();
+    // getCurrentLocation();
   }
 
   int currentNavIndex = 2;

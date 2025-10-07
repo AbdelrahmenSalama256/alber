@@ -1,0 +1,79 @@
+import 'dart:async';
+
+import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+
+import 'search_state.dart';
+
+class SearchCubit extends Cubit<SearchState> {
+  SearchCubit() : super(SearchInitial());
+
+  final TextEditingController searchC = TextEditingController();
+  Timer? _debounce;
+
+  Future<void> init() async {
+    emit(SearchLoading());
+    await Future.delayed(const Duration(milliseconds: 800));
+    emit(SearchLoaded(results: _sampleData(), query: ""));
+  }
+
+  void onQueryChanged(String q) {
+    _debounce?.cancel();
+    _debounce =
+        Timer(const Duration(milliseconds: 400), () => performSearch(q));
+  }
+
+  Future<void> performSearch(String q) async {
+    final base = _sampleData();
+    emit(SearchLoading());
+    await Future.delayed(const Duration(milliseconds: 600));
+    final filtered = q.isEmpty
+        ? base
+        : base
+            .where((e) => e['title']!.toLowerCase().contains(q.toLowerCase()))
+            .toList();
+    emit(SearchLoaded(results: filtered, query: q));
+  }
+
+  List<Map<String, String>> _sampleData() {
+    return [
+      {
+        "image": "assets/images/png/news.png",
+        "title": "جمعية البر بجدة",
+        "subtitle": "خبر ١"
+      },
+      {
+        "image": "assets/images/png/news.png",
+        "title": "الزكاة والصدقة",
+        "subtitle": "خبر ٢"
+      },
+      {
+        "image": "assets/images/png/news.png",
+        "title": "مشاريع السقيا",
+        "subtitle": "خبر ٣"
+      },
+      {
+        "image": "assets/images/png/news.png",
+        "title": "كفالة يتيم",
+        "subtitle": "خبر ٤"
+      },
+      {
+        "image": "assets/images/png/news.png",
+        "title": "صدقة جارية",
+        "subtitle": "خبر ٥"
+      },
+      {
+        "image": "assets/images/png/news.png",
+        "title": "حملات اغاثة",
+        "subtitle": "خبر ٦"
+      },
+    ];
+  }
+
+  @override
+  Future<void> close() {
+    _debounce?.cancel();
+    searchC.dispose();
+    return super.close();
+  }
+}

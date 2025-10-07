@@ -6,17 +6,22 @@ import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/features/cart/views/dontation_cart_screen.dart';
 
+import '../../../notifications/views/notifications_screen.dart';
+import '../../../search/views/search_screen.dart';
+
 class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? isHome;
   final bool? isCart;
   final bool? isNotification;
+  final bool? isSearch;
   final VoidCallback? onBack;
   const CustomTopBar(
       {super.key,
       this.isHome = false,
       this.onBack,
       this.isCart = false,
-      this.isNotification = false});
+      this.isNotification = false,
+      this.isSearch = false});
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +72,18 @@ class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Icon(
-                  CupertinoIcons.search,
-                  color: const Color(0xffCCCCCC),
-                  size: 30.sp,
-                ),
+                if (!isSearch!) ...[
+                  InkWell(
+                    onTap: () {
+                      navigateTo(context, const SearchScreen());
+                    },
+                    child: Icon(
+                      CupertinoIcons.search,
+                      color: const Color(0xffCCCCCC),
+                      size: 30.sp,
+                    ),
+                  ),
+                ],
                 if (!isCart!) ...[
                   SizedBox(width: 16.w),
                   _buildSvgIcon(
@@ -82,11 +94,16 @@ class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
                     },
                   ),
                 ],
-                SizedBox(width: 16.w),
-                _buildSvgIcon(
-                  "assets/images/svg/notifications_active.svg",
-                  count: 12,
-                ),
+                if (!isNotification!) ...[
+                  SizedBox(width: 16.w),
+                  _buildSvgIcon(
+                    "assets/images/svg/notifications_active.svg",
+                    count: 12,
+                    onTap: () {
+                      navigateTo(context, const NotificationsScreen());
+                    },
+                  ),
+                ],
               ],
             ),
           ],
