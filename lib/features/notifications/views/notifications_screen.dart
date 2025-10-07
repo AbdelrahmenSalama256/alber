@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
+import 'package:qafeel/features/shared/widgets/section_header.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../home/view/widgets/skeleton_loader.dart';
@@ -32,19 +32,16 @@ class NotificationsScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: Column(
                     children: [
-                      SizedBox(height: 40.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                              "assets/images/svg/notifications_active.svg",
-                              width: 22.w),
-                          SizedBox(width: 10.w),
-                          SkeletonLoader(
-                              width: 140.w,
-                              height: 22.h,
-                              borderRadius: BorderRadius.circular(6.r)),
-                        ],
+                      SectionHeader(
+                        leadingType: HeaderLeadingType.svg,
+                        svgAsset: "assets/images/svg/notifications_active.svg",
+                        title: "",
+                        isLoading: true,
+                        iconColor: AppColors.textSecondary,
+                        padding: EdgeInsets.only(top: 40.h),
+                        skeletonWidth: 140.w,
+                        skeletonHeight: 22.h,
+                        skeletonRadius: BorderRadius.circular(6.r),
                       ),
                       SizedBox(height: 20.h),
                       ...List.generate(
@@ -72,23 +69,12 @@ class NotificationsScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Column(
                   children: [
-                    SizedBox(height: 40.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                            "assets/images/svg/notifications_active.svg",
-                            width: 22.w,
-                            color: AppColors.textSecondary),
-                        SizedBox(width: 10.w),
-                        Text(
-                          "notifications".tr(context),
-                          style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 22.sp,
-                              fontWeight: FontWeight.w800),
-                        ),
-                      ],
+                    SectionHeader(
+                      leadingType: HeaderLeadingType.svg,
+                      iconColor: AppColors.textSecondary,
+                      svgAsset: "assets/images/svg/notifications_active.svg",
+                      title: "notifications".tr(context),
+                      padding: EdgeInsets.only(top: 40.h),
                     ),
                     SizedBox(height: 20.h),
                     ...items.map(

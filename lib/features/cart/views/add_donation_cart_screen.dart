@@ -9,12 +9,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
+import 'package:qafeel/features/shared/widgets/section_header.dart';
 
 import '../../../core/component/widgets/app_button.dart';
 import '../../../core/component/widgets/app_text_field.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/navigation.dart';
-import '../../home/view/widgets/skeleton_loader.dart';
 import '../../profile/views/widgets/custom_field.dart';
 import 'cubit/add_donation_cubit.dart';
 import 'cubit/add_donation_state.dart';
@@ -37,78 +37,111 @@ class AddDonationCartScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Column(
                   children: [
-                    SizedBox(height: 40.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SkeletonLoader(
-                            width: 30.w,
-                            height: 30.w,
-                            borderRadius: BorderRadius.circular(15.r)),
-                        SizedBox(width: 15.h),
-                        SkeletonLoader(
-                            width: 150.w,
-                            height: 24.h,
-                            borderRadius: BorderRadius.circular(6.r)),
-                      ],
+                    SectionHeader(
+                      leadingType: HeaderLeadingType.svg,
+                      svgAsset: "assets/images/svg/donation-cart.svg",
+                      isLoading: true,
+                      skeletonWidth: 150,
+                      skeletonHeight: 24,
+                      skeletonRadius: BorderRadius.circular(6.r),
+                      leadingSize: 30,
+                      spacing: 15,
+                      center: true,
+                      padding: EdgeInsets.only(top: 40.h),
                     ),
                     SizedBox(height: 30.h),
-                    SkeletonLoader(
-                        width: double.infinity,
-                        height: 60.h,
-                        borderRadius: BorderRadius.circular(12.r)),
+                    Container(
+                      width: double.infinity,
+                      height: 60.h,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F2F2),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
                     SizedBox(height: 20.h),
-                    SkeletonLoader(
-                        width: double.infinity,
-                        height: 60.h,
-                        borderRadius: BorderRadius.circular(12.r)),
+                    Container(
+                      width: double.infinity,
+                      height: 60.h,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F2F2),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
                     SizedBox(height: 20.h),
                     Row(
                       children: [
                         Expanded(
-                            child: SkeletonLoader(
-                                width: double.infinity,
-                                height: 60.h,
-                                borderRadius: BorderRadius.circular(12.r))),
+                          child: Container(
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F2F2),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                        ),
                         SizedBox(width: 10.w),
                         Expanded(
-                            child: SkeletonLoader(
-                                width: double.infinity,
-                                height: 60.h,
-                                borderRadius: BorderRadius.circular(12.r))),
+                          child: Container(
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F2F2),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 20.h),
-                    SkeletonLoader(
-                        width: double.infinity,
-                        height: 60.h,
-                        borderRadius: BorderRadius.circular(12.r)),
+                    Container(
+                      width: double.infinity,
+                      height: 60.h,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F2F2),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
                     SizedBox(height: 20.h),
                     Row(
                       children: [
                         Expanded(
-                            child: SkeletonLoader(
-                                width: double.infinity,
-                                height: 60.h,
-                                borderRadius: BorderRadius.circular(12.r))),
+                          child: Container(
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F2F2),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                        ),
                         SizedBox(width: 10.w),
                         Expanded(
-                            child: SkeletonLoader(
-                                width: double.infinity,
-                                height: 60.h,
-                                borderRadius: BorderRadius.circular(12.r))),
+                          child: Container(
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F2F2),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 20.h),
-                    SkeletonLoader(
-                        width: double.infinity,
-                        height: 60.h,
-                        borderRadius: BorderRadius.circular(12.r)),
+                    Container(
+                      width: double.infinity,
+                      height: 60.h,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F2F2),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
                     SizedBox(height: 80.h),
-                    SkeletonLoader(
-                        width: double.infinity,
-                        height: 52.h,
-                        borderRadius: BorderRadius.circular(24.r)),
+                    Container(
+                      width: double.infinity,
+                      height: 52.h,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F2F2),
+                        borderRadius: BorderRadius.circular(24.r),
+                      ),
+                    ),
                     SizedBox(height: 24.h),
                   ],
                 ),
@@ -155,9 +188,10 @@ class AddDonationCartScreen extends StatelessWidget {
                 builder: (context, child) => Theme(
                   data: Theme.of(context).copyWith(
                     colorScheme: ColorScheme.light(
-                        primary: AppColors.primary,
-                        onPrimary: Colors.white,
-                        onSurface: AppColors.textGrey),
+                      primary: AppColors.primary,
+                      onPrimary: Colors.white,
+                      onSurface: AppColors.textGrey,
+                    ),
                   ),
                   child: child!,
                 ),
@@ -176,22 +210,19 @@ class AddDonationCartScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 40.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                              "assets/images/svg/donation-cart.svg",
-                              width: 30.w),
-                          SizedBox(width: 15.h),
-                          Text(
-                            "donation_cart".tr(context),
-                            style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w700),
-                          ),
-                        ],
+                      SectionHeader(
+                        leadingType: HeaderLeadingType.svg,
+                        svgAsset: "assets/images/svg/donation-cart.svg",
+                        title: "donation_cart".tr(context),
+                        leadingSize: 30,
+                        spacing: 15,
+                        textStyle: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 24.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        center: true,
+                        padding: EdgeInsets.only(top: 40.h),
                       ),
                       SizedBox(height: 15.h),
                       Center(
@@ -206,9 +237,10 @@ class AddDonationCartScreen extends StatelessWidget {
                           child: Text(
                             "auto_deduction".tr(context),
                             style: TextStyle(
-                                color: AppColors.textGrey,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w600),
+                              color: AppColors.textGrey,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -315,11 +347,14 @@ class AddDonationCartScreen extends StatelessWidget {
                                   .map<DropdownMenuItem<String>>(
                                     (v) => DropdownMenuItem<String>(
                                       value: v,
-                                      child: Text(v,
-                                          style: TextStyle(
-                                              color: AppColors.textGrey,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600)),
+                                      child: Text(
+                                        v,
+                                        style: TextStyle(
+                                          color: AppColors.textGrey,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                     ),
                                   )
                                   .toList(),
@@ -379,8 +414,9 @@ class AddDonationCartScreen extends StatelessWidget {
                       SizedBox(height: 20.h),
                       Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.r),
-                            color: AppColors.white),
+                          borderRadius: BorderRadius.circular(12.r),
+                          color: AppColors.white,
+                        ),
                         child: Row(
                           children: [
                             Checkbox(
@@ -394,9 +430,10 @@ class AddDonationCartScreen extends StatelessWidget {
                               child: Text(
                                 "agree_terms".tr(context),
                                 style: TextStyle(
-                                    color: AppColors.textGrey,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w700),
+                                  color: AppColors.textGrey,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ],
@@ -426,9 +463,10 @@ class AddDonationCartScreen extends StatelessWidget {
                                 color: Colors.white.withOpacity(0.4),
                                 boxShadow: [
                                   BoxShadow(
-                                      blurRadius: 12.r,
-                                      offset: Offset(0, -4.h),
-                                      color: AppColors.black.withOpacity(0.2))
+                                    blurRadius: 12.r,
+                                    offset: Offset(0, -4.h),
+                                    color: AppColors.black.withOpacity(0.2),
+                                  ),
                                 ],
                                 border: Border(
                                     top: BorderSide(
@@ -451,9 +489,10 @@ class AddDonationCartScreen extends StatelessWidget {
                                       text: "terms_and_conditions_add"
                                           .tr(context),
                                       textStyle: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white),
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -508,9 +547,10 @@ class _CounterField extends StatelessWidget {
           Text(
             "$value",
             style: TextStyle(
-                color: const Color(0xffB1B1B1),
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600),
+              color: const Color(0xffB1B1B1),
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           _IconSquare(
             icon: CupertinoIcons.minus_circle_fill,
@@ -539,8 +579,9 @@ class _IconSquare extends StatelessWidget {
         width: 36.w,
         height: 36.w,
         decoration: BoxDecoration(
-            color: const Color(0xffE6E6E6),
-            borderRadius: BorderRadius.circular(10.r)),
+          color: const Color(0xffE6E6E6),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
         child: Icon(icon, color: AppColors.textGrey, size: 25.sp),
       ),
     );

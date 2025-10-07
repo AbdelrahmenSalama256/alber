@@ -11,9 +11,9 @@ import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/checkout/views/checkout_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import 'package:qafeel/features/profile/views/widgets/cart_item.dart';
+import 'package:qafeel/features/shared/widgets/section_header.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../../home/view/widgets/skeleton_loader.dart';
 import 'cubit/cart_cubit.dart';
 import 'cubit/cart_state.dart';
 
@@ -34,31 +34,36 @@ class DontationCartScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Column(
                   children: [
-                    SizedBox(height: 40.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SkeletonLoader(
-                            width: 20.w,
-                            height: 20.w,
-                            borderRadius: BorderRadius.circular(10.r)),
-                        SizedBox(width: 20.h),
-                        SkeletonLoader(
-                            width: 160.w,
-                            height: 24.h,
-                            borderRadius: BorderRadius.circular(6.r)),
-                      ],
+                    SectionHeader(
+                      leadingType: HeaderLeadingType.svg,
+                      svgAsset: "assets/images/svg/donation-cart.svg",
+                      isLoading: true,
+                      skeletonWidth: 150,
+                      skeletonHeight: 24,
+                      skeletonRadius: BorderRadius.circular(6.r),
+                      leadingSize: 30,
+                      spacing: 15,
+                      center: true,
+                      padding: EdgeInsets.only(top: 40.h),
                     ),
                     SizedBox(height: 30.h),
-                    SkeletonLoader(
-                        width: double.infinity,
-                        height: 160.h,
-                        borderRadius: BorderRadius.circular(20.r)),
+                    Container(
+                      width: double.infinity,
+                      height: 160.h,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F2F2),
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                    ),
                     SizedBox(height: 160.h),
-                    SkeletonLoader(
-                        width: double.infinity,
-                        height: 90.h,
-                        borderRadius: BorderRadius.circular(24.r)),
+                    Container(
+                      width: double.infinity,
+                      height: 90.h,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F2F2),
+                        borderRadius: BorderRadius.circular(24.r),
+                      ),
+                    ),
                     SizedBox(height: 16.h),
                   ],
                 ),
@@ -71,22 +76,19 @@ class DontationCartScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: Column(
                     children: [
-                      SizedBox(height: 40.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                              "assets/images/svg/donation-cart.svg",
-                              width: 20.w),
-                          SizedBox(width: 20.h),
-                          Text(
-                            "donation_cart".tr(context),
-                            style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w700),
-                          ),
-                        ],
+                      SectionHeader(
+                        leadingType: HeaderLeadingType.svg,
+                        svgAsset: "assets/images/svg/donation-cart.svg",
+                        title: "donation_cart".tr(context),
+                        textStyle: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 24.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        leadingSize: 30,
+                        spacing: 15,
+                        center: true,
+                        padding: EdgeInsets.only(top: 40.h),
                       ),
                       SizedBox(height: 30.h),
                       ...List.generate(s.items.length, (i) {
@@ -130,9 +132,10 @@ class DontationCartScreen extends StatelessWidget {
                                 color: Colors.white.withOpacity(0.4),
                                 boxShadow: [
                                   BoxShadow(
-                                      blurRadius: 12.r,
-                                      offset: Offset(0, -4.h),
-                                      color: AppColors.black.withOpacity(0.2)),
+                                    blurRadius: 12.r,
+                                    offset: Offset(0, -4.h),
+                                    color: AppColors.black.withOpacity(0.2),
+                                  ),
                                 ],
                                 border: Border(
                                     top: BorderSide(
@@ -152,9 +155,10 @@ class DontationCartScreen extends StatelessWidget {
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 16.w, vertical: 12.h),
                                       decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(14.r)),
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(14.r),
+                                      ),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -162,24 +166,27 @@ class DontationCartScreen extends StatelessWidget {
                                           Text(
                                             "total".tr(context),
                                             style: TextStyle(
-                                                fontSize: 20.sp,
-                                                fontWeight: FontWeight.w500,
-                                                color: AppColors.textGrey),
+                                              fontSize: 20.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.textGrey,
+                                            ),
                                           ),
                                           Row(
                                             children: [
                                               Text(
                                                 "${s.total}",
                                                 style: TextStyle(
-                                                    fontSize: 20.sp,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: AppColors.textGrey),
+                                                  fontSize: 20.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppColors.textGrey,
+                                                ),
                                               ),
                                               SizedBox(width: 4.w),
                                               SvgPicture.asset(
-                                                  "assets/images/svg/currancy.svg",
-                                                  width: 15.w,
-                                                  color: AppColors.textGrey),
+                                                "assets/images/svg/currancy.svg",
+                                                width: 15.w,
+                                                color: AppColors.textGrey,
+                                              ),
                                             ],
                                           ),
                                         ],
@@ -196,9 +203,10 @@ class DontationCartScreen extends StatelessWidget {
                                           context, const CheckoutScreen()),
                                       text: "pay_now".tr(context),
                                       textStyle: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white),
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ],

@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
+import 'package:qafeel/features/shared/widgets/section_header.dart';
 
 import '../../../core/component/widgets/app_button.dart';
 import '../../../core/component/widgets/app_text_field.dart';
@@ -41,24 +42,19 @@ class SendDedicationDonationScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 40.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          "assets/images/svg/nav/donation.svg",
-                          width: 25.w,
-                        ),
-                        SizedBox(width: 10.w),
-                        Text(
-                          "donation".tr(context),
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ],
+                    SectionHeader(
+                      leadingType: HeaderLeadingType.svg,
+                      svgAsset: "assets/images/svg/nav/donation.svg",
+                      title: "donation".tr(context),
+                      textStyle: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      leadingSize: 25,
+                      spacing: 10,
+                      center: true,
+                      padding: EdgeInsets.only(top: 40.h),
                     ),
                     SizedBox(height: 15.h),
                     _sectionTitle(context, "gift_data".tr(context)),
@@ -255,41 +251,42 @@ class SendDedicationDonationScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 40.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SkeletonLoader(
-                  width: 25.w,
-                  height: 25.w,
-                  borderRadius: BorderRadius.circular(12.r)),
-              SizedBox(width: 10.w),
-              SkeletonLoader(
-                  width: 160.w,
-                  height: 22.h,
-                  borderRadius: BorderRadius.circular(6.r)),
-            ],
+          SectionHeader(
+            leadingType: HeaderLeadingType.svg,
+            svgAsset: "assets/images/svg/nav/donation.svg",
+            isLoading: true,
+            skeletonWidth: 160,
+            skeletonHeight: 22,
+            skeletonRadius: BorderRadius.circular(6.r),
+            leadingSize: 25,
+            spacing: 10,
+            center: true,
+            padding: EdgeInsets.only(top: 40.h),
           ),
           SizedBox(height: 20.h),
           SkeletonLoader(
-              width: 120.w,
-              height: 20.h,
-              borderRadius: BorderRadius.circular(6.r)),
+            width: 120.w,
+            height: 20.h,
+            borderRadius: BorderRadius.circular(6.r),
+          ),
           SizedBox(height: 12.h),
           SkeletonLoader(
-              width: double.infinity,
-              height: 60.h,
-              borderRadius: BorderRadius.circular(12.r)),
+            width: double.infinity,
+            height: 60.h,
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           SizedBox(height: 12.h),
           SkeletonLoader(
-              width: double.infinity,
-              height: 60.h,
-              borderRadius: BorderRadius.circular(12.r)),
+            width: double.infinity,
+            height: 60.h,
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           SizedBox(height: 20.h),
           SkeletonLoader(
-              width: 120.w,
-              height: 20.h,
-              borderRadius: BorderRadius.circular(6.r)),
+            width: 120.w,
+            height: 20.h,
+            borderRadius: BorderRadius.circular(6.r),
+          ),
           SizedBox(height: 12.h),
           SizedBox(
             height: 56.h,
@@ -298,38 +295,45 @@ class SendDedicationDonationScreen extends StatelessWidget {
               itemCount: 4,
               separatorBuilder: (_, __) => SizedBox(width: 10.w),
               itemBuilder: (_, __) => SkeletonLoader(
-                  width: 90.w,
-                  height: 56.h,
-                  borderRadius: BorderRadius.circular(10.r)),
+                width: 90.w,
+                height: 56.h,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
             ),
           ),
           SizedBox(height: 12.h),
           SkeletonLoader(
-              width: double.infinity,
-              height: 60.h,
-              borderRadius: BorderRadius.circular(12.r)),
+            width: double.infinity,
+            height: 60.h,
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           SizedBox(height: 24.h),
           Row(
             children: [
               Expanded(
-                  child: SkeletonLoader(
-                      width: double.infinity,
-                      height: 48.h,
-                      borderRadius: BorderRadius.circular(10.r))),
+                child: SkeletonLoader(
+                  width: double.infinity,
+                  height: 48.h,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+              ),
               SizedBox(width: 12.w),
               Expanded(
-                  child: SkeletonLoader(
-                      width: double.infinity,
-                      height: 48.h,
-                      borderRadius: BorderRadius.circular(10.r))),
+                child: SkeletonLoader(
+                  width: double.infinity,
+                  height: 48.h,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+              ),
             ],
           ),
           SizedBox(height: 120.h),
           Center(
             child: SkeletonLoader(
-                width: 220.w,
-                height: 52.h,
-                borderRadius: BorderRadius.circular(14.r)),
+              width: 220.w,
+              height: 52.h,
+              borderRadius: BorderRadius.circular(14.r),
+            ),
           ),
           SizedBox(height: 24.h),
         ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/constants/navigation.dart';
-import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
+import 'package:qafeel/features/base/view/base_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen>
         });
         Future.delayed(const Duration(seconds: 2), () {
           if (mounted) {
-            navigateAndFinish(context, PhoneConfirmScreen());
+            navigateAndFinish(context, BaseScreen());
           }
         });
       }

@@ -62,8 +62,12 @@ class AboutAppScreeen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 40.h),
-                    Image.asset("assets/images/png/alber-inline-logo.png",
-                        width: 148.w, height: 40.88997268676758.h),
+                    Center(
+                      child: Image.asset(
+                          "assets/images/png/alber-inline-logo.png",
+                          width: 148.w,
+                          height: 40.88997268676758.h),
+                    ),
                     SizedBox(height: 20.h),
                     ActionCard(
                       title: 'about_albir'.tr(context),
