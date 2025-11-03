@@ -13,7 +13,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   Future<void> init() async {
     emit(SearchLoading());
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(seconds: 2));
     emit(SearchLoaded(results: _sampleData(), query: ""));
   }
 
@@ -26,7 +26,7 @@ class SearchCubit extends Cubit<SearchState> {
   Future<void> performSearch(String q) async {
     final base = _sampleData();
     emit(SearchLoading());
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(seconds: 2));
     final filtered = q.isEmpty
         ? base
         : base

@@ -18,7 +18,7 @@ class AddDonationCubit extends Cubit<AddDonationState> {
         amount: 200,
         month: 1,
         day: 1));
-    await Future.delayed(const Duration(milliseconds: 1800));
+    await Future.delayed(const Duration(seconds: 2));
     final s = state;
     if (s is AddDonationLoaded) emit(s.copyWith(showNextButton: true));
   }

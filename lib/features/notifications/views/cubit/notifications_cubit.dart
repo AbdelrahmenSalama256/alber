@@ -9,7 +9,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   Future<void> init() async {
     emit(NotificationsLoading());
-    await Future.delayed(const Duration(milliseconds: 900));
+      await Future.delayed(const Duration(seconds: 2));
     final items = _mock();
     emit(NotificationsLoaded(
       items: items,

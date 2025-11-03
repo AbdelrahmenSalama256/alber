@@ -8,10 +8,10 @@ class TermsCubit extends Cubit<TermsState> {
 
   Future<void> init() async {
     emit(TermsLoading());
-    await Future.delayed(const Duration(milliseconds: 1200));
+    await Future.delayed(const Duration(seconds: 2));
     final t = await _fetchTerms();
     emit(TermsLoaded(showPayPanel: false, terms: t));
-    await Future.delayed(const Duration(milliseconds: 1200));
+    await Future.delayed(const Duration(seconds: 2));
     final s = state;
     if (s is TermsLoaded) emit(s.copyWith(showPayPanel: true));
   }

@@ -13,7 +13,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   CheckoutCubit() : super(CheckoutLoading());
 
   Future<void> init() async {
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(seconds: 2));
     emit(CheckoutLoaded(
       totalAmount: 1000,
       savedCards: [

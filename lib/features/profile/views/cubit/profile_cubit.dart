@@ -17,7 +17,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> init() async {
     emit(ProfileLoading());
-    await Future.delayed(const Duration(milliseconds: 900));
+    await Future.delayed(const Duration(seconds: 2));
     final about = _about();
     final privacy = _longPolicy();
     final terms = _longPolicy();

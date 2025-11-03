@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
-class SkeletonLoader extends StatelessWidget {
+class SkeletonLoader extends StatefulWidget {
   final double width;
   final double height;
   final BorderRadius borderRadius;
@@ -16,29 +15,43 @@ class SkeletonLoader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final radius = isCircular ? BorderRadius.circular(width / 2) : borderRadius;
+  State<SkeletonLoader> createState() => _SkeletonLoaderState();
+}
 
-    return Shimmer.fromColors(
-      baseColor: const Color(0xFFFFFFFF),
-      highlightColor: const Color(0xFFF2F2F2),
-      direction: ShimmerDirection.ltr,
-      period: const Duration(milliseconds: 1600),
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFFFFFFF),
-              Color(0xFFF2F2F2),
-              Color(0xFFFFFFFF),
-            ],
-          ),
-          borderRadius: radius,
-        ),
+class _SkeletonLoaderState extends State<SkeletonLoader> {
+  bool _isHighlighted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAnimation();
+  }
+
+  void _startAnimation() {
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() {
+          _isHighlighted = !_isHighlighted;
+        });
+        _startAnimation();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = widget.isCircular
+        ? BorderRadius.circular(widget.width / 2)
+        : widget.borderRadius;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 600),
+      width: widget.width,
+      height: widget.height,
+      decoration: BoxDecoration(
+        color:
+            _isHighlighted ? const Color(0xFFF0F0F0) : const Color(0xFFE0E0E0),
+        borderRadius: radius,
       ),
     );
   }

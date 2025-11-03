@@ -144,5 +144,12 @@
   "search_hint": "ابحث عن مشروع، خبر، خدمة...",
   "no_results": "لا توجد نتائج",
   "notifications": "الإشعارات",
-  "view_details": "عرض التفاصيل"
+  "view_details": "عرض التفاصيل",
+  "quick_donation": "تبرع سريع",
+  "dedicate_donation": "اهداء تبرع",
+  "volunteer_projects": "مشاريع تطوع",
+  "dedicate_donation_desc": "اهدِ تبرعك لشخص خاص واجعلها أكثر معنى",
+  "go_to_dedicate": "الذهاب إلى اهداء تبرع",
+  "coming_soon": "قريباً",
+  "volunteer_projects_desc": "ميزة المشاريع التطوعية ستكون متاحة قريباً"
 }

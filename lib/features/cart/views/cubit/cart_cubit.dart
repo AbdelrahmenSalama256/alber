@@ -7,12 +7,12 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> load() async {
     emit(CartLoading());
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(seconds: 2));
     final items = await _fetchCartItems();
     final total = items.fold<int>(
         0, (p, e) => p + (e['amount'] as int) * (e['qty'] as int));
     emit(CartLoaded(items: items, total: total, showPayPanel: false));
-    await Future.delayed(const Duration(milliseconds: 1800));
+    await Future.delayed(const Duration(seconds: 2));
     final s = state;
     if (s is CartLoaded) emit(s.copyWith(showPayPanel: true));
   }

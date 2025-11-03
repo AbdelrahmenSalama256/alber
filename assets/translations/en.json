@@ -54,7 +54,6 @@
   "all_news": "All News",
   "finger_prints": "Finger Prints",
   "a_growing_partnership_community": "A growing partnership community",
-  "quick_donate": "Quick Donate",
   "go": "Go",
   "albir_socity_news": "Al-Bir Society News",
   "donation_count": "Donation Count",
@@ -144,5 +143,13 @@
   "search_hint": "Search for a project, news, or service...",
   "no_results": "No results found",
   "notifications": "Notifications",
-  "view_details": "View Details"
+  "view_details": "View Details",
+  "quick_donation": "Quick Donation",
+  "quick_donate": "Quick Donate",
+  "dedicate_donation": "Dedicate Donation",
+  "volunteer_projects": "Volunteer Projects",
+  "dedicate_donation_desc": "Dedicate your donation to someone special and make it more meaningful",
+  "go_to_dedicate": "Go to Dedicate Donation",
+  "coming_soon": "Coming Soon",
+  "volunteer_projects_desc": "Volunteer projects feature will be available soon"
 }

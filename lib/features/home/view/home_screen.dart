@@ -11,6 +11,7 @@ import 'package:qafeel/features/cart/views/add_donation_cart_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import 'package:qafeel/features/home/view/widgets/service_card.dart';
 import 'package:qafeel/features/news/views/news_screen.dart';
+import 'package:qafeel/features/services/views/service_details_screen.dart';
 import 'package:qafeel/features/services/views/services_screen.dart';
 
 import '../../../core/component/widgets/app_button.dart';
@@ -22,7 +23,6 @@ import 'widgets/donation_card.dart';
 import 'widgets/donation_service_card.dart';
 import 'widgets/news_section.dart';
 import 'widgets/partners_section.dart';
-import 'widgets/quick_dontate.dart';
 import 'widgets/skeleton_loader.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -39,13 +39,6 @@ class HomeScreen extends StatelessWidget {
             hasShape: false,
             appBar: const CustomTopBar(isHome: true),
             body: _buildBody(context, state),
-            floatingActionButton: ExpandableQuickDonateFAB(
-              onQuickDonate: () {
-                navigateTo(context, AddDonationCartScreen());
-              },
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerTop,
           );
         },
       ),
@@ -239,7 +232,7 @@ class HomeScreen extends StatelessWidget {
                   title: state.services[index]['title'],
                   borderColor: color,
                   onTap: () {
-                    navigateTo(context, ServicesScreen());
+                    navigateTo(context, ServiceDetailsScreen());
                   },
                 );
               },

@@ -12,7 +12,7 @@ class DedicateDonationCubit extends Cubit<DedicateDonationState> {
 
   Future<void> init() async {
     emit(DedicateDonationLoading());
-    await Future.delayed(const Duration(milliseconds: 900));
+    await Future.delayed(const Duration(seconds: 2));
     final types = [
       {"title": "تبرع بالمال", "icon": "assets/images/svg/testdonation.svg"},
       {"title": "تبرع بالدم", "icon": "assets/images/svg/testdonation.svg"},
