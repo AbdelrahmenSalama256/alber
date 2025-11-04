@@ -4,10 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qafeel/core/component/custom_toast.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/auth_return.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
 import 'package:qafeel/features/bills/views/bills_screen.dart';
 import 'package:qafeel/features/dedicate_donation/views/dedicate_donation_screen.dart';
 import 'package:qafeel/features/dedicate_donation/views/quick_donation_screen.dart';
@@ -15,6 +21,7 @@ import 'package:qafeel/features/home/view/home_screen.dart';
 import 'package:qafeel/features/home/view/widgets/quick_dontate.dart';
 import 'package:qafeel/features/services/views/services_screen.dart';
 
+import '../../../core/app/alber.dart';
 import '../../../core/cubit/global_state.dart';
 import '../../profile/views/profile_screen.dart';
 
@@ -38,8 +45,8 @@ class BaseScreen extends StatelessWidget {
 
         return WillPopScope(
           onWillPop: () async {
-            if (cubit.currentNavIndex != 0) {
-              cubit.changeBottomNavIndex(0);
+            if (cubit.currentNavIndex != 2) {
+              cubit.changeBottomNavIndex(2);
               return false;
             }
             return true;
@@ -139,7 +146,27 @@ class BaseScreen extends StatelessWidget {
                     animationCurve: Curves.bounceInOut,
                     animationDuration: const Duration(milliseconds: 300),
                     height: 75.h,
-                    onTap: (index) => cubit.changeBottomNavIndex(index),
+                    onTap: (index) {
+                      // Guard Profile and Bills for authenticated users
+                      if ((index == 4 || index == 3)) {
+                        final token = sl<CacheHelper>()
+                            .getDataString(key: AppConstants.token);
+                        if (token == null || token.isEmpty) {
+                          showToast(
+                            navigatorKey.currentContext!,
+                            message: 'login'.tr(navigatorKey.currentContext!),
+                            state: ToastStates.warning,
+                          );
+                          sl<AuthReturnService>().setPendingAction(() {
+                            sl<GlobalCubit>().changeBottomNavIndex(index);
+                          });
+                          navigateTo(navigatorKey.currentContext!,
+                              const PhoneConfirmScreen());
+                          return;
+                        }
+                      }
+                      cubit.changeBottomNavIndex(index);
+                    },
                   ),
                 ),
               ),

@@ -11,7 +11,10 @@ import 'package:qafeel/core/utils/validator.dart';
 
 import '../../../core/component/widgets/app_button.dart';
 import '../../../core/constants/navigation.dart';
+import '../../../core/cubit/global_cubit.dart';
+import '../../../core/services/service_locator.dart';
 import '../../base/view/base_screen.dart';
+import '../view/phone_confirm_screen.dart';
 import 'cubit/auth_cubit.dart';
 import 'cubit/auth_state.dart';
 
@@ -31,6 +34,14 @@ class RegisterScreen extends StatelessWidget {
               state: ToastStates.success,
             );
             navigateAndFinish(context, BaseScreen());
+          } else if (state is AuthCreateAccountSuccess) {
+            showToast(
+              context,
+              message: "register_success".tr(context),
+              state: ToastStates.success,
+            );
+            // Proceed to phone confirm/OTP; pending action will be executed after OTP success
+            navigateTo(context, const PhoneConfirmScreen());
           } else if (state is AuthError) {
             showToast(
               context,
@@ -57,7 +68,7 @@ class RegisterScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "assets/images/png/alber-inline-logo.png",
+                            sl<GlobalCubit>().AppLogoInline,
                             width: 232.w,
                             height: 64.1.h,
                           ),

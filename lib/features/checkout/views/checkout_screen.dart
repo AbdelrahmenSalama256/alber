@@ -6,6 +6,8 @@ import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 
 import '../../../core/component/widgets/app_button.dart';
 import '../../../core/constants/app_colors.dart';
@@ -74,7 +76,7 @@ class CheckoutScreen extends StatelessWidget {
                           ),
                           SizedBox(width: 10.w),
                           SvgPicture.asset(
-                            "assets/images/svg/currancy.svg",
+                            sl<GlobalCubit>().currencyIconAsset,
                             color: AppColors.textPrimary,
                             width: 15.w,
                           ),

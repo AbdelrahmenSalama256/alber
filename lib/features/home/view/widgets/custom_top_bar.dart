@@ -6,6 +6,8 @@ import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/features/cart/views/dontation_cart_screen.dart';
 
+import '../../../../core/cubit/global_cubit.dart';
+import '../../../../core/services/service_locator.dart';
 import '../../../notifications/views/notifications_screen.dart';
 import '../../../search/views/search_screen.dart';
 
@@ -63,7 +65,7 @@ class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   )
                 : Image.asset(
-                    "assets/images/png/alber-inline-logo.png",
+                    sl<GlobalCubit>().AppLogoInline,
                     width: 140.w,
                     height: 40.h,
                     fit: BoxFit.contain,

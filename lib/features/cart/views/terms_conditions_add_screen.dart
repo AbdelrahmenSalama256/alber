@@ -12,6 +12,13 @@ import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import '../../../core/component/widgets/app_button.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/navigation.dart';
+import 'package:qafeel/core/component/custom_toast.dart';
+import 'package:qafeel/core/constants/app_constant.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/services/auth_return.dart';
+import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
+import 'package:qafeel/core/app/alber.dart';
 import '../../checkout/views/checkout_screen.dart';
 import '../../home/view/widgets/skeleton_loader.dart';
 import 'cubit/terms_cubit.dart';
@@ -162,8 +169,24 @@ class TermsConditionsAddScreen extends StatelessWidget {
                                     child: AppButton(
                                       backgroundColor: AppColors.textSecondary,
                                       onPressed: () {
-                                        navigateTo(
-                                            context, const CheckoutScreen());
+                                        final token = sl<CacheHelper>()
+                                            .getDataString(key: AppConstants.token);
+                                        if (token == null || token.isEmpty) {
+                                          showToast(
+                                            context,
+                                            message: 'login'.tr(context),
+                                            state: ToastStates.warning,
+                                          );
+                                          sl<AuthReturnService>().setPendingAction(() {
+                                            navigateTo(
+                                              navigatorKey.currentContext!,
+                                              const CheckoutScreen(),
+                                            );
+                                          });
+                                          navigateTo(context, const PhoneConfirmScreen());
+                                          return;
+                                        }
+                                        navigateTo(context, const CheckoutScreen());
                                       },
                                       text: "pay_now".tr(context),
                                       textStyle: TextStyle(

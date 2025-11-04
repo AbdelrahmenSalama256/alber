@@ -1,18 +1,36 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/features/news/data/repo/news_repo.dart';
 
 import 'news_state.dart';
 
 class NewsCubit extends Cubit<NewsState> {
   NewsCubit() : super(NewsInitial());
 
+  int currentPage = 1;
+  bool isLoadingMore = false;
+  bool hasMore = true;
+
   Future<void> init() async {
     emit(NewsLoading());
     try {
-      await Future.delayed(const Duration(seconds: 2));
-      final firstPage = await _fetchPage(1);
-      emit(NewsLoaded(items: firstPage, currentPage: 1, hasMore: true));
+      currentPage = 1;
+      isLoadingMore = false;
+      final repo = sl<NewsRepo>();
+      final res = await repo.fetchPage(1);
+      res.fold(
+        (err) => emit(NewsError(err)),
+        (page) {
+          currentPage = page.meta.currentPage;
+          hasMore = page.meta.currentPage < page.meta.lastPage;
+          emit(NewsLoaded(
+              items: page.items,
+              currentPage: currentPage,
+              hasMore: hasMore));
+        },
+      );
     } catch (e) {
       emit(NewsError(e.toString()));
     }
@@ -20,23 +38,27 @@ class NewsCubit extends Cubit<NewsState> {
 
   Future<void> loadMore() async {
     final s = state;
-    if (s is! NewsLoaded || !s.hasMore) return;
-    emit(NewsLoading());
-    await Future.delayed(const Duration(seconds: 1));
-    final nextPage = s.currentPage + 1;
-    final data = await _fetchPage(nextPage);
-    final merged = [...s.items, ...data];
-    emit(NewsLoaded(
-        items: merged, currentPage: nextPage, hasMore: nextPage < 3));
+    if (s is! NewsLoaded || !hasMore || isLoadingMore) return;
+    isLoadingMore = true;
+    final nextPage = currentPage + 1;
+    final repo = sl<NewsRepo>();
+    final res = await repo.fetchPage(nextPage);
+    res.fold(
+      (err) {
+        isLoadingMore = false;
+        emit(NewsError(err));
+      },
+      (page) {
+        currentPage = page.meta.currentPage;
+        hasMore = currentPage < page.meta.lastPage;
+        final merged = [...s.items, ...page.items];
+        emit(NewsLoaded(items: merged, currentPage: currentPage, hasMore: hasMore));
+        isLoadingMore = false;
+      },
+    );
   }
 
-  Future<List<Map<String, String>>> _fetchPage(int page) async {
-    return List.generate(12, (i) {
-      return {
-        "imageAsset": "assets/images/png/news.png",
-        "title": "جمعية البر بجدة",
-        "subtitle": "شهادة “تكامل”",
-      };
-    });
+  Future<void> refresh() async {
+    await init();
   }
 }

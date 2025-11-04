@@ -6,9 +6,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/component/custom_toast.dart';
 import 'package:qafeel/core/component/widgets/app_text_field.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/core/utils/validator.dart';
 import 'package:qafeel/features/auth/view/otp_validation_screen.dart';
 import 'package:qafeel/features/auth/view/register_screen.dart';
@@ -56,7 +60,7 @@ class PhoneConfirmScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "assets/images/png/alber-inline-logo.png",
+                            sl<GlobalCubit>().AppLogoInline,
                             width: 232.w,
                             height: 64.1.h,
                           ),
@@ -87,6 +91,7 @@ class PhoneConfirmScreen extends StatelessWidget {
                               children: [
                                 AppTextField(
                                   enabled: state is AuthLoading ? false : true,
+                                  keyboardType: TextInputType.phone,
                                   controller: cubit.phoneController,
                                   hintText: "enter_phone".tr(context),
                                   validator: (value) =>
@@ -129,7 +134,18 @@ class PhoneConfirmScreen extends StatelessWidget {
                                     color:
                                         AppColors.textPrimary.withOpacity(0.5),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    await sl<CacheHelper>().removeData(
+                                        key: AppConstants.userProfile);
+                                    await sl<CacheHelper>()
+                                        .removeData(key: AppConstants.token);
+                                    context
+                                        .read<GlobalCubit>()
+                                        .changeBottomNavIndex(2);
+                                    showToast(context,
+                                        message:
+                                            'continue_as_guest'.tr(context),
+                                        state: ToastStates.info);
                                     navigateAndFinish(context, BaseScreen());
                                   },
                                 ),

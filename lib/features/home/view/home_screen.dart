@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/navigation.dart';
+import 'package:qafeel/core/component/custom_toast.dart';
+import 'package:qafeel/core/constants/app_constant.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/cart/views/add_donation_cart_screen.dart';
@@ -17,6 +21,9 @@ import 'package:qafeel/features/services/views/services_screen.dart';
 import '../../../core/component/widgets/app_button.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../news/views/news_details_screen.dart';
+import '../../auth/view/phone_confirm_screen.dart';
+import 'package:qafeel/core/services/auth_return.dart';
+import 'package:qafeel/core/app/alber.dart';
 import 'cubit/home_cubit.dart';
 import 'cubit/home_state.dart';
 import 'widgets/donation_card.dart';
@@ -158,12 +165,12 @@ class HomeScreen extends StatelessWidget {
                       context.read<HomeCubit>().updateSliderIndex(index);
                     },
                   ),
-                  items: state.sliderImages.map((image) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(20.r),
-                      child: Image.asset(image, fit: BoxFit.contain),
-                    );
-                  }).toList(),
+              items: state.sliderImages.map((image) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(20.r),
+                  child: Image.asset(image, fit: BoxFit.contain),
+                );
+              }).toList(),
                 ),
                 Positioned(
                   top: -10.h,
@@ -225,11 +232,12 @@ class HomeScreen extends StatelessWidget {
               ),
               itemCount: state.services.length,
               itemBuilder: (context, index) {
-                final imagePath = state.services[index]['image'];
+                final service = state.services[index];
+                final imagePath = service.image;
                 final color = state.extractedColors[imagePath] ?? Colors.grey;
                 return ServiceCard(
                   imagePath: imagePath,
-                  title: state.services[index]['title'],
+                  title: service.title,
                   borderColor: color,
                   onTap: () {
                     navigateTo(context, ServiceDetailsScreen());
@@ -276,14 +284,46 @@ class HomeScreen extends StatelessWidget {
                   return SizedBox(
                     width: MediaQuery.of(context).size.width * 0.96,
                     child: DonationCard(
-                      title: d['title'],
-                      imageAsset: d['image'],
-                      raised: d['raised'],
-                      goal: d['goal'],
-                      initialAmount: d['amount'],
-                      initialQty: d['qty'],
-                      onDonate: () {
-                        navigateTo(context, AddDonationCartScreen());
+                      title: d.title,
+                      imageAsset: d.displayImage ?? 'assets/images/png/text-donation.png',
+                      raised: (d.collectedValue ?? 0).toDouble(),
+                      goal: (d.targetValue ?? 0).toDouble(),
+                      initialAmount: (d.displayAmount ?? 0).toDouble(),
+                      initialQty: 1,
+                      type: d.priceValue,
+                      viewpercent: d.viewpercent,
+                      multiValues: [
+                        d.multi1?.toDouble(),
+                        d.multi2?.toDouble(),
+                        d.multi3?.toDouble(),
+                      ],
+                      frequencyOptions: const ["once", "monthly"],
+                      initialFrequencyIndex: 0,
+                      onDonateWithSelection: (amount, qty, freq) {
+                        final token = sl<CacheHelper>().getDataString(key: AppConstants.token);
+                        if (token == null || token.isEmpty) {
+                          showToast(context,
+                              message: 'login'.tr(context),
+                              state: ToastStates.warning);
+                          sl<AuthReturnService>().setPendingAction(() {
+                            navigateTo(
+                              navigatorKey.currentContext!,
+                              AddDonationCartScreen(
+                                initialAmount: amount.round(),
+                                initialQty: qty,
+                              ),
+                            );
+                          });
+                          navigateTo(context, const PhoneConfirmScreen());
+                          return;
+                        }
+                        navigateTo(
+                          context,
+                          AddDonationCartScreen(
+                            initialAmount: amount.round(),
+                            initialQty: qty,
+                          ),
+                        );
                       },
                     ),
                   );
@@ -312,11 +352,11 @@ class HomeScreen extends StatelessWidget {
                   return Padding(
                     padding: EdgeInsetsDirectional.only(end: 12.w),
                     child: DonationServiceCard(
-                      title: d['title'] as String,
-                      imageAsset: d['image'] as String,
+                      title: d.title,
+                      imageAsset: d.displayImage ?? 'assets/images/png/cure-main.png',
                       badgeSvg: 'assets/images/png/cure.png',
-                      amount: (d['amount'] as num).toDouble(),
-                      initialQty: d['qty'] as int,
+                      amount: (d.displayAmount ?? 0).toDouble(),
+                      initialQty: 1,
                       onDonate: () {
                         navigateTo(context, AddDonationCartScreen());
                       },
@@ -332,9 +372,9 @@ class HomeScreen extends StatelessWidget {
               items: state.news
                   .map(
                     (news) => NewsItem(
-                      imageAsset: news['imageAsset'],
-                      title: news['title'],
-                      subtitle: news['subtitle'],
+                      imageAsset: news.imageAsset,
+                      title: news.title,
+                      subtitle: news.subtitle,
                       onTap: () {
                         navigateTo(context, NewsDetailsScreen());
                       },

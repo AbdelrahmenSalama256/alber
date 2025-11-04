@@ -7,7 +7,10 @@ import 'package:qafeel/core/component/widgets/app_text_field.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/core/services/auth_return.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/core/utils/validator.dart';
 import 'package:qafeel/features/base/view/base_screen.dart';
 
@@ -28,7 +31,16 @@ class OtpValidationScreen extends StatelessWidget {
             showToast(context,
                 message: "otp_verified_success".tr(context),
                 state: ToastStates.success);
-            navigateAndFinish(context, BaseScreen());
+            final ret = sl<AuthReturnService>();
+            if (ret.hasPending) {
+              navigateAndFinish(context, BaseScreen());
+              Future.microtask(() => ret.runPending());
+            } else {
+              if (context.read<GlobalCubit>().currentNavIndex != 2) {
+                context.read<GlobalCubit>().changeBottomNavIndex(2);
+                navigateAndFinish(context, BaseScreen());
+              }
+            }
           } else if (state is AuthError) {
             showToast(context,
                 message: state.message.tr(context), state: ToastStates.error);
@@ -52,7 +64,7 @@ class OtpValidationScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "assets/images/png/alber-inline-logo.png",
+                            sl<GlobalCubit>().AppLogoInline,
                             width: 232.w,
                             height: 64.1.h,
                           ),
@@ -84,6 +96,7 @@ class OtpValidationScreen extends StatelessWidget {
                                 Directionality(
                                   textDirection: TextDirection.ltr,
                                   child: AppTextField(
+                                    keyboardType: TextInputType.number,
                                     enabled:
                                         state is AuthLoading ? false : true,
                                     controller: cubit.otpController,
@@ -94,7 +107,8 @@ class OtpValidationScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 20.h),
                                 AppButton(
-                                  isLoading: state is AuthLoading,
+                                  isLoading:
+                                      state is AuthOtpVerificationLoading,
                                   text: "continue".tr(context),
                                   onPressed: () {
                                     cubit.otpVerfication();

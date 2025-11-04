@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qafeel/core/component/custom_toast.dart';
+import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
+import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
+import 'package:qafeel/core/services/auth_return.dart';
+import 'package:qafeel/core/app/alber.dart';
 import 'package:qafeel/features/cart/views/add_donation_cart_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 
@@ -80,8 +88,32 @@ class ServiceDetailsScreen extends StatelessWidget {
                 goal: 400000,
                 initialAmount: 234,
                 initialQty: 1,
-                onDonate: () {
-                  navigateTo(context, AddDonationCartScreen());
+                onDonateWithSelection: (amount, qty, _) {
+                  final token =
+                      sl<CacheHelper>().getDataString(key: AppConstants.token);
+                  if (token == null || token.isEmpty) {
+                    showToast(context,
+                        message: 'login'.tr(context),
+                        state: ToastStates.warning);
+                    sl<AuthReturnService>().setPendingAction(() {
+                      navigateTo(
+                        navigatorKey.currentContext!,
+                        AddDonationCartScreen(
+                          initialAmount: amount.round(),
+                          initialQty: qty,
+                        ),
+                      );
+                    });
+                    navigateTo(context, const PhoneConfirmScreen());
+                    return;
+                  }
+                  navigateTo(
+                    context,
+                    AddDonationCartScreen(
+                      initialAmount: amount.round(),
+                      initialQty: qty,
+                    ),
+                  );
                 },
               ),
             ],

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:qafeel/features/home/data/models/donation_model.dart';
+import 'package:qafeel/features/news/data/models/news_model.dart';
+import 'package:qafeel/features/home/data/models/service_model.dart';
 
 abstract class HomeState {}
 
@@ -8,10 +11,10 @@ class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
   final List<String> sliderImages;
-  final List<Map<String, dynamic>> services;
-  final List<Map<String, dynamic>> donations;
-  final List<Map<String, dynamic>> donationServices;
-  final List<Map<String, dynamic>> news;
+  final List<ServiceModel> services;
+  final List<DonationModel> donations;
+  final List<DonationModel> donationServices;
+  final List<NewsModel> news;
   final List<String> partners;
   final Map<String, Color> extractedColors;
   final int currentSliderIndex;
@@ -29,10 +32,10 @@ class HomeLoaded extends HomeState {
 
   HomeLoaded copyWith({
     List<String>? sliderImages,
-    List<Map<String, dynamic>>? services,
-    List<Map<String, dynamic>>? donations,
-    List<Map<String, dynamic>>? donationServices,
-    List<Map<String, dynamic>>? news,
+    List<ServiceModel>? services,
+    List<DonationModel>? donations,
+    List<DonationModel>? donationServices,
+    List<NewsModel>? news,
     List<String>? partners,
     Map<String, Color>? extractedColors,
     int? currentSliderIndex,

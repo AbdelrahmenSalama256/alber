@@ -11,6 +11,8 @@ import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 
 import '../../cart/views/dontation_cart_screen.dart';
 import '../../profile/views/widgets/custom_field.dart';
@@ -71,7 +73,7 @@ class PayConfirmationScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 5.w),
                               SvgPicture.asset(
-                                "assets/images/svg/currancy.svg",
+                                sl<GlobalCubit>().currencyIconAsset,
                                 width: 20.w,
                               ),
                             ],

@@ -6,6 +6,8 @@ import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 
+import '../../../core/cubit/global_cubit.dart';
+import '../../../core/services/service_locator.dart';
 import '../../home/view/widgets/skeleton_loader.dart';
 import './about_us_screen.dart';
 import './complaints_screen.dart';
@@ -63,10 +65,8 @@ class AboutAppScreeen extends StatelessWidget {
                   children: [
                     SizedBox(height: 40.h),
                     Center(
-                      child: Image.asset(
-                          "assets/images/png/alber-inline-logo.png",
-                          width: 148.w,
-                          height: 40.88997268676758.h),
+                      child: Image.asset(sl<GlobalCubit>().AppLogoInline,
+                          width: 148.w, height: 40.88997268676758.h),
                     ),
                     SizedBox(height: 20.h),
                     ActionCard(

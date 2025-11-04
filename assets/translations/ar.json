@@ -151,5 +151,14 @@
   "dedicate_donation_desc": "اهدِ تبرعك لشخص خاص واجعلها أكثر معنى",
   "go_to_dedicate": "الذهاب إلى اهداء تبرع",
   "coming_soon": "قريباً",
-  "volunteer_projects_desc": "ميزة المشاريع التطوعية ستكون متاحة قريباً"
+  "volunteer_projects_desc": "ميزة المشاريع التطوعية ستكون متاحة قريباً",
+  "are_you_sure": "هل أنت متأكد؟",
+  "cancel": "إلغاء",
+  "logged_out": "تم تسجيل الخروج",
+  "continue_as_guest": "المتابعة كضيف",
+  "once": "مرة واحدة",
+  "daily": "يومي",
+  "enter_amount": "أدخل المبلغ",
+  "enter_valid_amount": "أدخل مبلغاً صحيحاً",
+  "min_amount_is": "الحد الأدنى للمبلغ هو"
 }

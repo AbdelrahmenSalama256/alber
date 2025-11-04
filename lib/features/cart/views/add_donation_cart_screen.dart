@@ -19,14 +19,18 @@ import '../../profile/views/widgets/custom_field.dart';
 import 'cubit/add_donation_cubit.dart';
 import 'cubit/add_donation_state.dart';
 import 'terms_conditions_add_screen.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 
 class AddDonationCartScreen extends StatelessWidget {
-  const AddDonationCartScreen({super.key});
+  final int? initialAmount;
+  final int? initialQty;
+  const AddDonationCartScreen({super.key, this.initialAmount, this.initialQty});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AddDonationCubit()..init(),
+      create: (_) => AddDonationCubit(initialAmount: initialAmount, initialQty: initialQty)..init(),
       child: CustomScaffold(
         hasShape: false,
         appBar: const CustomTopBar(),
@@ -343,7 +347,7 @@ class AddDonationCartScreen extends StatelessWidget {
                               value: s.periodicity,
                               icon: Icon(Icons.keyboard_arrow_down,
                                   color: AppColors.textGrey, size: 24.sp),
-                              items: <String>['شهري', 'ربع سنوي', 'سنوي']
+                              items: sl<GlobalCubit>().periodicityOptions
                                   .map<DropdownMenuItem<String>>(
                                     (v) => DropdownMenuItem<String>(
                                       value: v,
@@ -587,3 +591,4 @@ class _IconSquare extends StatelessWidget {
     );
   }
 }
+

@@ -1,3 +1,5 @@
+import 'package:qafeel/features/news/data/models/news_model.dart';
+
 abstract class NewsState {}
 
 class NewsInitial extends NewsState {}
@@ -5,7 +7,7 @@ class NewsInitial extends NewsState {}
 class NewsLoading extends NewsState {}
 
 class NewsLoaded extends NewsState {
-  final List<Map<String, String>> items;
+  final List<NewsModel> items;
   final int currentPage;
   final bool hasMore;
 
@@ -16,7 +18,7 @@ class NewsLoaded extends NewsState {
   });
 
   NewsLoaded copyWith({
-    List<Map<String, String>>? items,
+    List<NewsModel>? items,
     int? currentPage,
     bool? hasMore,
   }) {

@@ -7,6 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 
 class DonationBillCard extends StatelessWidget {
   final String tagText;
@@ -249,7 +251,7 @@ class DonationBillCard extends StatelessWidget {
                                   ),
                                   SizedBox(width: 7.w),
                                   SvgPicture.asset(
-                                    "assets/images/svg/currancy.svg",
+                                    sl<GlobalCubit>().currencyIconAsset,
                                     color: const Color(0xFF808080),
                                     width: 20.w,
                                   ),

@@ -7,6 +7,8 @@ import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/cubit/global_cubit.dart';
+import '../../../core/services/service_locator.dart';
 import '../../home/view/widgets/skeleton_loader.dart';
 import './cubit/profile_cubit.dart';
 import './cubit/profile_state.dart';
@@ -51,7 +53,7 @@ class AboutUsScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(height: 40.h),
-                    Image.asset("assets/images/png/alber-inline-logo.png",
+                    Image.asset(sl<GlobalCubit>().AppLogoInline,
                         width: 148.w, height: 40.88997268676758.h),
                     SizedBox(height: 20.h),
                     ClipRRect(

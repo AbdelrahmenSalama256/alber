@@ -1,7 +1,10 @@
 // ignore_for_file: avoid_types_as_parameter_names, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-
+import 'package:qafeel/core/constants/app_constant.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/auth_return.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 import '../app/alber.dart';
 
 void navigateTo(BuildContext context, Widget screen) {
@@ -11,6 +14,7 @@ void navigateTo(BuildContext context, Widget screen) {
       transitionDuration: const Duration(milliseconds: 1000),
       reverseTransitionDuration: const Duration(milliseconds: 700),
       pageBuilder: (context, animation, secondaryAnimation) => screen,
+      settings: RouteSettings(name: screen.runtimeType.toString()),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return const ZoomPageTransitionsBuilder().buildTransitions(
           MaterialPageRoute(builder: (context) => screen),
@@ -39,6 +43,7 @@ void navigateReplac(context, Widget) => Navigator.pushReplacement(
         transitionDuration: const Duration(milliseconds: 500),
         // reverseTransitionDuration: const Duration(milliseconds: 700),
         pageBuilder: (context, animation, secondaryAnimation) => Widget,
+        settings: RouteSettings(name: Widget.runtimeType.toString()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
@@ -51,6 +56,7 @@ void navigateAndFinish(context, Widget) => Navigator.pushAndRemoveUntil(
         transitionDuration: const Duration(milliseconds: 500),
         // reverseTransitionDuration: const Duration(milliseconds: 700),
         pageBuilder: (context, animation, secondaryAnimation) => Widget,
+        settings: RouteSettings(name: Widget.runtimeType.toString()),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
@@ -67,6 +73,7 @@ void navigateWithoutNav(BuildContext context, Widget screen) {
       transitionDuration: const Duration(milliseconds: 1000),
       reverseTransitionDuration: const Duration(milliseconds: 700),
       pageBuilder: (context, animation, secondaryAnimation) => screen,
+      settings: RouteSettings(name: screen.runtimeType.toString()),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
           opacity: animation,
@@ -84,6 +91,7 @@ void navigateReplacWithNav(BuildContext context, Widget screen,
     PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (context, animation, secondaryAnimation) => screen,
+      settings: RouteSettings(name: screen.runtimeType.toString()),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
           opacity: animation,
@@ -101,6 +109,7 @@ void navigateReplacWithoutNav(BuildContext context, Widget screen) {
     PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (context, animation, secondaryAnimation) => screen,
+      settings: RouteSettings(name: screen.runtimeType.toString()),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
           opacity: animation,
@@ -118,6 +127,7 @@ void navigateAndFinishWithNav(BuildContext context, Widget screen,
     PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (context, animation, secondaryAnimation) => screen,
+      settings: RouteSettings(name: screen.runtimeType.toString()),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
           opacity: animation,
@@ -136,6 +146,7 @@ void navigateAndFinishWithoutNav(BuildContext context, Widget screen) {
     PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (context, animation, secondaryAnimation) => screen,
+      settings: RouteSettings(name: screen.runtimeType.toString()),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
           opacity: animation,
@@ -145,4 +156,15 @@ void navigateAndFinishWithoutNav(BuildContext context, Widget screen) {
     ),
     (route) => false,
   );
+}
+
+/// Helper: requires auth; if guest, stores action and navigates to login.
+void requireAuthAndRun(BuildContext context, VoidCallback action) {
+  final token = sl<CacheHelper>().getDataString(key: AppConstants.token);
+  if (token != null && token.isNotEmpty) {
+    action();
+  } else {
+    sl<AuthReturnService>().setPendingAction(action);
+    // Caller should show toast before calling this helper
+  }
 }

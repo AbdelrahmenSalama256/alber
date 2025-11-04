@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 
 class MoneySelector extends StatefulWidget {
   const MoneySelector({super.key});
@@ -72,7 +74,7 @@ class _MoneySelectorState extends State<MoneySelector> {
                       ),
                       SizedBox(width: 6.w),
                       SvgPicture.asset(
-                        "assets/images/svg/currancy.svg",
+                        sl<GlobalCubit>().currencyIconAsset,
                         width: 15.w,
                         color: isSelected ? Colors.white : AppColors.primary,
                       ),

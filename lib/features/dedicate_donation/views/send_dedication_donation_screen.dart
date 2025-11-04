@@ -8,6 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/features/shared/widgets/section_header.dart';
 
 import '../../../core/component/widgets/app_button.dart';
@@ -92,7 +94,7 @@ class SendDedicationDonationScreen extends StatelessWidget {
                         suffixIcon: Padding(
                           padding: EdgeInsets.all(12.w),
                           child: SvgPicture.asset(
-                            "assets/images/svg/currancy.svg",
+                            sl<GlobalCubit>().currencyIconAsset,
                             color: AppColors.textGrey,
                             width: 20.w,
                           ),

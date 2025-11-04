@@ -151,5 +151,14 @@
   "dedicate_donation_desc": "Dedicate your donation to someone special and make it more meaningful",
   "go_to_dedicate": "Go to Dedicate Donation",
   "coming_soon": "Coming Soon",
-  "volunteer_projects_desc": "Volunteer projects feature will be available soon"
+  "volunteer_projects_desc": "Volunteer projects feature will be available soon",
+  "are_you_sure": "Are you sure?",
+  "cancel": "Cancel",
+  "logged_out": "You have been logged out",
+  "continue_as_guest": "Continue as guest",
+  "once": "One time",
+  "daily": "Daily",
+  "enter_amount": "Enter amount",
+  "enter_valid_amount": "Enter a valid amount",
+  "min_amount_is": "Minimum amount is"
 }

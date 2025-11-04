@@ -25,6 +25,7 @@ class NewsScreen extends StatelessWidget {
         appBar: const CustomTopBar(),
         body: BlocBuilder<NewsCubit, NewsState>(
           builder: (context, state) {
+            final cubit = context.read<NewsCubit>();
             if (state is NewsLoading || state is NewsInitial) {
               return _loadingSkeleton(context);
             }
@@ -44,67 +45,71 @@ class NewsScreen extends StatelessWidget {
               );
             }
             final s = state as NewsLoaded;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Column(
-                  children: [
-                    SizedBox(height: 40.h),
-                    Text(
-                      "albir_socity_news".tr(context),
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        decoration: TextDecoration.lineThrough,
-                        decorationColor: const Color(0xffF1A725),
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                    GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 20.h,
-                        crossAxisSpacing: 20.w,
-                        childAspectRatio: 1.5,
-                      ),
-                      itemCount: s.items.length,
-                      itemBuilder: (context, index) {
-                        final n = s.items[index];
-                        return NewsCard(
-                          imageAsset: n["imageAsset"]!,
-                          title: n["title"]!,
-                          subtitle: n["subtitle"]!,
-                          onTap: () {
-                            navigateTo(context, const NewsDetailsScreen());
-                          },
-                        );
-                      },
-                    ),
-                    SizedBox(height: 20.h),
-                    if (s.hasMore)
-                      SizedBox(
-                        width: double.infinity,
-                        child: TextButton(
-                          onPressed: () => context.read<NewsCubit>().loadMore(),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10.h),
-                            child: Text(
-                              "load_more".tr(context),
-                              style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
+            return NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification.metrics.pixels >=
+                        notification.metrics.maxScrollExtent - 200 &&
+                    !cubit.isLoadingMore &&
+                    s.hasMore) {
+                  cubit.loadMore();
+                }
+                return false;
+              },
+              child: RefreshIndicator(
+                onRefresh: () => cubit.refresh(),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.w),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 40.h),
+                        Text(
+                          "albir_socity_news".tr(context),
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: const Color(0xffF1A725),
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                      ),
-                    SizedBox(height: 20.h),
-                  ],
+                        SizedBox(height: 20.h),
+                        GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20.h,
+                            crossAxisSpacing: 20.w,
+                            childAspectRatio: 1.5,
+                          ),
+                          itemCount: s.items.length,
+                          itemBuilder: (context, index) {
+                            final n = s.items[index];
+                            return NewsCard(
+                              imageAsset: n.imageAsset,
+                              title: n.title,
+                              subtitle: n.subtitle,
+                              onTap: () {
+                                navigateTo(context, const NewsDetailsScreen());
+                              },
+                            );
+                          },
+                        ),
+                        SizedBox(height: 20.h),
+                        if (cubit.isLoadingMore && s.hasMore)
+                          const SizedBox(
+                            height: 48,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        SizedBox(height: 20.h),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             );

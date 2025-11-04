@@ -26,6 +26,15 @@ class GlobalCubit extends Cubit<GlobalState> {
   int currentNavIndex = 2;
   ScrollController controller = ScrollController();
 
+  // Shared UI resources and options
+  // Centralized assets/labels used app-wide
+  final String currencyIconAsset = 'assets/images/svg/currancy.svg';
+  final String AppLogoInline = 'assets/images/png/alber-inline-logo.png';
+  final List<String> periodicityOptions = const [
+    'once',
+    'monthly',
+  ];
+
   void changeBottomNavIndex(int index) {
     if (currentNavIndex != index) {
       currentNavIndex = index;

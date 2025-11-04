@@ -1,4 +1,3 @@
-// lib/features/search/views/search_screen.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,120 +22,120 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => SearchCubit()..init(),
-      child: CustomScaffold(
-        hasShape: false,
-        appBar: CustomTopBar(
-          isSearch: true,
-        ),
-        body: BlocBuilder<SearchCubit, SearchState>(
-          builder: (context, state) {
-            final cubit = context.read<SearchCubit>();
-            if (state is SearchLoading || state is SearchInitial) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 40.h),
-                      _Header(),
-                      SizedBox(height: 16.h),
-                      AppTextField(
-                        controller: cubit.searchC,
-                        hintText: "search_hint".tr(context),
-                        onChanged: cubit.onQueryChanged,
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.all(12.w),
-                          child: Icon(Icons.search,
-                              color: AppColors.textGrey, size: 20.sp),
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 20.h,
-                          crossAxisSpacing: 20.w,
-                          childAspectRatio: 1.5,
-                        ),
-                        itemCount: 6,
-                        itemBuilder: (_, __) => SkeletonLoader(
-                          width: double.infinity,
-                          height: 140.h,
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-            final s = state as SearchLoaded;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Column(
-                  children: [
-                    SizedBox(height: 40.h),
-                    _Header(),
-                    SizedBox(height: 16.h),
-                    AppTextField(
-                      controller: cubit.searchC,
-                      hintText: "search_hint".tr(context),
-                      onChanged: cubit.onQueryChanged,
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.all(12.w),
-                        child: Icon(Icons.search,
-                            color: AppColors.textGrey, size: 20.sp),
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                    if (s.results.isEmpty)
-                      Padding(
-                        padding: EdgeInsets.only(top: 60.h),
-                        child: Text(
-                          "no_results".tr(context),
-                          style: TextStyle(
-                            color: AppColors.textGrey,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      )
-                    else
-                      GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 20.h,
-                          crossAxisSpacing: 20.w,
-                          childAspectRatio: 1.5,
-                        ),
-                        itemCount: s.results.length,
-                        itemBuilder: (context, index) {
-                          final n = s.results[index];
-                          return NewsCard(
-                            imageAsset: n["image"]!,
-                            title: n["title"]!,
-                            subtitle: n["subtitle"]!,
-                            onTap: () {
-                              navigateTo(context, NewsDetailsScreen());
-                            },
-                          );
-                        },
-                      ),
-                    SizedBox(height: 16.h),
-                  ],
+      child: const _SearchView(),
+    );
+  }
+}
+
+class _SearchView extends StatelessWidget {
+  const _SearchView();
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<SearchCubit>();
+
+    return CustomScaffold(
+      hasShape: false,
+      appBar: CustomTopBar(isSearch: true),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w),
+          child: Column(
+            children: [
+              SizedBox(height: 40.h),
+              _Header(),
+              SizedBox(height: 16.h),
+
+              // ✅ TextField is now outside BlocBuilder (keyboard stays open)
+              AppTextField(
+                enabled: true,
+                controller: cubit.searchC,
+                hintText: "search_hint".tr(context),
+                onChanged: cubit.onQueryChanged,
+                prefixIcon: Padding(
+                  padding: EdgeInsets.all(12.w),
+                  child: Icon(Icons.search,
+                      color: AppColors.textGrey, size: 20.sp),
                 ),
               ),
-            );
-          },
+
+              SizedBox(height: 20.h),
+
+              // ✅ Only results rebuild
+              BlocBuilder<SearchCubit, SearchState>(
+                buildWhen: (p, c) => c is SearchLoaded || c is SearchLoading,
+                builder: (context, state) {
+                  if (state is SearchLoading || state is SearchInitial) {
+                    return _buildSkeletonLoader();
+                  } else if (state is SearchLoaded) {
+                    return _buildResults(context, state.results);
+                  }
+                  return const SizedBox();
+                },
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSkeletonLoader() {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 20.h,
+        crossAxisSpacing: 20.w,
+        childAspectRatio: 1.5,
+      ),
+      itemCount: 6,
+      itemBuilder: (_, __) => SkeletonLoader(
+        width: double.infinity,
+        height: 140.h,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+    );
+  }
+
+  Widget _buildResults(
+      BuildContext context, List<Map<String, String>> results) {
+    if (results.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.only(top: 60.h),
+        child: Text(
+          "no_results".tr(context),
+          style: TextStyle(
+            color: AppColors.textGrey,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+    }
+
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 20.h,
+        crossAxisSpacing: 20.w,
+        childAspectRatio: 1.5,
+      ),
+      itemCount: results.length,
+      itemBuilder: (context, index) {
+        final n = results[index];
+        return NewsCard(
+          imageAsset: n["image"]!,
+          title: n["title"]!,
+          subtitle: n["subtitle"]!,
+          onTap: () => navigateTo(context, const NewsDetailsScreen()),
+        );
+      },
     );
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 
 import '../../../../core/component/widgets/app_button.dart';
 
@@ -288,7 +290,7 @@ class _LabeledAmount extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: SvgPicture.asset("assets/images/svg/currancy.svg"),
+                  child: SvgPicture.asset(sl<GlobalCubit>().currencyIconAsset),
                 ),
               ),
             ),

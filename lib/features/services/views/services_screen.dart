@@ -102,12 +102,13 @@ class ServicesScreen extends StatelessWidget {
             ),
             itemCount: state.services.length,
             itemBuilder: (context, index) {
-              final imagePath = state.services[index]['image'];
+              final service = state.services[index];
+              final imagePath = service.image;
               final color = state.extractedColors[imagePath] ??
                   AppColors.primary.withOpacity(.3);
               return ServiceCard(
                 imagePath: imagePath,
-                title: state.services[index]['title'],
+                title: service.title,
                 borderColor: color,
                 onTap: () {
                   navigateTo(

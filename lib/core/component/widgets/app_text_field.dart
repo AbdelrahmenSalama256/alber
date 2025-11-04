@@ -28,6 +28,7 @@ class AppTextField extends StatefulWidget {
   final TextDirection? textDirection;
   final TextAlign textAlign;
   final AutovalidateMode autovalidateMode;
+  final bool restrictInputByType; // New parameter to enable/disable restriction
 
   const AppTextField({
     super.key,
@@ -55,6 +56,8 @@ class AppTextField extends StatefulWidget {
     this.textDirection,
     this.textAlign = TextAlign.start,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
+    this.restrictInputByType =
+        true, // Default to true for backward compatibility
   });
 
   @override
@@ -66,6 +69,7 @@ class _AppTextFieldState extends State<AppTextField> {
   bool _hasFocus = false;
   String? _errorMessage;
   late FocusNode _focusNode;
+  late List<TextInputFormatter> _effectiveInputFormatters;
 
   @override
   void initState() {
@@ -77,6 +81,63 @@ class _AppTextFieldState extends State<AppTextField> {
         _hasFocus = _focusNode.hasFocus;
       });
     });
+
+    // Initialize input formatters based on keyboard type
+    _effectiveInputFormatters = _getInputFormatters();
+  }
+
+  List<TextInputFormatter> _getInputFormatters() {
+    final List<TextInputFormatter> formatters = [];
+
+    // Add custom formatters based on keyboard type if restriction is enabled
+    if (widget.restrictInputByType) {
+      switch (widget.keyboardType) {
+        case TextInputType.number:
+        case TextInputType.phone:
+          formatters.add(FilteringTextInputFormatter.digitsOnly);
+          break;
+
+        case TextInputType.emailAddress:
+          formatters.add(
+              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@._-]')));
+          break;
+
+        case TextInputType.datetime:
+          formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9/]')));
+          break;
+
+        case TextInputType.name:
+          // Allow letters, spaces, and common name characters
+          formatters.add(FilteringTextInputFormatter.allow(
+              RegExp(r'[a-zA-Z\u0600-\u06FF\s]')));
+          break;
+
+        default:
+          // For text type, you can add custom restrictions if needed
+          break;
+      }
+    }
+
+    // Add user-provided formatters
+    if (widget.inputFormatters != null) {
+      formatters.addAll(widget.inputFormatters!);
+    }
+
+    return formatters;
+  }
+
+  @override
+  void didUpdateWidget(covariant AppTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Update formatters if keyboard type or restriction setting changes
+    if (oldWidget.keyboardType != widget.keyboardType ||
+        oldWidget.restrictInputByType != widget.restrictInputByType ||
+        oldWidget.inputFormatters != widget.inputFormatters) {
+      setState(() {
+        _effectiveInputFormatters = _getInputFormatters();
+      });
+    }
   }
 
   @override
@@ -122,7 +183,7 @@ class _AppTextFieldState extends State<AppTextField> {
             },
             onTap: widget.onTap,
             onFieldSubmitted: widget.onSubmitted,
-            inputFormatters: widget.inputFormatters,
+            inputFormatters: _effectiveInputFormatters,
             autofocus: widget.autofocus,
             enabled: widget.enabled,
             textDirection: widget.textDirection,
