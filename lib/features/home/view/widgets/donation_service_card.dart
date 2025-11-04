@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
-import 'package:qafeel/core/locale/app_loacl.dart';
-import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 import '../../../../core/component/widgets/app_button.dart';
 
@@ -126,7 +128,16 @@ class _DonationServiceCardState extends State<DonationServiceCard> {
                         height: 39.14134979248047.h,
                         width: double.infinity,
                         child: AppButton(
-                          onPressed: widget.onDonate,
+                          onPressed: () {
+                            if (sl<CacheHelper>()
+                                    .getData(key: AppConstants.token) ==
+                                null) {
+                              // Navigator.pushNamed(context, AppRoutes.login);
+                            } else {
+                              widget.onDonate?.call();
+                            }
+                            {}
+                          },
                           text: "donate_now".tr(context),
                           textStyle: TextStyle(
                             fontSize: 15.sp,

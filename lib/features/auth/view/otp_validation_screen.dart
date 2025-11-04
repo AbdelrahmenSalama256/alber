@@ -39,7 +39,10 @@ class OtpValidationScreen extends StatelessWidget {
               if (context.read<GlobalCubit>().currentNavIndex != 2) {
                 context.read<GlobalCubit>().changeBottomNavIndex(2);
                 navigateAndFinish(context, BaseScreen());
+              } else {
+                navigateAndFinish(context, BaseScreen());
               }
+              navigateAndFinish(context, BaseScreen());
             }
           } else if (state is AuthError) {
             showToast(context,
