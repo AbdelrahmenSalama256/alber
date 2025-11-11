@@ -3,6 +3,8 @@ import 'package:qafeel/core/constants/widgets/custom_shimmer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class CustomCachedImage extends StatelessWidget {
   const CustomCachedImage({
@@ -20,11 +22,12 @@ class CustomCachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radiusLg = sl<GlobalCubit>().radiusLg;
     return SizedBox(
       height: h ?? 100.h,
       width: w ?? 100.w,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius ?? 15),
+        borderRadius: BorderRadius.circular(borderRadius ?? radiusLg),
         child: CachedNetworkImage(
           imageUrl: imageUrl ?? "",
           placeholder: (context, url) => CustomShimmer(
@@ -36,7 +39,7 @@ class CustomCachedImage extends StatelessWidget {
               width: w ?? 100.w,
               decoration: BoxDecoration(
                 color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(borderRadius ?? 15.r),
+                borderRadius: BorderRadius.circular(borderRadius ?? radiusLg.r),
               ),
               child:
                   Icon(CupertinoIcons.person, size: 40.r, color: Colors.grey)),

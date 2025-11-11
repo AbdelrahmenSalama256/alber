@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class AppDropdownField extends StatefulWidget {
   final String hint;
@@ -56,6 +58,7 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
 
   @override
   Widget build(BuildContext context) {
+    // radius tokens consumed directly via sl<GlobalCubit>() where needed
     return InputDecorator(
       decoration: InputDecoration(
         labelText: widget.hint,
@@ -68,30 +71,30 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
               vertical: 7.h,
             ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusLg.r),
           borderSide: const BorderSide(
             color: Color(0xffEBEBEB),
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusLg.r),
           borderSide: const BorderSide(color: Color(0xffEBEBEB)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusLg.r),
           borderSide: const BorderSide(
             color: AppColors.primary,
             width: 2,
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusLg.r),
           borderSide: const BorderSide(
             color: Color(0xFFE53935),
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusLg.r),
           borderSide: const BorderSide(
             color: Color(0xFFE53935),
             width: 2,
@@ -125,7 +128,7 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
         value: widget.value,
         isExpanded: true,
         hint: Container(
-          decoration: BoxDecoration(color: Colors.white),
+          decoration: const BoxDecoration(color: Colors.white),
           child: Text(widget.hint, style: widget.hintStyle),
         ),
         icon: Container(
@@ -133,7 +136,7 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
           height: 20.h,
           decoration: BoxDecoration(
             color: selectedColor ?? Colors.transparent,
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusSm.r),
           ),
           child: selectedColor == null
               ? Icon(
@@ -146,7 +149,7 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
         dropdownColor: Colors.white,
         menuMaxHeight: 300.h,
         elevation: 1,
-        borderRadius: BorderRadius.circular(15.r),
+        borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusLg.r),
         onChanged: widget.enabled ? widget.onChanged : null,
         items: widget.items.map((item) {
           return DropdownMenuItem<String>(
@@ -248,13 +251,13 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
         final tempValues = List<String>.from(_selectedValues);
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.r),
+            borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusLg.r),
           ),
           elevation: 5,
           shadowColor: Colors.black.withOpacity(0.3),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.r),
+              borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusLg.r),
               color: Colors.white,
             ),
             child: Column(

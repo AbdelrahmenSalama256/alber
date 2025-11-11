@@ -76,6 +76,7 @@ dependencies:
   http: ^1.5.0
   palette_generator: ^0.3.3+7
   flutter_launcher_icons: ^0.14.4
+  meta: ^1.15.0
 
 flutter_launcher_icons:
   android: true

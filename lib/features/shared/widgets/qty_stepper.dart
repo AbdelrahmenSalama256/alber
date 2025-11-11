@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class QtyStepper extends StatelessWidget {
   final int qty;
@@ -18,12 +20,14 @@ class QtyStepper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radius = sl<GlobalCubit>().radiusMd;
+    // final btnRadius = sl<GlobalCubit>().radiusSm;
     return Container(
       height: height.h,
-      padding: EdgeInsets.symmetric(horizontal: 3.w),
+      padding: EdgeInsets.symmetric(horizontal: 10.w),
       decoration: BoxDecoration(
         color: AppColors.textSecondary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6.r),
+        borderRadius: BorderRadius.circular(radius.r),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -34,7 +38,7 @@ class QtyStepper extends StatelessWidget {
           Text(
             "$qty",
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w500,
               color: accent,
             ),
@@ -62,9 +66,10 @@ class _StepBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final btnRadius = sl<GlobalCubit>().radiusSm;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10.r),
+      borderRadius: BorderRadius.circular(btnRadius.r),
       child: Container(
         width: 15.w,
         height: 15.w,

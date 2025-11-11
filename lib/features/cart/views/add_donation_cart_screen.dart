@@ -152,7 +152,10 @@ class AddDonationCartScreen extends StatelessWidget {
               );
             }
             final c = context.read<AddDonationCubit>();
-            final s = state as AddDonationLoaded;
+            if (state is! AddDonationLoaded) {
+              return const SizedBox.shrink();
+            }
+            final s = state;
 
             Future<void> pickDate(bool isStart) async {
               final now = DateTime.now();

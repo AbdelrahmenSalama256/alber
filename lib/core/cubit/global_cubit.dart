@@ -2,17 +2,17 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as loc;
 import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/constants/widgets/print_util.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 import 'package:qafeel/core/network/local_network.dart';
 import 'package:qafeel/core/services/service_locator.dart';
 
 import 'global_state.dart';
 
-class GlobalCubit extends Cubit<GlobalState> {
+class GlobalCubit extends AppCubit<GlobalState> {
   GlobalCubit() : super(GlobalInitial());
 
   void init() {
@@ -35,10 +35,26 @@ class GlobalCubit extends Cubit<GlobalState> {
     'monthly',
   ];
 
+  // Global design tokens (tweak once, used everywhere)
+  double radiusXs = 6.0;
+  double radiusSm = 8.0;
+  double radiusMd = 12.0;
+  double radiusLg = 16.0;
+  double radiusXl = 20.0;
+
+  void setRadii({double? xs, double? sm, double? md, double? lg, double? xl}) {
+    if (xs != null) radiusXs = xs;
+    if (sm != null) radiusSm = sm;
+    if (md != null) radiusMd = md;
+    if (lg != null) radiusLg = lg;
+    if (xl != null) radiusXl = xl;
+    emitSafe(DesignTokensUpdated());
+  }
+
   void changeBottomNavIndex(int index) {
     if (currentNavIndex != index) {
       currentNavIndex = index;
-      emit(BottomNavChangeState());
+      emitSafe(BottomNavChangeState());
     }
   }
 
@@ -57,7 +73,7 @@ class GlobalCubit extends Cubit<GlobalState> {
     }
     language = sl<CacheHelper>().getCachedLanguage();
     log("language is $language");
-    emit(LanguageChangeState());
+    emitSafe(LanguageChangeState());
   }
 
   String? currentLocation;

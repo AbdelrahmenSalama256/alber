@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 // import 'package:qafeel/core/constants/widgets/custom-shimmer.dart';
 
@@ -40,11 +42,12 @@ class _CustomImageState extends State<CustomImage> {
 
   @override
   Widget build(BuildContext context) {
+    final radiusLg = sl<GlobalCubit>().radiusLg;
     return SizedBox(
       height: widget.h,
       width: widget.w,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(widget.borderRadius ?? 20.r),
+        borderRadius: BorderRadius.circular(widget.borderRadius ?? radiusLg.r),
         child: Image.network(
           "${widget.imageUrl}",
           key: ValueKey(imageKey),

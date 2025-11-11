@@ -1,27 +1,27 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 import 'package:qafeel/core/services/service_locator.dart';
-import 'package:qafeel/features/home/data/repo/home_repo.dart';
 import 'package:qafeel/features/home/data/models/service_model.dart';
+import 'package:qafeel/features/home/data/repo/home_repo.dart';
 
 import 'home_state.dart';
 
-class HomeCubit extends Cubit<HomeState> {
+class HomeCubit extends AppCubit<HomeState> {
   final HomeRepo homeRepo = sl<HomeRepo>();
   HomeCubit() : super(HomeInitial());
 
   Future<void> loadHomeData() async {
-    emit(HomeLoading());
+    emitSafe(HomeLoading());
 
     try {
       final res = await homeRepo.fetchHome();
 
       res.fold(
-        (error) => emit(HomeError(error)),
+        (error) => emitSafe(HomeError(error)),
         (data) async {
           final extractedColors = await _extractColors(data.services);
-          emit(
+          emitSafe(
             HomeLoaded(
               sliderImages: data.sliderImages,
               services: data.services,
@@ -36,14 +36,14 @@ class HomeCubit extends Cubit<HomeState> {
         },
       );
     } catch (e) {
-      emit(HomeError('Failed to load data: $e'));
+      emitSafe(HomeError('Failed to load data: $e'));
     }
   }
 
   void updateSliderIndex(int index) {
     final state = this.state;
     if (state is HomeLoaded) {
-      emit(state.copyWith(currentSliderIndex: index));
+      emitSafe(state.copyWith(currentSliderIndex: index));
     }
   }
 

@@ -140,6 +140,7 @@ class BaseScreen extends StatelessWidget {
                             currentIndex == 4 ? "" : "my_account".tr(context),
                       ),
                     ],
+                    // Make the curve fully transparent and let body show behind
                     backgroundColor: Colors.transparent,
                     color: Colors.white.withOpacity(0.85),
                     buttonBackgroundColor: Colors.white,

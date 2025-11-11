@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class AppTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -150,6 +152,8 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final radiusMd = sl<GlobalCubit>().radiusMd;
+    final radiusLg = sl<GlobalCubit>().radiusLg;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -158,7 +162,7 @@ class _AppTextFieldState extends State<AppTextField> {
           height: 56.h,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(11.79.r),
+            borderRadius: BorderRadius.circular(radiusMd.r),
             border: Border.all(
               color: const Color(0xFF707070),
               width: 0.47.w,
@@ -231,16 +235,16 @@ class _AppTextFieldState extends State<AppTextField> {
                     vertical: 16.h,
                   ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.r),
+                borderRadius: BorderRadius.circular(radiusLg.r),
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(15.r),
+                borderRadius: BorderRadius.circular(radiusLg.r),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(15.r),
+                borderRadius: BorderRadius.circular(radiusLg.r),
               ),
               errorText: null, // منع الـ error جوة البوكس
             ),

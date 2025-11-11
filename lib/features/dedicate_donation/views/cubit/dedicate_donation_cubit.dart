@@ -1,9 +1,9 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'dedicate_donation_state.dart';
 
-class DedicateDonationCubit extends Cubit<DedicateDonationState> {
+class DedicateDonationCubit extends AppCubit<DedicateDonationState> {
   DedicateDonationCubit() : super(DedicateDonationLoading());
 
   final TextEditingController recipientNameC = TextEditingController();
@@ -11,7 +11,7 @@ class DedicateDonationCubit extends Cubit<DedicateDonationState> {
   final TextEditingController customAmountC = TextEditingController();
 
   Future<void> init() async {
-    emit(DedicateDonationLoading());
+    emitSafe(DedicateDonationLoading());
     await Future.delayed(const Duration(seconds: 2));
     final types = [
       {"title": "تبرع بالمال", "icon": "assets/images/svg/testdonation.svg"},
@@ -21,7 +21,7 @@ class DedicateDonationCubit extends Cubit<DedicateDonationState> {
       {"title": "تبرع بالأدوية", "icon": "assets/images/svg/testdonation.svg"},
       {"title": "تبرع بالماء", "icon": "assets/images/svg/testdonation.svg"},
     ];
-    emit(DedicateDonationLoaded(
+    emitSafe(DedicateDonationLoaded(
       donationTypes: types,
       selectedTypeIndex: -1,
       selectedFieldIndex: -1,
@@ -33,28 +33,34 @@ class DedicateDonationCubit extends Cubit<DedicateDonationState> {
       sendCardToMyPhone: false,
     ));
     await Future.delayed(const Duration(seconds: 3));
-    final s = state as DedicateDonationLoaded;
-    emit(s.copyWith(showNextButton: true));
+    final s = state;
+    if (s is DedicateDonationLoaded) {
+      emitSafe(s.copyWith(showNextButton: true));
+    }
   }
 
   void selectType(int i) {
     final s = state;
-    if (s is DedicateDonationLoaded) emit(s.copyWith(selectedTypeIndex: i));
+    if (s is DedicateDonationLoaded) emitSafe(s.copyWith(selectedTypeIndex: i));
   }
 
   void selectField(int i) {
     final s = state;
-    if (s is DedicateDonationLoaded) emit(s.copyWith(selectedFieldIndex: i));
+    if (s is DedicateDonationLoaded) {
+      emitSafe(s.copyWith(selectedFieldIndex: i));
+    }
   }
 
   void toggleShowAmount(bool v) {
     final s = state;
-    if (s is DedicateDonationLoaded) emit(s.copyWith(showAmountToRecipient: v));
+    if (s is DedicateDonationLoaded) {
+      emitSafe(s.copyWith(showAmountToRecipient: v));
+    }
   }
 
   void toggleSendToMyPhone(bool v) {
     final s = state;
-    if (s is DedicateDonationLoaded) emit(s.copyWith(sendCardToMyPhone: v));
+    if (s is DedicateDonationLoaded) emitSafe(s.copyWith(sendCardToMyPhone: v));
   }
 
   @override

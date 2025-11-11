@@ -1,20 +1,20 @@
-import 'package:bloc/bloc.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'cart_state.dart';
 
-class CartCubit extends Cubit<CartState> {
+class CartCubit extends AppCubit<CartState> {
   CartCubit() : super(CartLoading());
 
   Future<void> load() async {
-    emit(CartLoading());
+    emitSafe(CartLoading());
     await Future.delayed(const Duration(seconds: 2));
     final items = await _fetchCartItems();
     final total = items.fold<int>(
         0, (p, e) => p + (e['amount'] as int) * (e['qty'] as int));
-    emit(CartLoaded(items: items, total: total, showPayPanel: false));
+    emitSafe(CartLoaded(items: items, total: total, showPayPanel: false));
     await Future.delayed(const Duration(seconds: 2));
     final s = state;
-    if (s is CartLoaded) emit(s.copyWith(showPayPanel: true));
+    if (s is CartLoaded) emitSafe(s.copyWith(showPayPanel: true));
   }
 
   Future<List<Map<String, dynamic>>> _fetchCartItems() async {
@@ -37,7 +37,7 @@ class CartCubit extends Cubit<CartState> {
       items[index]['qty'] = qty;
       final total = items.fold<int>(
           0, (p, e) => p + (e['amount'] as int) * (e['qty'] as int));
-      emit(s.copyWith(items: items, total: total));
+      emitSafe(s.copyWith(items: items, total: total));
     }
   }
 }

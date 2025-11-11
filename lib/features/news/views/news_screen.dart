@@ -44,7 +44,10 @@ class NewsScreen extends StatelessWidget {
                 ),
               );
             }
-            final s = state as NewsLoaded;
+            if (state is! NewsLoaded) {
+              return const SizedBox.shrink();
+            }
+            final s = state;
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification.metrics.pixels >=

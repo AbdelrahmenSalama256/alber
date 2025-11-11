@@ -1,7 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/constants/widgets/print_util.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 import 'package:qafeel/core/network/local_network.dart';
 import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/features/auth/data/models/user_registration_model.dart';
@@ -11,7 +11,7 @@ import 'package:qafeel/features/profile/data/models/contact_model.dart';
 
 import 'auth_state.dart';
 
-class AuthCubit extends Cubit<AuthState> {
+class AuthCubit extends AppCubit<AuthState> {
   AuthCubit() : super(AuthInitial()) {
     usernameController = TextEditingController();
     createAccountEmailController = TextEditingController();
@@ -56,7 +56,7 @@ class AuthCubit extends Cubit<AuthState> {
     } else if (fieldType == 'confirm') {
       isConfirmNewPasswordObscure = !isConfirmNewPasswordObscure;
     }
-    emit(AuthPasswordVisibilityChanged(
+    emitSafe(AuthPasswordVisibilityChanged(
         isObscure: _getObscurityStatus(fieldType), fieldType: fieldType));
   }
 
@@ -72,31 +72,31 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> login() async {
     // Form validation (UI errors) + toast/error state
     if (!formKey.currentState!.validate()) {
-      emit(AuthError('invalid_phone'));
+      emitSafe(AuthError('invalid_phone'));
       return;
     }
     final phone = loginEmailController.text.trim();
     if (!_isValidPhone(phone)) {
-      emit(AuthError('invalid_phone'));
+      emitSafe(AuthError('invalid_phone'));
       return;
     }
-    emit(AuthLoading());
+    emitSafe(AuthLoading());
     // In your real flow this should request OTP
     await Future.delayed(const Duration(milliseconds: 500));
-    emit(AuthSuccess());
+    emitSafe(AuthSuccess());
   }
 
   Future<void> otpVerfication() async {
     if (!formKey.currentState!.validate()) {
-      emit(AuthError('invalid_otp'));
+      emitSafe(AuthError('invalid_otp'));
       return;
     }
     final otp = otpController.text.trim();
     if (!_isValidOtp(otp)) {
-      emit(AuthError('invalid_otp'));
+      emitSafe(AuthError('invalid_otp'));
       return;
     }
-    emit(AuthOtpVerificationLoading());
+    emitSafe(AuthOtpVerificationLoading());
     await Future.delayed(const Duration(milliseconds: 500));
     // Simulate calling login and storing user profile
     final loginRepo = sl<LoginRepo>();
@@ -107,17 +107,17 @@ class AuthCubit extends Cubit<AuthState> {
       password: loginPasswordController.text.trim(),
     );
     res.fold(
-      (err) => emit(AuthError(err)),
+      (err) => emitSafe(AuthError(err)),
       (contactResponse) async {
         await _cacheSession(contactResponse);
-        emit(AuthSuccess());
+        emitSafe(AuthSuccess());
       },
     );
   }
 
   Future<void> register() async {
     if (!formKey.currentState!.validate()) {
-      emit(AuthError('validation_error'));
+      emitSafe(AuthError('validation_error'));
       return;
     }
     // Extra guard validations
@@ -127,26 +127,26 @@ class AuthCubit extends Cubit<AuthState> {
     final pass = createAccountPasswordController.text.trim();
     final confirm = confirmNewPasswordController.text.trim();
     if (username.length < 2) {
-      emit(AuthError('name_length'));
+      emitSafe(AuthError('name_length'));
       return;
     }
     if (!_isValidEmail(email)) {
-      emit(AuthError('invalid_email'));
+      emitSafe(AuthError('invalid_email'));
       return;
     }
     if (!_isValidPhone(mobile)) {
-      emit(AuthError('invalid_phone'));
+      emitSafe(AuthError('invalid_phone'));
       return;
     }
     if (pass.length < 8) {
-      emit(AuthError('password_too_short'));
+      emitSafe(AuthError('password_too_short'));
       return;
     }
     if (pass != confirm) {
-      emit(AuthError('passwords_not_match'));
+      emitSafe(AuthError('passwords_not_match'));
       return;
     }
-    emit(AuthLoading());
+    emitSafe(AuthLoading());
     final repo = sl<RegisterRepo>();
     final user = UserRegistrationModel(
       username: usernameController.text.trim(),
@@ -154,18 +154,17 @@ class AuthCubit extends Cubit<AuthState> {
       password: createAccountPasswordController.text.trim().isEmpty
           ? '12345678'
           : createAccountPasswordController.text.trim(),
-      passwordConfirmation:
-          confirmNewPasswordController.text.trim().isEmpty
-              ? '12345678'
-              : confirmNewPasswordController.text.trim(),
+      passwordConfirmation: confirmNewPasswordController.text.trim().isEmpty
+          ? '12345678'
+          : confirmNewPasswordController.text.trim(),
       name: usernameController.text.trim(),
       mobile: loginEmailController.text.trim(),
     );
     final res = await repo.registerUser(user);
     res.fold(
-      (err) => emit(AuthError(err)),
+      (err) => emitSafe(AuthError(err)),
       (data) async {
-        emit(AuthCreateAccountSuccess(
+        emitSafe(AuthCreateAccountSuccess(
             message: data['message']?.toString() ?? 'Registration successful',
             emailForVerification: user.email));
       },
@@ -174,41 +173,41 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> sendForgotPasswordCode() async {
     if (!formKey.currentState!.validate()) {
-      emit(AuthError('validation_error'));
+      emitSafe(AuthError('validation_error'));
       return;
     }
-    emit(AuthLoading());
+    emitSafe(AuthLoading());
     final repo = sl<LoginRepo>();
     final res = await repo.sendForgotPasswordCode(
       forgotPasswordEmailController.text.trim(),
     );
     res.fold(
-      (err) => emit(AuthError(err)),
-      (msg) => emit(AuthForgotPasswordOtpSent(
+      (err) => emitSafe(AuthError(err)),
+      (msg) => emitSafe(AuthForgotPasswordOtpSent(
           message: msg, emailOrPhone: forgotPasswordEmailController.text)),
     );
   }
 
   Future<void> attemptResetPassword(GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) {
-      emit(AuthError('validation_error'));
+      emitSafe(AuthError('validation_error'));
       return;
     }
     final newPass = newPasswordController.text.trim();
     final confirm = confirmNewPasswordController.text.trim();
     if (newPass.length < 8) {
-      emit(AuthError('password_too_short'));
+      emitSafe(AuthError('password_too_short'));
       return;
     }
     if (newPass != confirm) {
-      emit(AuthError('passwords_not_match'));
+      emitSafe(AuthError('passwords_not_match'));
       return;
     }
-    emit(AuthLoading());
+    emitSafe(AuthLoading());
     await Future.delayed(const Duration(milliseconds: 500));
     newPasswordController.clear();
     confirmNewPasswordController.clear();
-    emit(AuthResetPasswordSuccess(message: 'auth_password_reset_success'));
+    emitSafe(AuthResetPasswordSuccess(message: 'auth_password_reset_success'));
   }
 
   Future<void> _cacheSession(ContactResponse contactResponse) async {

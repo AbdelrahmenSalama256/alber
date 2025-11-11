@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,13 +33,24 @@ void main() async {
   await sl<CacheHelper>().init();
   //! Application Starts From here.
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => sl<GlobalCubit>()..init(),
+    DevicePreview(
+      enabled: kDebugMode,
+      builder: (_) => UpgradeAlert(
+        upgrader: Upgrader(
+          debugLogging: kDebugMode,
+          durationUntilAlertAgain: const Duration(days: 1),
+
+          // shouldPopScope: () => Future.value(true),
         ),
-      ],
-      child: Alber(),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<GlobalCubit>()..init(),
+            ),
+          ],
+          child: const Alber(),
+        ),
+      ),
     ),
   );
 }

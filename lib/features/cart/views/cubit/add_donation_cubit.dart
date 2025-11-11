@@ -1,9 +1,9 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'add_donation_state.dart';
 
-class AddDonationCubit extends Cubit<AddDonationState> {
+class AddDonationCubit extends AppCubit<AddDonationState> {
   final TextEditingController projectC = TextEditingController();
   final TextEditingController startDateC = TextEditingController();
   final TextEditingController endDateC = TextEditingController();
@@ -16,7 +16,7 @@ class AddDonationCubit extends Cubit<AddDonationState> {
       : super(AddDonationLoading());
 
   Future<void> init() async {
-    emit(AddDonationLoaded(
+    emitSafe(AddDonationLoaded(
       showNextButton: false,
       periodicity: 'once',
       amount: initialAmount ?? 200,
@@ -25,7 +25,7 @@ class AddDonationCubit extends Cubit<AddDonationState> {
     ));
     await Future.delayed(const Duration(seconds: 2));
     final s = state;
-    if (s is AddDonationLoaded) emit(s.copyWith(showNextButton: true));
+    if (s is AddDonationLoaded) emitSafe(s.copyWith(showNextButton: true));
   }
 
   void setProject(String v) => projectC.text = v;
@@ -35,22 +35,22 @@ class AddDonationCubit extends Cubit<AddDonationState> {
 
   void setAmount(int v) {
     final s = state;
-    if (s is AddDonationLoaded) emit(s.copyWith(amount: v));
+    if (s is AddDonationLoaded) emitSafe(s.copyWith(amount: v));
   }
 
   void setMonth(int v) {
     final s = state;
-    if (s is AddDonationLoaded) emit(s.copyWith(month: v));
+    if (s is AddDonationLoaded) emitSafe(s.copyWith(month: v));
   }
 
   void setDay(int v) {
     final s = state;
-    if (s is AddDonationLoaded) emit(s.copyWith(day: v));
+    if (s is AddDonationLoaded) emitSafe(s.copyWith(day: v));
   }
 
   void setPeriodicity(String v) {
     final s = state;
-    if (s is AddDonationLoaded) emit(s.copyWith(periodicity: v));
+    if (s is AddDonationLoaded) emitSafe(s.copyWith(periodicity: v));
   }
 
   @override
@@ -62,4 +62,3 @@ class AddDonationCubit extends Cubit<AddDonationState> {
     return super.close();
   }
 }
-

@@ -29,7 +29,11 @@ class DedicateDonationScreen extends StatelessWidget {
         hasShape: false,
         appBar: CustomTopBar(
           onBack: () {
-            context.read<GlobalCubit>().changeBottomNavIndex(2);
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              context.read<GlobalCubit>().changeBottomNavIndex(2);
+            }
           },
         ),
         body: BlocBuilder<DedicateDonationCubit, DedicateDonationState>(

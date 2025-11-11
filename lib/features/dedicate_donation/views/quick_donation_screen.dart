@@ -16,6 +16,7 @@ import 'package:qafeel/features/cart/views/add_donation_cart_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import 'package:qafeel/features/home/view/widgets/donation_card.dart';
 import 'package:qafeel/features/home/view/widgets/skeleton_loader.dart';
+import 'package:qafeel/features/services/views/service_details_screen.dart';
 
 import '../../../core/app/alber.dart';
 import '../../../core/component/widgets/app_button.dart';
@@ -85,6 +86,7 @@ class _QuickDonationScreenState extends State<QuickDonationScreen>
                   borderRadius: BorderRadius.circular(10.r),
                   color: AppColors.primary,
                 ),
+                dividerHeight: 0,
                 labelColor: Colors.white,
                 unselectedLabelColor: AppColors.textGrey,
                 tabs: [
@@ -196,6 +198,10 @@ class _QuickDonationTab extends StatelessWidget {
                 initialAmount: item['amount'],
                 initialQty: item['qty'],
                 accent: AppColors.primary,
+                // bg: Colors.transparent,
+                onInfoTap: () {
+                  navigateTo(context, ServiceDetailsScreen());
+                },
                 onDonateWithSelection: (amount, qty, _) {
                   final token =
                       sl<CacheHelper>().getDataString(key: AppConstants.token);

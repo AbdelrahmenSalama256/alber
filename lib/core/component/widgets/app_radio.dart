@@ -1,4 +1,6 @@
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 import 'package:flutter/material.dart';
 
@@ -22,9 +24,10 @@ class AppRadio<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radiusSm = sl<GlobalCubit>().radiusSm;
     return InkWell(
       onTap: () => onChanged(value),
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(radiusSm),
       child: Padding(
         padding: padding ?? const EdgeInsets.symmetric(vertical: 8),
         child: Row(

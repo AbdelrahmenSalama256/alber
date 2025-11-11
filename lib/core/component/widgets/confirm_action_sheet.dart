@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/component/widgets/app_button.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class ConfirmActionSheet extends StatelessWidget {
   final String title;
@@ -23,12 +25,14 @@ class ConfirmActionSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radiusXl = sl<GlobalCubit>().radiusXl;
+    final radiusMd = sl<GlobalCubit>().radiusMd;
     return SafeArea(
       top: false,
       child: Padding(
         padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24.r),
+          borderRadius: BorderRadius.circular(radiusXl.r),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
             child: Container(
@@ -43,7 +47,7 @@ class ConfirmActionSheet extends StatelessWidget {
                   ),
                 ],
                 border: Border(top: BorderSide(color: AppColors.primary, width: 2.w)),
-                borderRadius: BorderRadius.circular(24.r),
+                borderRadius: BorderRadius.circular(radiusXl.r),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -68,7 +72,7 @@ class ConfirmActionSheet extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(radiusMd.r),
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                       child: Container(
@@ -76,7 +80,7 @@ class ConfirmActionSheet extends StatelessWidget {
                         padding: EdgeInsets.all(12.w),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(12.r),
+                          borderRadius: BorderRadius.circular(radiusMd.r),
                           border: Border(bottom: BorderSide(color: AppColors.primary, width: 1.w)),
                         ),
                         child: Text(
@@ -145,4 +149,3 @@ Future<bool?> showConfirmActionSheet(
     ),
   );
 }
-

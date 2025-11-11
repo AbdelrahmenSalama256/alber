@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'search_state.dart';
 
-class SearchCubit extends Cubit<SearchState> {
+class SearchCubit extends AppCubit<SearchState> {
   SearchCubit() : super(SearchInitial());
 
   final TextEditingController searchC = TextEditingController();
   Timer? _debounce;
 
   Future<void> init() async {
-    emit(SearchLoading());
+    emitSafe(SearchLoading());
     await Future.delayed(const Duration(seconds: 2));
-    emit(SearchLoaded(results: _sampleData(), query: ""));
+    emitSafe(SearchLoaded(results: _sampleData(), query: ""));
   }
 
   void onQueryChanged(String q) {
@@ -33,7 +33,7 @@ class SearchCubit extends Cubit<SearchState> {
         : base
             .where((e) => e['title']!.toLowerCase().contains(q.toLowerCase()))
             .toList();
-    emit(SearchLoaded(results: filtered, query: q));
+    emitSafe(SearchLoaded(results: filtered, query: q));
   }
 
   List<Map<String, String>> _sampleData() {

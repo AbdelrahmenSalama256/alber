@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'profile_state.dart';
 
-class ProfileCubit extends Cubit<ProfileState> {
+class ProfileCubit extends AppCubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
 
   final TextEditingController nameC = TextEditingController();
@@ -16,14 +16,14 @@ class ProfileCubit extends Cubit<ProfileState> {
   String? topic;
 
   Future<void> init() async {
-    emit(ProfileLoading());
+    emitSafe(ProfileLoading());
     await Future.delayed(const Duration(seconds: 2));
     final about = _about();
     final privacy = _longPolicy();
     final terms = _longPolicy();
     final history = _history();
     final locs = _locations();
-    emit(ProfileLoaded(
+    emitSafe(ProfileLoaded(
       aboutText: about,
       privacyText: privacy,
       termsText: terms,
@@ -37,7 +37,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   void setTopic(String? v) {
     topic = v;
     final s = state;
-    if (s is ProfileLoaded) emit(s.copyWith());
+    if (s is ProfileLoaded) emitSafe(s.copyWith());
   }
 
   List<Map<String, String>> _history() {

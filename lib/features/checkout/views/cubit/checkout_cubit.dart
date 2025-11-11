@@ -1,9 +1,9 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'checkout_state.dart';
 
-class CheckoutCubit extends Cubit<CheckoutState> {
+class CheckoutCubit extends AppCubit<CheckoutState> {
   final TextEditingController cardNumberC = TextEditingController();
   final TextEditingController cardNameC = TextEditingController();
   final TextEditingController expiryC = TextEditingController();
@@ -14,7 +14,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   Future<void> init() async {
     await Future.delayed(const Duration(seconds: 2));
-    emit(CheckoutLoaded(
+    emitSafe(CheckoutLoaded(
       totalAmount: 1000,
       savedCards: [
         CardItem(
@@ -36,12 +36,12 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   void setTotal(int v) {
     final s = state;
-    if (s is CheckoutLoaded) emit(s.copyWith(totalAmount: v));
+    if (s is CheckoutLoaded) emitSafe(s.copyWith(totalAmount: v));
   }
 
   void selectCard(int? index) {
     final s = state;
-    if (s is CheckoutLoaded) emit(s.copyWith(selectedCardIndex: index));
+    if (s is CheckoutLoaded) emitSafe(s.copyWith(selectedCardIndex: index));
   }
 
   void addCardFromControllers() {
@@ -59,7 +59,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         imagePath: "assets/images/png/master_card.png",
       );
       final list = List<CardItem>.from(s.savedCards)..add(item);
-      emit(s.copyWith(savedCards: list));
+      emitSafe(s.copyWith(savedCards: list));
       clearCardControllers();
     }
   }

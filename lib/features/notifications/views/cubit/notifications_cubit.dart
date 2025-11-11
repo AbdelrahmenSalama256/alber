@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'notifications_state.dart';
 
-class NotificationsCubit extends Cubit<NotificationsState> {
+class NotificationsCubit extends AppCubit<NotificationsState> {
   NotificationsCubit() : super(NotificationsInitial());
 
   Future<void> init() async {
-    emit(NotificationsLoading());
-      await Future.delayed(const Duration(seconds: 2));
+    emitSafe(NotificationsLoading());
+    await Future.delayed(const Duration(seconds: 2));
     final items = _mock();
-    emit(NotificationsLoaded(
+    emitSafe(NotificationsLoaded(
       items: items,
       unreadCount:
           items.where((e) => e.status == NotificationStatus.unread).length,
@@ -25,7 +25,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
           .map((e) =>
               e.id == id ? e.copyWith(status: NotificationStatus.read) : e)
           .toList();
-      emit(s.copyWith(
+      emitSafe(s.copyWith(
         items: updated,
         unreadCount:
             updated.where((e) => e.status == NotificationStatus.unread).length,
@@ -39,14 +39,14 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       final updated = s.items
           .map((e) => e.copyWith(status: NotificationStatus.read))
           .toList();
-      emit(s.copyWith(items: updated, unreadCount: 0));
+      emitSafe(s.copyWith(items: updated, unreadCount: 0));
     }
   }
 
   void setFilter(NotificationType? filter) {
     final s = state;
     if (s is NotificationsLoaded) {
-      emit(s.copyWith(filter: filter));
+      emitSafe(s.copyWith(filter: filter));
     }
   }
 

@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/features/news/data/repo/news_repo.dart';
 
 import 'news_state.dart';
 
-class NewsCubit extends Cubit<NewsState> {
+class NewsCubit extends AppCubit<NewsState> {
   NewsCubit() : super(NewsInitial());
 
   int currentPage = 1;
@@ -14,25 +14,23 @@ class NewsCubit extends Cubit<NewsState> {
   bool hasMore = true;
 
   Future<void> init() async {
-    emit(NewsLoading());
+    emitSafe(NewsLoading());
     try {
       currentPage = 1;
       isLoadingMore = false;
       final repo = sl<NewsRepo>();
       final res = await repo.fetchPage(1);
       res.fold(
-        (err) => emit(NewsError(err)),
+        (err) => emitSafe(NewsError(err)),
         (page) {
           currentPage = page.meta.currentPage;
           hasMore = page.meta.currentPage < page.meta.lastPage;
-          emit(NewsLoaded(
-              items: page.items,
-              currentPage: currentPage,
-              hasMore: hasMore));
+          emitSafe(NewsLoaded(
+              items: page.items, currentPage: currentPage, hasMore: hasMore));
         },
       );
     } catch (e) {
-      emit(NewsError(e.toString()));
+      emitSafe(NewsError(e.toString()));
     }
   }
 
@@ -46,13 +44,14 @@ class NewsCubit extends Cubit<NewsState> {
     res.fold(
       (err) {
         isLoadingMore = false;
-        emit(NewsError(err));
+        emitSafe(NewsError(err));
       },
       (page) {
         currentPage = page.meta.currentPage;
         hasMore = currentPage < page.meta.lastPage;
         final merged = [...s.items, ...page.items];
-        emit(NewsLoaded(items: merged, currentPage: currentPage, hasMore: hasMore));
+        emitSafe(NewsLoaded(
+            items: merged, currentPage: currentPage, hasMore: hasMore));
         isLoadingMore = false;
       },
     );

@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qafeel/core/constants/navigation.dart';
-import 'package:qafeel/core/network/local_network.dart';
-import 'package:qafeel/core/services/service_locator.dart';
-import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/component/custom_toast.dart';
+import 'package:qafeel/core/component/widgets/confirm_action_sheet.dart';
+import 'package:qafeel/core/constants/app_constant.dart';
+import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
 import 'package:qafeel/features/cart/views/dontation_cart_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
@@ -19,7 +20,6 @@ import 'package:qafeel/features/profile/views/edit_profile_screen.dart';
 import 'package:qafeel/features/profile/views/widgets/logout_button.dart';
 
 import '../../../core/constants/app_colors.dart';
-import 'package:qafeel/core/component/widgets/confirm_action_sheet.dart';
 import '../../home/view/widgets/skeleton_loader.dart';
 import './cubit/profile_cubit.dart';
 import './cubit/profile_state.dart';
@@ -37,7 +37,11 @@ class ProfileScreen extends StatelessWidget {
         hasShape: false,
         appBar: CustomTopBar(
           onBack: () {
-            context.read<GlobalCubit>().changeBottomNavIndex(2);
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              context.read<GlobalCubit>().changeBottomNavIndex(2);
+            }
           },
         ),
         body: BlocBuilder<ProfileCubit, ProfileState>(
@@ -145,10 +149,15 @@ class ProfileScreen extends StatelessWidget {
                           confirmText: 'logout'.tr(context),
                           cancelText: 'cancel'.tr(context),
                           onConfirm: () async {
-                            await sl<CacheHelper>().removeData(key: AppConstants.userProfile);
-                            await sl<CacheHelper>().removeData(key: AppConstants.token);
-                            showToast(context, message: 'logged_out'.tr(context), state: ToastStates.success);
-                            navigateAndFinish(context, const PhoneConfirmScreen());
+                            await sl<CacheHelper>()
+                                .removeData(key: AppConstants.userProfile);
+                            await sl<CacheHelper>()
+                                .removeData(key: AppConstants.token);
+                            showToast(context,
+                                message: 'logged_out'.tr(context),
+                                state: ToastStates.success);
+                            navigateAndFinish(
+                                context, const PhoneConfirmScreen());
                           },
                         );
                       },

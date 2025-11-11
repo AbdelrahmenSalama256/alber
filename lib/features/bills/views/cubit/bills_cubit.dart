@@ -1,12 +1,12 @@
-import 'package:bloc/bloc.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'bills_state.dart';
 
-class BillsCubit extends Cubit<BillsState> {
+class BillsCubit extends AppCubit<BillsState> {
   BillsCubit() : super(BillsInitial());
 
   Future<void> loadBills() async {
-    emit(BillsLoading());
+    emitSafe(BillsLoading());
     try {
       await Future.delayed(const Duration(seconds: 2));
 
@@ -33,9 +33,9 @@ class BillsCubit extends Cubit<BillsState> {
         ),
       ];
 
-      emit(BillsLoaded(data));
+      emitSafe(BillsLoaded(data));
     } catch (e) {
-      emit(BillsError('Failed to load bills'));
+      emitSafe(BillsError('Failed to load bills'));
     }
   }
 }

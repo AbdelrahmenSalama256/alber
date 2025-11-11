@@ -1,12 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/component/widgets/app_text_field.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/core/services/service_locator.dart';
-import 'package:qafeel/core/cubit/global_cubit.dart';
 
 import '../../../../core/component/widgets/app_button.dart';
 import '../../../shared/widgets/qty_stepper.dart';
@@ -327,6 +329,7 @@ class _DonationCardState extends State<DonationCard> {
               child: IgnorePointer(
                 ignoring: !_isAmountValid,
                 child: QtyStepper(
+                  height: 50.h,
                   qty: _qty,
                   onChanged: (q) {
                     setState(() => _qty = q);
@@ -442,6 +445,13 @@ class _CompactDonutAvatar extends StatelessWidget {
     final double avatarSize = 72.w;
     final double ringSize = 72.w;
     final double strokeW = 6.w;
+    final double ringRadius = ringSize / 2;
+    final double strokeRadius = (ringSize - strokeW) / 2;
+
+    // Calculate pin position based on progress
+    double angle = 2 * pi * progress - (pi / 2); // Start from top (-pi/2)
+    double pinX = ringRadius + strokeRadius * cos(angle);
+    double pinY = ringRadius + strokeRadius * sin(angle);
 
     Widget imageWidget = SizedBox(
       width: avatarSize,
@@ -467,10 +477,10 @@ class _CompactDonutAvatar extends StatelessWidget {
               child: _buildImage(imageAsset, avatarSize),
             ),
           ),
+          // Positioned pin at the end of progress
           PositionedDirectional(
-            bottom: -6.h,
-            start: 8.w,
-            end: 8.w,
+            end: pinX - 16.w,
+            top: pinY - 35.w,
             child: PercentPin(
               progress: progress,
               color: ringColor,
@@ -504,9 +514,11 @@ class _CompactDonutAvatar extends StatelessWidget {
         width: size,
         height: size,
         errorBuilder: (context, _, __) => Container(
+          width: double.infinity,
+          height: double.infinity,
           color: AppColors.primary.withOpacity(0.1),
-          child: Icon(CupertinoIcons.photo_camera,
-              color: AppColors.primary, size: 25.sp),
+          child:
+              Icon(Icons.photo_camera, color: AppColors.primary, size: 25.sp),
         ),
       );
     }
@@ -515,6 +527,13 @@ class _CompactDonutAvatar extends StatelessWidget {
       fit: BoxFit.cover,
       width: size,
       height: size,
+      errorBuilder: (context, _, __) => Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: AppColors.primary.withOpacity(0.1),
+        child: Icon(CupertinoIcons.photo_camera,
+            color: AppColors.primary, size: 25.sp),
+      ),
     );
   }
 }

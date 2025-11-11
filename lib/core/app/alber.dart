@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,23 +27,25 @@ class Alber extends StatelessWidget {
           designSize: const Size(375, 812),
           builder: (context, child) {
             return MaterialApp(
+              useInheritedMediaQuery: true,
+              locale: Locale(sl<GlobalCubit>().language),
               navigatorKey: navigatorKey,
               theme: AppTheme.getLightTheme(sl<GlobalCubit>().language),
-
               builder: (context, child) {
+                // Wrap with DevicePreview builder in debug to simulate devices
+                final wrapped = DevicePreview.appBuilder(context, child);
                 final mediaQueryData = MediaQuery.of(context);
                 final scale = mediaQueryData.textScaler
                     .clamp(minScaleFactor: 1.0, maxScaleFactor: 1.0);
                 return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(textScaler: scale),
-                  child: child!,
+                  data: mediaQueryData.copyWith(textScaler: scale),
+                  child: wrapped,
                 );
               },
               debugShowCheckedModeBanner: false,
               //!Localization Settings
               localizationsDelegates: localizationsDelegatesList,
               supportedLocales: supportedLocalesList,
-              locale: Locale(sl<GlobalCubit>().language),
 
               //!App Scroll Behavior
               scrollBehavior: ScrollConfiguration.of(context)

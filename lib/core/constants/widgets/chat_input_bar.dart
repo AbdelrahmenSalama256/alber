@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class ChatInputBar extends StatefulWidget {
   final Function(String)? onSendMessage; // جعلها اختيارية
@@ -61,7 +63,7 @@ class _ChatInputBarState extends State<ChatInputBar>
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color(0xffF7F7FC), // لون الخلفية المطلوب
-                    borderRadius: BorderRadius.circular(10.r), // زوايا دائرية
+                    borderRadius: BorderRadius.circular(sl<GlobalCubit>().radiusSm.r), // زوايا دائرية
                   ),
                   child: TextField(
                     controller: _controller,

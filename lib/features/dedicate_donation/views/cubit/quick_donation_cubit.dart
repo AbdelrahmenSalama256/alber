@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'quick_donation_state.dart';
 
-class QuickDonationCubit extends Cubit<QuickDonationState> {
+class QuickDonationCubit extends AppCubit<QuickDonationState> {
   QuickDonationCubit() : super(QuickDonationLoading());
 
   Future<void> init() async {
-    emit(QuickDonationLoading());
+    emitSafe(QuickDonationLoading());
     await Future.delayed(const Duration(seconds: 2)); // simulate network delay
 
     final donationItems = [
@@ -46,6 +46,6 @@ class QuickDonationCubit extends Cubit<QuickDonationState> {
       },
     ];
 
-    emit(QuickDonationLoaded(donationItems: donationItems));
+    emitSafe(QuickDonationLoaded(donationItems: donationItems));
   }
 }

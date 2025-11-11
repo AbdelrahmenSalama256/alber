@@ -116,3 +116,6 @@ class WishlistItemRemovedSuccess extends GlobalState {
 class ProfileUpdating extends GlobalState {}
 
 class GlobalLocationUpdated extends GlobalState {} // Add this state
+
+// Design tokens or theming values updated
+class DesignTokensUpdated extends GlobalState {}

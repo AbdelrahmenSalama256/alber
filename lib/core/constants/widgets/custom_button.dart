@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/constants/widgets/text_style.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   const CustomElevatedButton({
@@ -27,6 +29,7 @@ class CustomElevatedButton extends StatelessWidget {
   final Widget? icon;
   @override
   Widget build(BuildContext context) {
+    final radiusSm = sl<GlobalCubit>().radiusSm;
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
@@ -35,7 +38,7 @@ class CustomElevatedButton extends StatelessWidget {
         shadowColor: AppColors.lightGrey,
         fixedSize: Size(width ?? MediaQuery.of(context).size.width, 45.h),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 5),
+          borderRadius: BorderRadius.circular(borderRadius ?? radiusSm),
           side: BorderSide(
             color: borderColor ?? AppColors.primary,
           ),

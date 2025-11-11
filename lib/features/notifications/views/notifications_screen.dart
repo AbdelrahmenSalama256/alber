@@ -60,7 +60,10 @@ class NotificationsScreen extends StatelessWidget {
                 ),
               );
             }
-            final s = state as NotificationsLoaded;
+            if (state is! NotificationsLoaded) {
+              return const SizedBox.shrink();
+            }
+            final s = state;
             final items = s.filter == null
                 ? s.items
                 : s.items.where((e) => e.type == s.filter).toList();

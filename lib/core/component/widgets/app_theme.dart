@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class AppTheme {
   static ThemeData getLightTheme(String language) {
+    final radiusSm = sl<GlobalCubit>().radiusSm;
+    final radiusXs = sl<GlobalCubit>().radiusXs;
     return ThemeData(
       fontFamily: language == "ar" ? 'arabic' : "arabic",
       primaryColor: AppColors.primary,
@@ -90,23 +94,23 @@ class AppTheme {
         fillColor: Colors.white,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+        borderRadius: BorderRadius.all(Radius.circular(radiusSm.r)),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+          borderRadius: BorderRadius.all(Radius.circular(radiusSm.r)),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+          borderRadius: BorderRadius.all(Radius.circular(radiusSm.r)),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+          borderRadius: BorderRadius.all(Radius.circular(radiusSm.r)),
           borderSide: const BorderSide(color: AppColors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+          borderRadius: BorderRadius.all(Radius.circular(radiusSm.r)),
           borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
       ),
@@ -116,7 +120,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           minimumSize: Size(double.infinity, 50.h),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(radiusSm.r),
           ),
           elevation: 0,
           textStyle: TextStyle(
@@ -132,7 +136,7 @@ class AppTheme {
           minimumSize: Size(double.infinity, 50.h),
           side: const BorderSide(color: AppColors.primary, width: 1.5),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(radiusSm.r),
           ),
           textStyle: TextStyle(
             fontFamily: language == "ar" ? 'arabic' : "arabic",
@@ -158,8 +162,8 @@ class AppTheme {
           }
           return Colors.transparent;
         }),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.r),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusXs.r),
         ),
       ),
       radioTheme: RadioThemeData(
@@ -228,8 +232,8 @@ class AppTheme {
           }
           return Colors.transparent;
         }),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.r),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusXs.r),
           side: const BorderSide(color: Colors.transparent),
         ),
       ),

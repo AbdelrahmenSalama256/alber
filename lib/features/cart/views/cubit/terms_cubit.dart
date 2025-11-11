@@ -1,19 +1,19 @@
 // lib/features/profile/views/add_donation_cart/cubit/terms_cubit.dart
-import 'package:bloc/bloc.dart';
+import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'terms_state.dart';
 
-class TermsCubit extends Cubit<TermsState> {
+class TermsCubit extends AppCubit<TermsState> {
   TermsCubit() : super(TermsLoading());
 
   Future<void> init() async {
-    emit(TermsLoading());
+    emitSafe(TermsLoading());
     await Future.delayed(const Duration(seconds: 2));
     final t = await _fetchTerms();
-    emit(TermsLoaded(showPayPanel: false, terms: t));
+    emitSafe(TermsLoaded(showPayPanel: false, terms: t));
     await Future.delayed(const Duration(seconds: 2));
     final s = state;
-    if (s is TermsLoaded) emit(s.copyWith(showPayPanel: true));
+    if (s is TermsLoaded) emitSafe(s.copyWith(showPayPanel: true));
   }
 
   Future<String> _fetchTerms() async {

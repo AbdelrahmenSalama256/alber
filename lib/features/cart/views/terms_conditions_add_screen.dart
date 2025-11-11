@@ -74,7 +74,10 @@ class TermsConditionsAddScreen extends StatelessWidget {
                 ),
               );
             }
-            final s = state as TermsLoaded;
+            if (state is! TermsLoaded) {
+              return const SizedBox.shrink();
+            }
+            final s = state;
             return Stack(
               children: [
                 SingleChildScrollView(

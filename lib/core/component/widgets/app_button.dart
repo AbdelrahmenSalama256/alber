@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 enum AppButtonType { primary, outlined, secondary }
 
@@ -97,7 +99,7 @@ class AppButton extends StatelessWidget {
                 : null,
             gradient: backgroundGradient,
             image: backgroundImage,
-            borderRadius: borderRadius ?? BorderRadius.circular(11.79.r),
+            borderRadius: borderRadius ?? BorderRadius.circular(sl<GlobalCubit>().radiusMd.r),
             border: border,
           ),
           child: ElevatedButton(
@@ -107,7 +109,7 @@ class AppButton extends StatelessWidget {
               shadowColor: Colors.transparent,
               padding: padding ?? EdgeInsets.symmetric(horizontal: 16.w),
               shape: RoundedRectangleBorder(
-                borderRadius: borderRadius ?? BorderRadius.circular(11.79.r),
+                borderRadius: borderRadius ?? BorderRadius.circular(sl<GlobalCubit>().radiusMd.r),
               ),
             ),
             child: _buildContent(finalTextColor),

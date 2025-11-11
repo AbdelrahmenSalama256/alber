@@ -50,7 +50,10 @@ class OurLocationsScreen extends StatelessWidget {
                 ),
               );
             }
-            final s = state as ProfileLoaded;
+            if (state is! ProfileLoaded) {
+              return const SizedBox.shrink();
+            }
+            final s = state;
             return SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),

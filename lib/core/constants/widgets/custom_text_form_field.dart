@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/constants/widgets/text_style.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
@@ -58,6 +60,7 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radiusSm = sl<GlobalCubit>().radiusSm;
     return TextFormField(
       autofocus: autofocus ?? false,
       keyboardType: keyboardType,
@@ -75,12 +78,12 @@ class CustomTextFormField extends StatelessWidget {
         floatingLabelBehavior:
             floatingLabelBehavior ?? FloatingLabelBehavior.auto,
         contentPadding: contentPadding ?? EdgeInsets.all(18.w),
-        border: getBorderStyle(context, borderRadius, borderColor),
-        enabledBorder: getBorderStyle(context, borderRadius, borderColor),
-        focusedBorder: getBorderStyle(context, borderRadius, borderColor),
-        errorBorder: getBorderStyle(context, borderRadius, borderColor),
-        disabledBorder: getBorderStyle(context, borderRadius, borderColor),
-        focusedErrorBorder: getBorderStyle(context, borderRadius, borderColor),
+        border: getBorderStyle(context, borderRadius ?? radiusSm, borderColor),
+        enabledBorder: getBorderStyle(context, borderRadius ?? radiusSm, borderColor),
+        focusedBorder: getBorderStyle(context, borderRadius ?? radiusSm, borderColor),
+        errorBorder: getBorderStyle(context, borderRadius ?? radiusSm, borderColor),
+        disabledBorder: getBorderStyle(context, borderRadius ?? radiusSm, borderColor),
+        focusedErrorBorder: getBorderStyle(context, borderRadius ?? radiusSm, borderColor),
         errorMaxLines: 5,
         labelText: labelText,
         hintText: hintText,
@@ -99,7 +102,7 @@ class CustomTextFormField extends StatelessWidget {
 
 OutlineInputBorder getBorderStyle(context, borderRadius, borderColor) {
   return OutlineInputBorder(
-    borderRadius: BorderRadius.circular(borderRadius ?? 5),
+    borderRadius: BorderRadius.circular(borderRadius ?? sl<GlobalCubit>().radiusSm),
     borderSide: BorderSide(
       color: borderColor ?? const Color(0xffDDE5E9),
       width: 0.5,

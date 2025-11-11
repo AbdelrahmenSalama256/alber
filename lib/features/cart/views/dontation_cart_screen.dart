@@ -77,7 +77,10 @@ class DontationCartScreen extends StatelessWidget {
                 ),
               );
             }
-            final s = state as CartLoaded;
+            if (state is! CartLoaded) {
+              return const SizedBox.shrink();
+            }
+            final s = state;
             return Stack(
               children: [
                 SingleChildScrollView(

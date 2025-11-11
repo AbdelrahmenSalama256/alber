@@ -29,7 +29,11 @@ class ServicesScreen extends StatelessWidget {
             appBar: CustomTopBar(
               isHome: false,
               onBack: () {
-                context.read<GlobalCubit>().changeBottomNavIndex(2);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  context.read<GlobalCubit>().changeBottomNavIndex(2);
+                }
               },
             ),
             body: SingleChildScrollView(
