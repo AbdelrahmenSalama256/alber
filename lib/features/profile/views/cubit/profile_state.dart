@@ -12,6 +12,8 @@ class ProfileLoaded extends ProfileState {
   final List<Map<String, String>> locations;
   final String totalAmount;
   final String totalCount;
+  final ProfileUser profile;
+  final bool isEditingProfile;
 
   ProfileLoaded({
     required this.aboutText,
@@ -21,6 +23,8 @@ class ProfileLoaded extends ProfileState {
     required this.locations,
     required this.totalAmount,
     required this.totalCount,
+    required this.profile,
+    this.isEditingProfile = false,
   });
 
   ProfileLoaded copyWith({
@@ -31,6 +35,8 @@ class ProfileLoaded extends ProfileState {
     List<Map<String, String>>? locations,
     String? totalAmount,
     String? totalCount,
+    ProfileUser? profile,
+    bool? isEditingProfile,
   }) {
     return ProfileLoaded(
       aboutText: aboutText ?? this.aboutText,
@@ -40,6 +46,40 @@ class ProfileLoaded extends ProfileState {
       locations: locations ?? this.locations,
       totalAmount: totalAmount ?? this.totalAmount,
       totalCount: totalCount ?? this.totalCount,
+      profile: profile ?? this.profile,
+      isEditingProfile: isEditingProfile ?? this.isEditingProfile,
+    );
+  }
+}
+
+class ProfileUser {
+  final String name;
+  final String memberId;
+  final String phone;
+  final String email;
+  final String? avatarPath;
+
+  const ProfileUser({
+    required this.name,
+    required this.memberId,
+    required this.phone,
+    required this.email,
+    this.avatarPath,
+  });
+
+  ProfileUser copyWith({
+    String? name,
+    String? memberId,
+    String? phone,
+    String? email,
+    String? avatarPath,
+  }) {
+    return ProfileUser(
+      name: name ?? this.name,
+      memberId: memberId ?? this.memberId,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      avatarPath: avatarPath ?? this.avatarPath,
     );
   }
 }

@@ -103,7 +103,13 @@ class ProfileScreen extends StatelessWidget {
                       title: 'my_profile'.tr(context),
                       svgAsset: 'assets/images/svg/person.svg',
                       onTap: () {
-                        navigateTo(context, const EditProfileScreen());
+                        navigateTo(
+                          context,
+                          BlocProvider.value(
+                            value: context.read<ProfileCubit>(),
+                            child: const EditProfileScreen(),
+                          ),
+                        );
                       },
                     ),
                     ActionCard(

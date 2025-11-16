@@ -31,7 +31,40 @@ class ProfileCubit extends AppCubit<ProfileState> {
       locations: locs,
       totalAmount: "35000",
       totalCount: "350",
+      profile: _defaultUser(),
     ));
+  }
+
+  void toggleProfileEditing({bool? enabled}) {
+    final current = state;
+    if (current is! ProfileLoaded) return;
+    final nextValue = enabled ?? !current.isEditingProfile;
+    emitSafe(current.copyWith(isEditingProfile: nextValue));
+  }
+
+  void updateProfileField({
+    String? name,
+    String? memberId,
+    String? phone,
+    String? email,
+  }) {
+    final current = state;
+    if (current is! ProfileLoaded) return;
+    final updated = current.profile.copyWith(
+      name: name,
+      memberId: memberId,
+      phone: phone,
+      email: email,
+    );
+    emitSafe(current.copyWith(profile: updated));
+  }
+
+  void updateProfileImage(String path) {
+    final current = state;
+    if (current is! ProfileLoaded) return;
+    emitSafe(
+      current.copyWith(profile: current.profile.copyWith(avatarPath: path)),
+    );
   }
 
   void setTopic(String? v) {
@@ -73,6 +106,16 @@ class ProfileCubit extends AppCubit<ProfileState> {
 
   String _about() {
     return "تأسست جمعية البر بجدة في 25/12/1402هـ وهي جمعية خيرية ذات شخصية اعتبارية تشمل خدماتها محافظة جدة وما حولها من القرى , ورئيسها الفخري صاحب السمو الملكي أمير منطقة مكة المكرمة , وتعمل تحت إشراف وزارة الموارد البشرية والتنمية الاجتماعية ومسجلة برقم 62 .";
+  }
+
+  ProfileUser _defaultUser() {
+    return const ProfileUser(
+      name: 'Akram Ahmed',
+      memberId: 'D-280843',
+      phone: '0540936802',
+      email: 'akram.ahmed@share.net.sa',
+      avatarPath: "assets/images/png/profile-user.jpg",
+    );
   }
 
   String _longPolicy() {

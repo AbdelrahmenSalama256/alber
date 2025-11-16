@@ -5,15 +5,15 @@ import 'package:qafeel/core/constants/app_colors.dart';
 
 class ProfileFieldItem extends StatelessWidget {
   final String title;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   final IconData? icon;
-  final String? assetImage; // assets/my_icon.png
-  final String? svgAsset; // assets/my_icon.svg
+  final String? assetImage;
+  final String? svgAsset;
 
-  final double? iconSize; // optional override
-  final Color? iconColor; // for IconData only
-  final List<Color>? gradient; // custom gradient if you want
+  final double? iconSize;
+  final Color? iconColor;
+  final List<Color>? gradient;
   final EdgeInsetsGeometry? margin;
 
   const ProfileFieldItem({
@@ -37,6 +37,7 @@ class ProfileFieldItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isInteractive = onTap != null;
     return Padding(
       padding: margin ??
           EdgeInsets.symmetric(horizontal: 0.w).copyWith(bottom: 30.h),
@@ -54,9 +55,14 @@ class ProfileFieldItem extends StatelessWidget {
                 constraints: BoxConstraints(minHeight: 50.h),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.r),
-                  color: const Color(0xffD9D9D9).withOpacity(0.5),
+                  color: (isInteractive
+                          ? const Color(0xffD9D9D9)
+                          : const Color(0xffEFEFEF))
+                      .withOpacity(0.5),
                   border: Border.all(
-                    color: Color(0xffCCCCCC),
+                    color: isInteractive
+                        ? const Color(0xffCCCCCC)
+                        : const Color(0xffE0E0E0),
                     width: 1.w,
                   ),
                   boxShadow: [
@@ -74,10 +80,14 @@ class ProfileFieldItem extends StatelessWidget {
                     child: Text(
                       title,
                       textAlign: TextAlign.center,
+                      maxLines: 1,
                       style: TextStyle(
-                        fontSize: 24.sp,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.textSecondary,
+                        color: isInteractive
+                            ? AppColors.textSecondary
+                            : AppColors.textGrey,
                       ),
                     ),
                   ),
@@ -109,7 +119,6 @@ class ProfileFieldItem extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
-        // border: Border.all(color: const Color(0xFFEAE6E2)),
       ),
       child: child,
     );
