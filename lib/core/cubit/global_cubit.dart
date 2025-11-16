@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -15,19 +16,19 @@ import 'global_state.dart';
 class GlobalCubit extends AppCubit<GlobalState> {
   GlobalCubit() : super(GlobalInitial());
 
+  CachedProfile? cachedProfile;
+
   void init() {
+    loadCachedProfile();
     PrintUtil.warning(
         "User type is ${sl<CacheHelper>().getDataString(key: AppConstants.userType)}");
     PrintUtil.success(
         "${sl<CacheHelper>().getDataString(key: AppConstants.token)}");
-    // getCurrentLocation();
   }
 
   int currentNavIndex = 2;
   ScrollController controller = ScrollController();
 
-  // Shared UI resources and options
-  // Centralized assets/labels used app-wide
   final String currencyIconAsset = 'assets/images/svg/currancy.svg';
   final String AppLogoInline = 'assets/images/png/alber-inline-logo.png';
   final List<String> periodicityOptions = const [
@@ -35,7 +36,6 @@ class GlobalCubit extends AppCubit<GlobalState> {
     'monthly',
   ];
 
-  // Global design tokens (tweak once, used everywhere)
   double radiusXs = 6.0;
   double radiusSm = 8.0;
   double radiusMd = 12.0;
@@ -63,10 +63,8 @@ class GlobalCubit extends AppCubit<GlobalState> {
     sl<CacheHelper>().getCachedLanguage() == "en"
         ? await sl<CacheHelper>().cacheLanguage("ar")
         : await sl<CacheHelper>().cacheLanguage("en");
-    // After caching the language, send it to backend with endpoint lang code
     final langCode = sl<CacheHelper>().getCachedLanguage();
     try {
-      // await sl<ProfileRepo>().updateLang(langCode: langCode);
       PrintUtil.success("Language updated on backend: $langCode");
     } catch (e) {
       PrintUtil.error("Failed to update language on backend: $e");
@@ -128,4 +126,119 @@ class GlobalCubit extends AppCubit<GlobalState> {
       PrintUtil.warning('Location request: $e');
     }
   }
+
+  void loadCachedProfile() {
+    final raw = sl<CacheHelper>().getDataString(key: AppConstants.userProfile);
+    if (raw == null || raw.isEmpty) return;
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+      final data = decoded['data'] as Map<String, dynamic>? ?? {};
+      final userJson = data['user'] as Map<String, dynamic>? ?? {};
+      cachedProfile = CachedProfile.fromJson(userJson);
+    } catch (e) {
+      PrintUtil.error('Failed to parse cached profile: $e');
+    }
+  }
+
+  void updateCachedProfileFromJson(Map<String, dynamic> userJson) {
+    cachedProfile = CachedProfile.fromJson(userJson);
+    _persistCachedProfile();
+  }
+
+  void updateCachedProfileValues({
+    String? name,
+    String? email,
+    String? phone,
+    String? memberId,
+    String? avatarPath,
+  }) {
+    if (cachedProfile == null) {
+      cachedProfile = CachedProfile(
+        id: 0,
+        name: name ?? '',
+        email: email,
+        phone: phone,
+        membershipId: memberId,
+        avatar: avatarPath,
+      );
+    } else {
+      cachedProfile = cachedProfile!.copyWith(
+        name: name,
+        email: email,
+        phone: phone,
+        membershipId: memberId,
+        avatar: avatarPath,
+      );
+    }
+    _persistCachedProfile();
+  }
+
+  void clearCachedProfile() {
+    cachedProfile = null;
+  }
+
+  void _persistCachedProfile() {
+    if (cachedProfile == null) return;
+    final payload = {
+      'data': {'user': cachedProfile!.toJson()}
+    };
+    sl<CacheHelper>()
+        .setData(AppConstants.userProfile, jsonEncode(payload));
+  }
+}
+
+class CachedProfile {
+  final int id;
+  final String name;
+  final String? email;
+  final String? phone;
+  final String? membershipId;
+  final String? avatar;
+
+  const CachedProfile({
+    required this.id,
+    required this.name,
+    this.email,
+    this.phone,
+    this.membershipId,
+    this.avatar,
+  });
+
+  CachedProfile copyWith({
+    String? name,
+    String? email,
+    String? phone,
+    String? membershipId,
+    String? avatar,
+  }) {
+    return CachedProfile(
+      id: id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      membershipId: membershipId ?? this.membershipId,
+      avatar: avatar ?? this.avatar,
+    );
+  }
+
+  factory CachedProfile.fromJson(Map<String, dynamic> json) {
+    return CachedProfile(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      name: json['name']?.toString() ?? '',
+      email: json['email']?.toString(),
+      phone: json['mobile']?.toString() ?? json['phone']?.toString(),
+      membershipId:
+          json['member_id']?.toString() ?? json['membership_id']?.toString(),
+      avatar: json['image_url']?.toString() ?? json['image']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'email': email,
+        'mobile': phone,
+        'member_id': membershipId,
+        'image_url': avatar,
+      };
 }

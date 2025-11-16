@@ -51,10 +51,11 @@ class NewsDetailsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                  //! Glassmorphism info container
                   child: Container(
                     padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
-                      color: AppColors.white.withOpacity(0.18), // glassy fill
+                      color: AppColors.white.withOpacity(0.18),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
                         color: AppColors.white.withOpacity(0.28),

@@ -1,4 +1,3 @@
-// lib/features/profile/views/add_donation_cart/cubit/terms_cubit.dart
 import 'package:qafeel/core/cubit/app_cubit.dart';
 
 import 'terms_state.dart';

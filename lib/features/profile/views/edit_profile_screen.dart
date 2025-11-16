@@ -1,11 +1,20 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qafeel/core/component/custom_toast.dart';
 import 'package:qafeel/core/component/widgets/app_button.dart';
+import 'package:qafeel/core/component/widgets/profile_image_picker.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
+import 'package:qafeel/features/profile/views/cubit/profile_cubit.dart';
+import 'package:qafeel/features/profile/views/cubit/profile_state.dart';
 import 'package:qafeel/features/profile/views/widgets/profile_field_item.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -15,75 +24,289 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-      appBar: CustomTopBar(),
-      hasShape: false,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 40.h,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    "assets/images/svg/nav/profile2.svg",
-                    width: 20.w,
-                  ),
-                  SizedBox(width: 20.h),
-                  Text(
-                    "my_profile".tr(context),
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30.h),
-              ProfileFieldItem(
-                title: " سعد عطيه المالكي",
-                svgAsset: "assets/images/svg/person.svg",
-                onTap: () {},
-              ),
-              ProfileFieldItem(
-                title: "D-280843",
-                svgAsset: "assets/images/svg/security.svg",
-                onTap: () {},
-              ),
-              ProfileFieldItem(
-                title: "0540936802",
-                svgAsset: "assets/images/svg/mob.svg",
-                onTap: () {},
-              ),
-              ProfileFieldItem(
-                title: "akram.ahmed@share.net.sa",
-                svgAsset: "assets/images/svg/emal.svg",
-                onTap: () {},
-              ),
-              SizedBox(
-                height: 40.h,
-              ),
-              AppButton(
-                text: "edit_profile".tr(context),
-                onPressed: () {},
-                backgroundColor: Colors.transparent,
-                prefixIcon: Icon(
-                  CupertinoIcons.gear,
-                  size: 30.sp,
-                  color: AppColors.textSecondary,
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        final bool isLoading =
+            state is ProfileLoading || state is ProfileInitial;
+        final ProfileLoaded? loaded = state is ProfileLoaded ? state : null;
+        return CustomScaffold(
+          appBar: CustomTopBar(),
+          hasShape: false,
+          body: isLoading || loaded == null
+              ? const Center(child: CircularProgressIndicator())
+              : _EditProfileBody(state: loaded),
+        );
+      },
+    );
+  }
+}
+
+class _EditProfileBody extends StatelessWidget {
+  final ProfileLoaded state;
+
+  const _EditProfileBody({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final user = state.profile;
+    final isEditing = state.isEditingProfile;
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15.w),
+        child: Column(
+          children: [
+            SizedBox(height: 30.h),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  "assets/images/svg/nav/profile2.svg",
+                  width: 20.w,
                 ),
-                type: AppButtonType.outlined,
+                SizedBox(width: 20.h),
+                Text(
+                  "my_profile".tr(context),
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 24.h),
+            ProfileImagePicker(
+              profileImage: null,
+              initialImage: user.avatarPath,
+              onImageSelected: (file) {
+                context.read<ProfileCubit>().updateProfileImage(file.path);
+              },
+              size: 100,
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              user.name,
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              user.email,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textGrey,
+              ),
+            ),
+            SizedBox(height: 32.h),
+            _buildEditableField(
+              context,
+              label: "name".tr(context),
+              value: user.name,
+              svg: "assets/images/svg/person.svg",
+              isEditing: isEditing,
+              inputType: TextInputType.name,
+              onSubmit: (value) =>
+                  context.read<ProfileCubit>().updateProfileField(name: value),
+            ),
+            _buildEditableField(
+              context,
+              label: "membership_id".tr(context),
+              value: user.memberId,
+              svg: "assets/images/svg/security.svg",
+              isEditing: isEditing,
+              inputType: TextInputType.text,
+              onSubmit: (value) => context
+                  .read<ProfileCubit>()
+                  .updateProfileField(memberId: value),
+            ),
+            _buildEditableField(
+              context,
+              label: "phone".tr(context),
+              value: user.phone,
+              svg: "assets/images/svg/mob.svg",
+              isEditing: isEditing,
+              inputType: TextInputType.phone,
+              onSubmit: (value) =>
+                  context.read<ProfileCubit>().updateProfileField(phone: value),
+            ),
+            _buildEditableField(
+              context,
+              label: "email".tr(context),
+              value: user.email,
+              svg: "assets/images/svg/emal.svg",
+              isEditing: isEditing,
+              inputType: TextInputType.emailAddress,
+              onSubmit: (value) =>
+                  context.read<ProfileCubit>().updateProfileField(email: value),
+            ),
+            SizedBox(height: 30.h),
+            AppButton(
+              text: isEditing ? "save".tr(context) : "edit_profile".tr(context),
+              onPressed: () {
+                final cubit = context.read<ProfileCubit>();
+                if (isEditing) {
+                  cubit.toggleProfileEditing(enabled: false);
+                  showToast(context,
+                      message: "profile_updated".tr(context),
+                      state: ToastStates.success);
+                } else {
+                  cubit.toggleProfileEditing(enabled: true);
+                }
+              },
+              backgroundColor:
+                  isEditing ? AppColors.primary : Colors.transparent,
+              prefixIcon: Icon(
+                isEditing ? Icons.check_circle_outline : CupertinoIcons.gear,
+                size: 26.sp,
+                color: isEditing ? Colors.white : AppColors.textSecondary,
+              ),
+              type: isEditing ? AppButtonType.primary : AppButtonType.outlined,
+            ),
+            SizedBox(height: 24.h),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _buildEditableField(
+    BuildContext context, {
+    required String label,
+    required String value,
+    required String svg,
+    required bool isEditing,
+    required TextInputType inputType,
+    required ValueChanged<String> onSubmit,
+  }) {
+    return ProfileFieldItem(
+      title: value,
+      svgAsset: svg,
+      onTap: isEditing
+          ? () {
+              _showEditFieldSheet(
+                context,
+                fieldLabel: label,
+                initialValue: value,
+                keyboardType: inputType,
+                onSubmit: onSubmit,
+              );
+            }
+          : null,
+    );
+  }
+
+  Future<void> _showEditFieldSheet(
+    BuildContext context, {
+    required String fieldLabel,
+    required String initialValue,
+    required TextInputType keyboardType,
+    required ValueChanged<String> onSubmit,
+  }) async {
+    final controller = TextEditingController(text: initialValue);
+    final radiusXl = sl<GlobalCubit>().radiusXl;
+    final radiusMd = sl<GlobalCubit>().radiusMd;
+    final result = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        final bottomInset = MediaQuery.of(sheetContext).viewInsets.bottom;
+        return SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              16.w,
+              0,
+              16.w,
+              bottomInset + 16.h,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(radiusXl.r),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(radiusXl.r),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.2),
+                      width: 1.w,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 50.w,
+                        height: 5.h,
+                        decoration: BoxDecoration(
+                          color: AppColors.textGrey.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Text(
+                        fieldLabel,
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      TextField(
+                        controller: controller,
+                        keyboardType: keyboardType,
+                        decoration: InputDecoration(
+                          hintText: fieldLabel,
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(radiusMd.r),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppButton(
+                              type: AppButtonType.outlined,
+                              text: "cancel".tr(context),
+                              onPressed: () => Navigator.of(sheetContext).pop(),
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: AppButton(
+                              text: "save".tr(context),
+                              onPressed: () => Navigator.of(sheetContext)
+                                  .pop(controller.text),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (result != null) {
+      final trimmed = result.trim();
+      if (trimmed.isNotEmpty) {
+        onSubmit(trimmed);
+      }
+    }
   }
 }

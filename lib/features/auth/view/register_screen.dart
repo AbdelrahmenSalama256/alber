@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/component/custom_toast.dart';
 import 'package:qafeel/core/component/widgets/app_text_field.dart';
+import 'package:qafeel/core/component/widgets/profile_image_picker.dart';
 import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
@@ -40,7 +41,6 @@ class RegisterScreen extends StatelessWidget {
               message: "register_success".tr(context),
               state: ToastStates.success,
             );
-            // Proceed to phone confirm/OTP; pending action will be executed after OTP success
             navigateTo(context, const PhoneConfirmScreen());
           } else if (state is AuthError) {
             showToast(
@@ -91,6 +91,21 @@ class RegisterScreen extends StatelessWidget {
                                 width: 20.w,
                               ),
                             ],
+                          ),
+                          SizedBox(height: 20.h),
+                          ProfileImagePicker(
+                            profileImage: cubit.profileImage,
+                            onImageSelected: cubit.updateProfileImage,
+                            size: 110,
+                          ),
+                          SizedBox(height: 12.h),
+                          Text(
+                            "upload_profile_image".tr(context),
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.textGrey,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           SizedBox(height: 20.h),
                           Padding(

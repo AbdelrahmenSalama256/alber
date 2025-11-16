@@ -44,7 +44,7 @@ class LocationsCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Background container
+            //! Background container
             Container(
               decoration: BoxDecoration(
                 color: backgroundColor,
@@ -52,18 +52,18 @@ class LocationsCard extends StatelessWidget {
               ),
             ),
 
-            // Content row
+            //! Main content row
             Padding(
               padding: EdgeInsets.all(16.w),
               child: Row(
                 children: [
-                  // Text content section
+                  //! Text content column
                   Expanded(
                     flex: 6,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Title badge
+                        //! Title badge
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 12.w,
@@ -96,7 +96,7 @@ class LocationsCard extends StatelessWidget {
 
                         SizedBox(height: 16.h),
 
-                        // Description with icon
+                        //! Description with supporting icon
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -132,7 +132,7 @@ class LocationsCard extends StatelessWidget {
 
                         Spacer(),
 
-                        // Optional: Add a call-to-action button
+                        //! Optional call-to-action row
                         if (onTap != null)
                           Row(
                             children: [
@@ -158,7 +158,7 @@ class LocationsCard extends StatelessWidget {
 
                   SizedBox(width: 16.w),
 
-                  // Image section
+                  //! Image section
                   Expanded(
                     flex: 4,
                     child: Container(

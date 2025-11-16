@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:qafeel/core/cubit/app_cubit.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
 import 'profile_state.dart';
 
@@ -51,12 +53,18 @@ class ProfileCubit extends AppCubit<ProfileState> {
     final current = state;
     if (current is! ProfileLoaded) return;
     final updated = current.profile.copyWith(
+      name: name ?? current.profile.name,
+      memberId: memberId ?? current.profile.memberId,
+      phone: phone ?? current.profile.phone,
+      email: email ?? current.profile.email,
+    );
+    emitSafe(current.copyWith(profile: updated));
+    sl<GlobalCubit>().updateCachedProfileValues(
       name: name,
       memberId: memberId,
       phone: phone,
       email: email,
     );
-    emitSafe(current.copyWith(profile: updated));
   }
 
   void updateProfileImage(String path) {
@@ -65,6 +73,7 @@ class ProfileCubit extends AppCubit<ProfileState> {
     emitSafe(
       current.copyWith(profile: current.profile.copyWith(avatarPath: path)),
     );
+    sl<GlobalCubit>().updateCachedProfileValues(avatarPath: path);
   }
 
   void setTopic(String? v) {
@@ -109,6 +118,16 @@ class ProfileCubit extends AppCubit<ProfileState> {
   }
 
   ProfileUser _defaultUser() {
+    final cached = sl<GlobalCubit>().cachedProfile;
+    if (cached != null) {
+      return ProfileUser(
+        name: cached.name,
+        memberId: cached.membershipId ?? 'ID-${cached.id}',
+        phone: cached.phone ?? '',
+        email: cached.email ?? '',
+        avatarPath: cached.avatar,
+      );
+    }
     return const ProfileUser(
       name: 'Akram Ahmed',
       memberId: 'D-280843',

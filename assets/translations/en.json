@@ -23,6 +23,7 @@
   "enter_otp": "Enter OTP Code",
   "continue": "Continue",
   "new_account": "New Account",
+  "upload_profile_image": "Add a profile photo",
   "name": "Name",
   "email": "Email",
   "phone_hint": "Phone 50xxxxxxxxx",
@@ -64,6 +65,7 @@
   "donation_cart": "Donation Cart",
   "about_app": "About App",
   "edit_profile": "Edit Profile",
+  "membership_id": "Membership ID",
   "profile_updated": "Profile updated successfully",
   "bill": "Bill",
   "total": "Total",
@@ -161,5 +163,10 @@
   "daily": "Daily",
   "enter_amount": "Enter amount",
   "enter_valid_amount": "Enter a valid amount",
-  "min_amount_is": "Minimum amount is"
+  "min_amount_is": "Minimum amount is",
+  "select_image_source": "Select image source",
+  "camera": "Camera",
+  "gallery": "Gallery",
+  "error_picking_image": "Error picking image",
+  "phone": "Phone Number"
 }

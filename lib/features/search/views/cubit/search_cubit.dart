@@ -26,7 +26,6 @@ class SearchCubit extends AppCubit<SearchState> {
   Future<void> performSearch(String q) async {
     final base = _sampleData();
 
-    // 🧠 No loading flicker while typing — only filter and emit
     await Future.delayed(const Duration(milliseconds: 400));
     final filtered = q.isEmpty
         ? base

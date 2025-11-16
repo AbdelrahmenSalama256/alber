@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -9,13 +10,14 @@ class ActionCard extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  final IconData? icon; // Material icon
-  final String? assetImage; // assets/my_icon.png
-  final String? svgAsset; // assets/my_icon.svg
+  final IconData? icon;
+  final String? assetImage;
+  final String? svgAsset;
+  final String? imagePath;
 
-  final double? iconSize; // optional override
-  final Color? iconColor; // for IconData only
-  final List<Color>? gradient; // custom gradient if you want
+  final double? iconSize;
+  final Color? iconColor;
+  final List<Color>? gradient;
   final EdgeInsetsGeometry? margin;
 
   const ActionCard({
@@ -25,6 +27,7 @@ class ActionCard extends StatelessWidget {
     this.icon,
     this.assetImage,
     this.svgAsset,
+    this.imagePath,
     this.iconSize,
     this.iconColor,
     this.gradient,
@@ -32,9 +35,10 @@ class ActionCard extends StatelessWidget {
   }) : assert(
           (icon != null ? 1 : 0) +
                   (assetImage != null ? 1 : 0) +
-                  (svgAsset != null ? 1 : 0) ==
+                  (svgAsset != null ? 1 : 0) +
+                  (imagePath != null ? 1 : 0) ==
               1,
-          'Provide exactly ONE of icon, assetImage, or svgAsset.',
+          'Provide exactly ONE of icon, assetImage, svgAsset, or imagePath.',
         );
 
   @override
@@ -102,10 +106,22 @@ class ActionCard extends StatelessWidget {
       child =
           Icon(icon, size: size, color: iconColor ?? const Color(0xFF3C3C3C));
     } else if (assetImage != null) {
-      child = Image.asset(assetImage!,
-          width: size, height: size, fit: BoxFit.contain);
-    } else {
+      child = ClipRRect(
+        borderRadius: BorderRadius.circular(size / 2),
+        child: Image.asset(
+          assetImage!,
+          width: size,
+          height: size,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else if (svgAsset != null) {
       child = SvgPicture.asset(svgAsset!, width: size, height: size);
+    } else {
+      child = ClipRRect(
+        borderRadius: BorderRadius.circular(size / 2),
+        child: _buildDynamicImage(size),
+      );
     }
 
     return Container(
@@ -114,9 +130,47 @@ class ActionCard extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
-        // border: Border.all(color: const Color(0xFFEAE6E2)),
       ),
       child: child,
     );
+  }
+
+  Widget _buildDynamicImage(double size) {
+    if (imagePath == null || imagePath!.isEmpty) {
+      return Icon(Icons.person_outline,
+          size: size, color: const Color(0xFF3C3C3C));
+    }
+    final path = imagePath!;
+    if (path.startsWith('http')) {
+      return Image.network(
+        path,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) =>
+            Icon(Icons.person_outline, size: size, color: AppColors.textGrey),
+      );
+    }
+
+    if (path.startsWith('assets/')) {
+      return Image.asset(
+        path,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+      );
+    }
+
+    final file = File(path);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+      );
+    }
+    return Icon(Icons.person_outline,
+        size: size, color: AppColors.textGrey.withOpacity(0.7));
   }
 }

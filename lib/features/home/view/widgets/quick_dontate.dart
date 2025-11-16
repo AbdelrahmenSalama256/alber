@@ -132,8 +132,8 @@ class _ExpandableQuickDonateFABState extends State<ExpandableQuickDonateFAB>
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // Background overlay
         if (_expanded)
+          //! Fullscreen overlay to focus attention on the panel
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             bottom: 0,
@@ -151,7 +151,7 @@ class _ExpandableQuickDonateFABState extends State<ExpandableQuickDonateFAB>
             ),
           ),
 
-        // Options panel - positioned like a smart sidebar
+        //! Sliding options panel positioned like a floating sidebar
         AnimatedPositionedDirectional(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
@@ -205,7 +205,7 @@ class _ExpandableQuickDonateFABState extends State<ExpandableQuickDonateFAB>
           ),
         ),
 
-        // Main FAB Button
+        //! Main floating button that toggles the quick actions
         PositionedDirectional(
           bottom: 200.h,
           start: 10.w,

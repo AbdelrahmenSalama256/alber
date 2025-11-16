@@ -1,4 +1,3 @@
-// lib/features/profile/views/add_donation_cart/terms_conditions_add_screen.dart
 import 'dart:ui';
 
 import 'package:flutter/material.dart';

@@ -21,7 +21,6 @@ class QtyStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final radius = sl<GlobalCubit>().radiusMd;
-    // final btnRadius = sl<GlobalCubit>().radiusSm;
     return Container(
       height: height.h,
       padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -34,7 +33,7 @@ class QtyStepper extends StatelessWidget {
         children: [
           _StepBtn(
               accent: accent, icon: Icons.add, onTap: () => onChanged(qty + 1)),
-          SizedBox(width: 10.w),
+        SizedBox(width: 10.w),
           Text(
             "$qty",
             style: TextStyle(

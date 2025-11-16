@@ -101,7 +101,18 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(height: 20.h),
                     ActionCard(
                       title: 'my_profile'.tr(context),
-                      svgAsset: 'assets/images/svg/person.svg',
+                      svgAsset: (s.profile.avatarPath == null ||
+                              s.profile.avatarPath!.isEmpty)
+                          ? 'assets/images/svg/person.svg'
+                          : null,
+                      assetImage: s.profile.avatarPath != null &&
+                              s.profile.avatarPath!.startsWith('assets/')
+                          ? s.profile.avatarPath
+                          : null,
+                      imagePath: s.profile.avatarPath != null &&
+                              !s.profile.avatarPath!.startsWith('assets/')
+                          ? s.profile.avatarPath
+                          : null,
                       onTap: () {
                         navigateTo(
                           context,
@@ -159,6 +170,7 @@ class ProfileScreen extends StatelessWidget {
                                 .removeData(key: AppConstants.userProfile);
                             await sl<CacheHelper>()
                                 .removeData(key: AppConstants.token);
+                            sl<GlobalCubit>().clearCachedProfile();
                             showToast(context,
                                 message: 'logged_out'.tr(context),
                                 state: ToastStates.success);

@@ -15,12 +15,14 @@ import '../../../shared/widgets/qty_stepper.dart';
 
 class DonationCard extends StatefulWidget {
   final String title;
-  final String imageAsset; // asset path or URL
-  final String? type; // fixed | variable | multi
+  final String imageAsset;
+  final String? type;
   final double raised;
   final double goal;
   final double initialAmount;
   final int initialQty;
+  final double? savedAmount;
+  final int? savedQty;
   final VoidCallback? onDonate;
   final void Function(double amount, int qty, String? frequency)?
       onDonateWithSelection;
@@ -43,6 +45,8 @@ class DonationCard extends StatefulWidget {
     required this.goal,
     this.initialAmount = 100,
     this.initialQty = 1,
+    this.savedAmount,
+    this.savedQty,
     this.onDonate,
     this.onDonateWithSelection,
     this.type,
@@ -72,11 +76,29 @@ class _DonationCardState extends State<DonationCard> {
   @override
   void initState() {
     super.initState();
-    _amount = widget.initialAmount;
-    _qty = widget.initialQty;
+    _amount = widget.savedAmount ?? widget.initialAmount;
+    _qty = widget.savedQty ?? widget.initialQty;
     _amountController =
-        TextEditingController(text: widget.initialAmount.toStringAsFixed(0));
+        TextEditingController(text: _amount.toStringAsFixed(0));
     _freqIndex = widget.initialFrequencyIndex;
+  }
+
+  @override
+  void didUpdateWidget(covariant DonationCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.savedAmount != null &&
+        widget.savedAmount != oldWidget.savedAmount &&
+        widget.savedAmount != _amount) {
+      _amount = widget.savedAmount!;
+      _amountController.value = TextEditingValue(
+        text: widget.savedAmount!.toStringAsFixed(0),
+      );
+    }
+    if (widget.savedQty != null &&
+        widget.savedQty != oldWidget.savedQty &&
+        widget.savedQty != _qty) {
+      _qty = widget.savedQty!;
+    }
   }
 
   @override
@@ -128,7 +150,7 @@ class _DonationCardState extends State<DonationCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+            //! Header row with avatar and stats
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -203,7 +225,6 @@ class _DonationCardState extends State<DonationCard> {
 
             SizedBox(height: 12.h),
 
-            // Donation Amount Section
             if ((widget.frequencyOptions != null &&
                 widget.frequencyOptions!.isNotEmpty))
               Padding(
@@ -215,6 +236,7 @@ class _DonationCardState extends State<DonationCard> {
                   accent: widget.accent,
                 ),
               ),
+            //! Donation amount section
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(12.w),
@@ -293,7 +315,6 @@ class _DonationCardState extends State<DonationCard> {
           child: AppTextField(
             controller: _amountController,
             keyboardType: TextInputType.number,
-            // borderColor: AppColors.primary.withOpacity(0.2),
             hintText: 'enter_amount'.tr(context),
             validator: (value) {
               final text = (value ?? '').trim();
@@ -448,8 +469,7 @@ class _CompactDonutAvatar extends StatelessWidget {
     final double ringRadius = ringSize / 2;
     final double strokeRadius = (ringSize - strokeW) / 2;
 
-    // Calculate pin position based on progress
-    double angle = 2 * pi * progress - (pi / 2); // Start from top (-pi/2)
+    double angle = 2 * pi * progress - (pi / 2);
     double pinX = ringRadius + strokeRadius * cos(angle);
     double pinY = ringRadius + strokeRadius * sin(angle);
 
@@ -477,7 +497,7 @@ class _CompactDonutAvatar extends StatelessWidget {
               child: _buildImage(imageAsset, avatarSize),
             ),
           ),
-          // Positioned pin at the end of progress
+          //! Progress pin positioned along the ring
           PositionedDirectional(
             end: pinX - 16.w,
             top: pinY - 35.w,
@@ -539,10 +559,10 @@ class _CompactDonutAvatar extends StatelessWidget {
 }
 
 class PercentPin extends StatelessWidget {
-  final double progress; // 0..1
-  final Color color; // fill color of the pin
-  final double size; // width of the pin
-  final String assetPath; // pin svg path
+  final double progress;
+  final Color color;
+  final double size;
+  final String assetPath;
   final List<BoxShadow>? shadow;
   final TextStyle? textStyle;
   final double bulbPaddingFactor;

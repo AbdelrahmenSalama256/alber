@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/constants/widgets/print_util.dart';
 import 'package:qafeel/core/cubit/app_cubit.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/network/local_network.dart';
 import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/features/auth/data/models/user_registration_model.dart';
@@ -24,7 +28,6 @@ class AuthCubit extends AppCubit<AuthState> {
     confirmNewPasswordController = TextEditingController();
   }
 
-  // Controllers (aligned with sample)
   late TextEditingController usernameController;
   late TextEditingController createAccountEmailController;
   late TextEditingController createAccountPasswordController;
@@ -35,8 +38,8 @@ class AuthCubit extends AppCubit<AuthState> {
   late TextEditingController newPasswordController;
   late TextEditingController confirmNewPasswordController;
   final formKey = GlobalKey<FormState>();
+  XFile? profileImage;
 
-  // Keep backwards compatibility with existing screens
   TextEditingController get phoneController => loginEmailController;
   TextEditingController get nameController => usernameController;
   TextEditingController get emailController => createAccountEmailController;
@@ -60,6 +63,11 @@ class AuthCubit extends AppCubit<AuthState> {
         isObscure: _getObscurityStatus(fieldType), fieldType: fieldType));
   }
 
+  void updateProfileImage(XFile image) {
+    profileImage = image;
+    emitSafe(AuthAvatarChanged(image.path));
+  }
+
   bool _getObscurityStatus(String fieldType) {
     if (fieldType == 'createAccount') return isCreateAccountPasswordObscure;
     if (fieldType == 'login') return isLoginPasswordObscure;
@@ -68,9 +76,7 @@ class AuthCubit extends AppCubit<AuthState> {
     return true;
   }
 
-  // Screen API - matches existing screens
   Future<void> login() async {
-    // Form validation (UI errors) + toast/error state
     if (!formKey.currentState!.validate()) {
       emitSafe(AuthError('invalid_phone'));
       return;
@@ -81,7 +87,6 @@ class AuthCubit extends AppCubit<AuthState> {
       return;
     }
     emitSafe(AuthLoading());
-    // In your real flow this should request OTP
     await Future.delayed(const Duration(milliseconds: 500));
     emitSafe(AuthSuccess());
   }
@@ -98,7 +103,6 @@ class AuthCubit extends AppCubit<AuthState> {
     }
     emitSafe(AuthOtpVerificationLoading());
     await Future.delayed(const Duration(milliseconds: 500));
-    // Simulate calling login and storing user profile
     final loginRepo = sl<LoginRepo>();
     final res = await loginRepo.loginUser(
       username: loginEmailController.text.trim().isEmpty
@@ -120,7 +124,6 @@ class AuthCubit extends AppCubit<AuthState> {
       emitSafe(AuthError('validation_error'));
       return;
     }
-    // Extra guard validations
     final username = usernameController.text.trim();
     final email = createAccountEmailController.text.trim();
     final mobile = loginEmailController.text.trim();
@@ -159,6 +162,7 @@ class AuthCubit extends AppCubit<AuthState> {
           : confirmNewPasswordController.text.trim(),
       name: usernameController.text.trim(),
       mobile: loginEmailController.text.trim(),
+      image: profileImage,
     );
     final res = await repo.registerUser(user);
     res.fold(
@@ -216,10 +220,10 @@ class AuthCubit extends AppCubit<AuthState> {
       await sl<CacheHelper>().setData(AppConstants.token, token);
       PrintUtil.success('Token cached: $token');
     }
-    await sl<CacheHelper>().setData(
-      AppConstants.userProfile,
-      contactResponse.toJson().toString(),
-    );
+    final payload = jsonEncode(contactResponse.toJson());
+    await sl<CacheHelper>().setData(AppConstants.userProfile, payload);
+    sl<GlobalCubit>()
+        .updateCachedProfileFromJson(contactResponse.data.user.toJson());
   }
 
   @override

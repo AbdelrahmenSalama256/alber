@@ -93,7 +93,7 @@ class ServicesScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20.h),
-          // Same grid as Home
+          //! Services grid (same layout as Home)
           GridView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -136,14 +136,14 @@ class ServicesScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 20.h),
-        // title skeleton
+        //! Title text skeleton placeholder
         SkeletonLoader(
           width: 120.w,
           height: 20.h,
           borderRadius: BorderRadius.circular(6.r),
         ),
         SizedBox(height: 12.h),
-        // grid skeleton
+        //! Grid skeleton placeholders
         GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,

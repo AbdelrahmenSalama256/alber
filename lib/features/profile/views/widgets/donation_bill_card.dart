@@ -64,7 +64,6 @@ class DonationBillCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.r),
             child: Container(
               margin: EdgeInsets.only(bottom: 20.h),
-              // height: 180.h,
               decoration: BoxDecoration(),
               child: Stack(
                 children: [
@@ -72,7 +71,6 @@ class DonationBillCard extends StatelessWidget {
                     top: 0,
                     start: 0,
                     child: Container(
-                      // margin: EdgeInsetsDirectional.only(top: 16.h, end: 16.w),
                       padding: EdgeInsets.symmetric(
                           horizontal: 16.w, vertical: 10.h),
                       decoration: BoxDecoration(
@@ -275,7 +273,6 @@ class DonationBillCard extends StatelessWidget {
                                         'assets/images/png/Union.png',
                                         width: 67.080078125.w,
                                         height: 38.08142852783203.h,
-                                        // fit: BoxFit.fill,
                                       ),
                                     ),
                                   ),

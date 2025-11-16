@@ -46,7 +46,7 @@ class _SearchView extends StatelessWidget {
               _Header(),
               SizedBox(height: 16.h),
 
-              // ✅ TextField is now outside BlocBuilder (keyboard stays open)
+              //! Search text field outside BlocBuilder so keyboard stays open
               AppTextField(
                 enabled: true,
                 controller: cubit.searchC,
@@ -61,7 +61,7 @@ class _SearchView extends StatelessWidget {
 
               SizedBox(height: 20.h),
 
-              // ✅ Only results rebuild
+              //! Only the search results section rebuilds
               BlocBuilder<SearchCubit, SearchState>(
                 buildWhen: (p, c) => c is SearchLoaded || c is SearchLoading,
                 builder: (context, state) {

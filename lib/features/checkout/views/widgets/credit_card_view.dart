@@ -2,16 +2,16 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:qafeel/core/locale/app_loacl.dart'; // للترجمة
+import 'package:qafeel/core/locale/app_loacl.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
 class CreditCardView extends StatelessWidget {
-  final String cardType; // مثل "Master Card" أو "Visa"
-  final String cardNumber; // مثل "**** 3356"
-  final String expiryDate; // مثل "11/23"
-  final String imagePath; // مسار الصورة
-  final bool isVisible; // حالة إظهار أو إخفاء البطاقة
+  final String cardType;
+  final String cardNumber;
+  final String expiryDate;
+  final String imagePath;
+  final bool isVisible;
 
   const CreditCardView({
     super.key,

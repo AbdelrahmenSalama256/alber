@@ -61,7 +61,6 @@ class DonationInfoCard extends StatelessWidget {
                   iconPath,
                   width: 22.w,
                   height: 22.w,
-                  // color: const Color(0xff9E9E9E),
                 ),
               ),
             ),

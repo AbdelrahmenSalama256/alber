@@ -23,13 +23,11 @@ class SocialMediaButton extends StatelessWidget {
           alignment: Alignment.center,
           width: 38.7.w,
           height: 38.7.h,
-          // clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppColors.white,
-            // color: const Color(0xff7E7E7E),
           ),
-          child: icon, // هنا بقى تستقبل أي Widget
+          child: icon,
         ),
       ),
     );

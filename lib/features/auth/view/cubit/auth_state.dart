@@ -11,10 +11,9 @@ class AuthError extends AuthState {
   AuthError(this.message);
 }
 
-// Extended, granular states (kept for future use)
 class AuthPasswordVisibilityChanged extends AuthState {
   final bool isObscure;
-  final String fieldType; // createAccount | login | new | confirm
+  final String fieldType;
   AuthPasswordVisibilityChanged({required this.isObscure, required this.fieldType});
 }
 
@@ -45,4 +44,9 @@ class AuthForgotPasswordOtpSent extends AuthState {
 class AuthResetPasswordSuccess extends AuthState {
   final String message;
   AuthResetPasswordSuccess({required this.message});
+}
+
+class AuthAvatarChanged extends AuthState {
+  final String imagePath;
+  AuthAvatarChanged(this.imagePath);
 }

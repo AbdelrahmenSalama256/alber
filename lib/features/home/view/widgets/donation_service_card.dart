@@ -132,7 +132,6 @@ class _DonationServiceCardState extends State<DonationServiceCard> {
                             if (sl<CacheHelper>()
                                     .getData(key: AppConstants.token) ==
                                 null) {
-                              // Navigator.pushNamed(context, AppRoutes.login);
                             } else {
                               widget.onDonate?.call();
                             }
@@ -268,7 +267,6 @@ class _LabeledAmount extends StatelessWidget {
         SizedBox(height: 6.h),
         Stack(
           clipBehavior: Clip.none,
-          // mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: 37.439552307128906.w,

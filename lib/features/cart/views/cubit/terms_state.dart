@@ -1,4 +1,3 @@
-// lib/features/profile/views/add_donation_cart/cubit/terms_state.dart
 abstract class TermsState {}
 
 class TermsLoading extends TermsState {}

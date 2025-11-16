@@ -1,4 +1,4 @@
-{
+﻿{
   "login": "تسجيل الدخول",
   "enter_phone": "ادخل رقم جوالك  50xxxxxxxxx",
   "confirm_phone": "تأكيد الجوال",
@@ -66,6 +66,7 @@
   "about_app": "عن التطبيق",
   "edit_profile": "تعديل الملف الشخصي",
   "bill": "الفاتورة",
+  "membership_id": "رقم العضوية",
   "total": "الاجمالي",
   "pay_now": "ادفع الآن",
   "service": "خدمة",
@@ -160,5 +161,12 @@
   "daily": "يومي",
   "enter_amount": "أدخل المبلغ",
   "enter_valid_amount": "أدخل مبلغاً صحيحاً",
-  "min_amount_is": "الحد الأدنى للمبلغ هو"
+  "min_amount_is": "الحد الأدنى للمبلغ هو",
+  "profile_updated": "تم تحديث الملف الشخصي بنجاح",
+  "select_image_source": "اختر مصدر الصورة",
+  "camera": "الكاميرا",
+  "gallery": "معرض الصور",
+  "error_picking_image": "حدث خطأ أثناء اختيار الصورة",
+  "phone": "رقم الجوال",
+  "upload_profile_image": "أضف صورة للملف الشخصي"
 }

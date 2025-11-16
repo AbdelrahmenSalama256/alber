@@ -72,7 +72,7 @@ class _QuickDonationScreenState extends State<QuickDonationScreen>
             ),
             SizedBox(height: 20.h),
 
-            // 🔹 Tab Bar
+            //! Tab bar to switch between donation flows
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20.w),
               decoration: BoxDecoration(
@@ -98,7 +98,7 @@ class _QuickDonationScreenState extends State<QuickDonationScreen>
             ),
             SizedBox(height: 20.h),
 
-            // 🔹 Tab Bar Views
+            //! Tab views showing each flow content
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -191,14 +191,21 @@ class _QuickDonationTab extends StatelessWidget {
             itemBuilder: (context, index) {
               final item = donationItems[index];
               return DonationCard(
-                title: item['title'],
-                imageAsset: item['imageAsset'],
-                raised: item['raised'],
-                goal: item['goal'],
-                initialAmount: item['amount'],
-                initialQty: item['qty'],
+                title: item.title,
+                imageAsset: item.imageAsset,
+                raised: item.raised,
+                goal: item.goal,
+                initialAmount: item.minAmount,
+                initialQty: item.minQty,
+                savedAmount: item.selectedAmount,
+                savedQty: item.selectedQty,
                 accent: AppColors.primary,
-                // bg: Colors.transparent,
+                onAmountChanged: (value) => context
+                    .read<QuickDonationCubit>()
+                    .updateSelection(item.id, amount: value),
+                onQtyChanged: (qty) => context
+                    .read<QuickDonationCubit>()
+                    .updateSelection(item.id, qty: qty),
                 onInfoTap: () {
                   navigateTo(context, ServiceDetailsScreen());
                 },

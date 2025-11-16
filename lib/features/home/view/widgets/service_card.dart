@@ -30,7 +30,6 @@ class ServiceCard extends StatelessWidget {
           ),
         ),
         child: Stack(
-          // alignment: Alignment.topCenter,
           children: [
             Positioned(
               top: 0,
@@ -52,10 +51,8 @@ class ServiceCard extends StatelessWidget {
               left: 0,
               right: 0,
               child: Container(
-                // height: 50.h,
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
                 decoration: BoxDecoration(
-                  // color: Colors.white.withOpacity(0.8),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10.r),
                     bottomRight: Radius.circular(10.r),

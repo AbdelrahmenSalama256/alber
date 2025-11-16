@@ -1,29 +1,44 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:qafeel/core/app/alber.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
+import 'package:qafeel/core/cubit/global_state.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/core/services/service_locator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(Alber());
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
+    if (!sl.isRegistered<CacheHelper>()) {
+      initServiceLocator();
+    }
+    await sl<CacheHelper>().init();
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('provides global cubit data to descendants',
+      (WidgetTester tester) async {
+    final globalCubit = sl<GlobalCubit>()..init();
+
+    await tester.pumpWidget(
+      BlocProvider.value(
+        value: globalCubit,
+        child: BlocBuilder<GlobalCubit, GlobalState>(
+          builder: (context, state) {
+            final currencyIcon = context.read<GlobalCubit>().currencyIconAsset;
+            return MaterialApp(
+              home: Scaffold(
+                body: Center(child: Text(currencyIcon)),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
     await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('assets/images/svg/currancy.svg'), findsOneWidget);
   });
 }

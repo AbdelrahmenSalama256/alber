@@ -140,7 +140,7 @@ class BaseScreen extends StatelessWidget {
                             currentIndex == 4 ? "" : "my_account".tr(context),
                       ),
                     ],
-                    // Make the curve fully transparent and let body show behind
+                    //! Make the curve transparent so the body shows behind
                     backgroundColor: Colors.transparent,
                     color: Colors.white.withOpacity(0.85),
                     buttonBackgroundColor: Colors.white,
@@ -148,7 +148,6 @@ class BaseScreen extends StatelessWidget {
                     animationDuration: const Duration(milliseconds: 300),
                     height: 75.h,
                     onTap: (index) {
-                      // Guard Profile and Bills for authenticated users
                       if ((index == 4 || index == 3)) {
                         final token = sl<CacheHelper>()
                             .getDataString(key: AppConstants.token);
