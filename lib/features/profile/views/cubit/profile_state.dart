@@ -1,3 +1,6 @@
+import 'package:image_picker/image_picker.dart';
+import 'package:qafeel/features/profile/data/models/contact_model.dart';
+
 abstract class ProfileState {}
 
 class ProfileInitial extends ProfileState {}
@@ -5,6 +8,10 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
+  static const _pendingAvatarSentinel = Object();
+  static const _pendingEmailSentinel = Object();
+  static const _pendingPhoneSentinel = Object();
+
   final String aboutText;
   final String privacyText;
   final String termsText;
@@ -12,8 +19,14 @@ class ProfileLoaded extends ProfileState {
   final List<Map<String, String>> locations;
   final String totalAmount;
   final String totalCount;
-  final ProfileUser profile;
+  final UserModel profile;
   final bool isEditingProfile;
+  final bool isUpdatingProfile;
+  final bool isEmailVerified;
+  final bool isPhoneVerified;
+  final XFile? pendingAvatar;
+  final String? pendingEmail;
+  final String? pendingPhone;
 
   ProfileLoaded({
     required this.aboutText,
@@ -25,6 +38,12 @@ class ProfileLoaded extends ProfileState {
     required this.totalCount,
     required this.profile,
     this.isEditingProfile = false,
+    this.isUpdatingProfile = false,
+    this.isEmailVerified = true,
+    this.isPhoneVerified = true,
+    this.pendingAvatar,
+    this.pendingEmail,
+    this.pendingPhone,
   });
 
   ProfileLoaded copyWith({
@@ -35,8 +54,14 @@ class ProfileLoaded extends ProfileState {
     List<Map<String, String>>? locations,
     String? totalAmount,
     String? totalCount,
-    ProfileUser? profile,
+    UserModel? profile,
     bool? isEditingProfile,
+    bool? isUpdatingProfile,
+    bool? isEmailVerified,
+    bool? isPhoneVerified,
+    Object? pendingAvatar = _pendingAvatarSentinel,
+    Object? pendingEmail = _pendingEmailSentinel,
+    Object? pendingPhone = _pendingPhoneSentinel,
   }) {
     return ProfileLoaded(
       aboutText: aboutText ?? this.aboutText,
@@ -48,38 +73,30 @@ class ProfileLoaded extends ProfileState {
       totalCount: totalCount ?? this.totalCount,
       profile: profile ?? this.profile,
       isEditingProfile: isEditingProfile ?? this.isEditingProfile,
+      isUpdatingProfile: isUpdatingProfile ?? this.isUpdatingProfile,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
+      isPhoneVerified: isPhoneVerified ?? this.isPhoneVerified,
+      pendingAvatar: identical(pendingAvatar, _pendingAvatarSentinel)
+          ? this.pendingAvatar
+          : pendingAvatar as XFile?,
+      pendingEmail: identical(pendingEmail, _pendingEmailSentinel)
+          ? this.pendingEmail
+          : pendingEmail as String?,
+      pendingPhone: identical(pendingPhone, _pendingPhoneSentinel)
+          ? this.pendingPhone
+          : pendingPhone as String?,
     );
   }
 }
 
-class ProfileUser {
-  final String name;
-  final String memberId;
-  final String phone;
-  final String email;
-  final String? avatarPath;
+class ProfileLogoutLoading extends ProfileState {}
 
-  const ProfileUser({
-    required this.name,
-    required this.memberId,
-    required this.phone,
-    required this.email,
-    this.avatarPath,
-  });
+class ProfileLogoutSuccess extends ProfileState {
+  final String message;
+  ProfileLogoutSuccess(this.message);
+}
 
-  ProfileUser copyWith({
-    String? name,
-    String? memberId,
-    String? phone,
-    String? email,
-    String? avatarPath,
-  }) {
-    return ProfileUser(
-      name: name ?? this.name,
-      memberId: memberId ?? this.memberId,
-      phone: phone ?? this.phone,
-      email: email ?? this.email,
-      avatarPath: avatarPath ?? this.avatarPath,
-    );
-  }
+class ProfileLogoutError extends ProfileState {
+  final String message;
+  ProfileLogoutError(this.message);
 }

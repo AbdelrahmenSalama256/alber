@@ -61,8 +61,31 @@ class LocalNotificationService {
       details,
     );
   }
-}
 
+  static Future<void> showPlainNotification({
+    required String title,
+    required String body,
+  }) async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'local_plain_channel',
+      'Local Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      icon: '@drawable/ic_notification',
+    );
+    const NotificationDetails details = NotificationDetails(
+      android: androidDetails,
+      iOS: DarwinNotificationDetails(),
+    );
+    await flutterLocalNotificationsPlugin.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title,
+      body,
+      details,
+    );
+  }
+}
 
 /*
 1. Add Notification Icon to Drawable Folder:

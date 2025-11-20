@@ -25,16 +25,45 @@ import '../../../core/app/alber.dart';
 import '../../../core/cubit/global_state.dart';
 import '../../profile/views/profile_screen.dart';
 
-class BaseScreen extends StatelessWidget {
-  BaseScreen({super.key});
+class BaseScreen extends StatefulWidget {
+  const BaseScreen({super.key});
 
-  final List<Widget> _pages = [
-    ServicesScreen(),
-    DedicateDonationScreen(),
-    HomeScreen(),
-    BillsScreen(),
-    ProfileScreen()
-  ];
+  @override
+  State<BaseScreen> createState() => _BaseScreenState();
+}
+
+class _BaseScreenState extends State<BaseScreen> {
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = List<Widget>.filled(5, const SizedBox.shrink(), growable: false);
+    _pages[2] = const HomeScreen();
+  }
+
+  Widget _buildPage(int index) {
+    switch (index) {
+      case 0:
+        return const ServicesScreen();
+      case 1:
+        return const DedicateDonationScreen();
+      case 2:
+        return const HomeScreen();
+      case 3:
+        return const BillsScreen();
+      case 4:
+        return const ProfileScreen();
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  void _ensurePage(int index) {
+    if (_pages[index] is SizedBox) {
+      _pages[index] = _buildPage(index);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +71,7 @@ class BaseScreen extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<GlobalCubit>();
         final currentIndex = cubit.currentNavIndex;
+        _ensurePage(currentIndex);
 
         return WillPopScope(
           onWillPop: () async {
@@ -56,7 +86,10 @@ class BaseScreen extends StatelessWidget {
               Scaffold(
                 extendBody: true,
                 backgroundColor: Colors.transparent,
-                body: _pages[currentIndex],
+                body: IndexedStack(
+                  index: currentIndex,
+                  children: _pages,
+                ),
                 bottomNavigationBar: SafeArea(
                   bottom: true,
                   left: false,

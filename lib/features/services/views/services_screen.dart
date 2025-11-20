@@ -10,10 +10,11 @@ import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/features/home/view/widgets/service_card.dart';
 import 'package:qafeel/features/home/view/widgets/skeleton_loader.dart';
 import 'package:qafeel/features/services/views/service_details_screen.dart';
+import 'package:qafeel/core/services/service_locator.dart';
 
-import '../../home/view/cubit/home_cubit.dart';
-import '../../home/view/cubit/home_state.dart';
 import '../../home/view/widgets/custom_top_bar.dart';
+import 'cubit/services_cubit.dart';
+import 'cubit/services_state.dart';
 
 class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
@@ -21,8 +22,8 @@ class ServicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => HomeCubit()..loadHomeData(),
-      child: BlocBuilder<HomeCubit, HomeState>(
+      create: (_) => sl<ServicesCubit>()..fetchServices(),
+      child: BlocBuilder<ServicesCubit, ServicesState>(
         builder: (context, state) {
           return CustomScaffold(
             hasShape: false,
@@ -48,12 +49,12 @@ class ServicesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, HomeState state) {
-    if (state is HomeLoading) {
+  Widget _buildBody(BuildContext context, ServicesState state) {
+    if (state is ServicesLoading) {
       return _buildSkeleton();
     }
 
-    if (state is HomeError) {
+    if (state is ServicesError) {
       return Center(
         child: Text(
           state.message,
@@ -67,7 +68,7 @@ class ServicesScreen extends StatelessWidget {
       );
     }
 
-    if (state is HomeLoaded) {
+    if (state is ServicesLoaded) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -108,16 +109,19 @@ class ServicesScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final service = state.services[index];
               final imagePath = service.image;
-              final color = state.extractedColors[imagePath] ??
+              final color = state.extractedColors[service.id] ??
+                  state.extractedColors[imagePath] ??
                   AppColors.primary.withOpacity(.3);
               return ServiceCard(
                 imagePath: imagePath,
-                title: service.title,
+                title: service
+                    .titleForLanguage(context.read<GlobalCubit>().language),
                 borderColor: color,
                 onTap: () {
                   navigateTo(
                       context,
                       ServiceDetailsScreen(
+                        service: service,
                         color: color,
                       ));
                 },

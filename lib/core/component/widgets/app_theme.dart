@@ -82,7 +82,7 @@ class AppTheme {
           fontFamily: language == "ar" ? 'arabic' : "arabic",
           fontSize: 12.sp,
           color: AppColors.textSecondary,
-        ),
+        ),  
       ),
       textSelectionTheme: TextSelectionThemeData(
         selectionColor: AppColors.primary.withOpacity(0.4),

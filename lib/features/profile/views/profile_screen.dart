@@ -4,12 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/component/custom_toast.dart';
 import 'package:qafeel/core/component/widgets/confirm_action_sheet.dart';
-import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
-import 'package:qafeel/core/network/local_network.dart';
 import 'package:qafeel/core/services/service_locator.dart';
 import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
 import 'package:qafeel/features/cart/views/dontation_cart_screen.dart';
@@ -32,159 +30,174 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileCubit()..init(),
-      child: CustomScaffold(
-        hasShape: false,
-        appBar: CustomTopBar(
-          onBack: () {
-            if (Navigator.canPop(context)) {
-              Navigator.pop(context);
-            } else {
-              context.read<GlobalCubit>().changeBottomNavIndex(2);
-            }
-          },
-        ),
-        body: BlocBuilder<ProfileCubit, ProfileState>(
-          builder: (context, state) {
-            if (state is ProfileLoading || state is ProfileInitial) {
-              return _loading();
-            }
-            if (state is! ProfileLoaded) {
-              return const SizedBox();
-            }
-            final s = state;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Column(
-                  children: [
-                    SizedBox(height: 40.h),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset("assets/images/svg/person.svg",
-                            width: 25.w, height: 25.w),
-                        SizedBox(width: 15.h),
-                        Text(
-                          "my_account".tr(context),
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 30.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: DonationInfoCard(
-                            iconPath: "assets/images/svg/wallet.svg",
-                            title: "total_donations".tr(context),
-                            value: s.totalAmount,
-                            isAmout: true,
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: DonationInfoCard(
-                            iconPath: "assets/images/svg/donation-count.svg",
-                            title: "donation_count".tr(context),
-                            value: s.totalCount,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20.h),
-                    ActionCard(
-                      title: 'my_profile'.tr(context),
-                      svgAsset: (s.profile.avatarPath == null ||
-                              s.profile.avatarPath!.isEmpty)
-                          ? 'assets/images/svg/person.svg'
-                          : null,
-                      assetImage: s.profile.avatarPath != null &&
-                              s.profile.avatarPath!.startsWith('assets/')
-                          ? s.profile.avatarPath
-                          : null,
-                      imagePath: s.profile.avatarPath != null &&
-                              !s.profile.avatarPath!.startsWith('assets/')
-                          ? s.profile.avatarPath
-                          : null,
-                      onTap: () {
-                        navigateTo(
-                          context,
-                          BlocProvider.value(
-                            value: context.read<ProfileCubit>(),
-                            child: const EditProfileScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    ActionCard(
-                      title: 'donation_history'.tr(context),
-                      svgAsset: "assets/images/svg/donation-history.svg",
-                      onTap: () {
-                        navigateTo(
-                          context,
-                          BlocProvider(
-                            create: (context) => ProfileCubit()..init(),
-                            child: DonationHistoryScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    ActionCard(
-                      title: 'donation_cart'.tr(context),
-                      svgAsset: 'assets/images/svg/donation-cart.svg',
-                      onTap: () {
-                        navigateTo(context, DontationCartScreen());
-                      },
-                    ),
-                    ActionCard(
-                      title: 'about_app'.tr(context),
-                      assetImage: 'assets/images/png/about.png',
-                      onTap: () {
-                        navigateTo(
-                          context,
-                          BlocProvider(
-                            create: (context) => ProfileCubit()..init(),
-                            child: AboutAppScreeen(),
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 40.h),
-                    LogoutButton(
-                      onLogout: () async {
-                        await showConfirmActionSheet(
-                          context,
-                          title: 'logout'.tr(context),
-                          message: 'are_you_sure'.tr(context),
-                          confirmText: 'logout'.tr(context),
-                          cancelText: 'cancel'.tr(context),
-                          onConfirm: () async {
-                            await sl<CacheHelper>()
-                                .removeData(key: AppConstants.userProfile);
-                            await sl<CacheHelper>()
-                                .removeData(key: AppConstants.token);
-                            sl<GlobalCubit>().clearCachedProfile();
-                            showToast(context,
-                                message: 'logged_out'.tr(context),
-                                state: ToastStates.success);
-                            navigateAndFinish(
-                                context, const PhoneConfirmScreen());
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
+      create: (_) => sl<ProfileCubit>()..init(),
+      child: BlocConsumer<ProfileCubit, ProfileState>(
+        listenWhen: (previous, current) =>
+            current is ProfileLogoutSuccess || current is ProfileLogoutError,
+        listener: (context, state) {
+          if (state is ProfileLogoutSuccess) {
+            showToast(context,
+                message: state.message, state: ToastStates.success);
+            navigateAndFinish(context, const PhoneConfirmScreen());
+          } else if (state is ProfileLogoutError) {
+            showToast(context,
+                message: state.message, state: ToastStates.error);
+          }
+        },
+        buildWhen: (previous, current) =>
+            current is ProfileInitial ||
+            current is ProfileLoading ||
+            current is ProfileLoaded,
+        builder: (context, state) {
+          Widget body;
+          if (state is ProfileLoaded) {
+            body = _buildProfileContent(context, state);
+          } else {
+            body = _loading();
+          }
+
+          return CustomScaffold(
+            hasShape: false,
+            appBar: CustomTopBar(
+              onBack: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  context.read<GlobalCubit>().changeBottomNavIndex(2);
+                }
+              },
+            ),
+            body: body,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
+    final profile = state.profile;
+    final avatar = profile.imageUrl;
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15.w),
+        child: Column(
+          children: [
+            SizedBox(height: 40.h),
+            if (state.isUpdatingProfile)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
+                child: LinearProgressIndicator(minHeight: 2),
               ),
-            );
-          },
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset("assets/images/svg/person.svg",
+                    width: 25.w, height: 25.w),
+                SizedBox(width: 15.h),
+                Text(
+                  "my_account".tr(context),
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 30.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: DonationInfoCard(
+                    iconPath: "assets/images/svg/wallet.svg",
+                    title: "total_donations".tr(context),
+                    value: state.totalAmount,
+                    isAmout: true,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: DonationInfoCard(
+                    iconPath: "assets/images/svg/donation-count.svg",
+                    title: "donation_count".tr(context),
+                    value: state.totalCount,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.h),
+            ActionCard(
+              title: 'my_profile'.tr(context),
+              svgAsset: (avatar == null || avatar.isEmpty)
+                  ? 'assets/images/svg/person.svg'
+                  : null,
+              assetImage: avatar != null && avatar.startsWith('assets/')
+                  ? avatar
+                  : null,
+              imagePath: avatar != null && !avatar.startsWith('assets/')
+                  ? avatar
+                  : null,
+              onTap: () {
+                navigateTo(
+                  context,
+                  BlocProvider.value(
+                    value: context.read<ProfileCubit>(),
+                    child: const EditProfileScreen(),
+                  ),
+                );
+              },
+            ),
+            ActionCard(
+              title: 'donation_history'.tr(context),
+              svgAsset: "assets/images/svg/donation-history.svg",
+              onTap: () {
+                navigateTo(
+                  context,
+                  BlocProvider.value(
+                    value: context.read<ProfileCubit>(),
+                    child: DonationHistoryScreen(),
+                  ),
+                );
+              },
+            ),
+            ActionCard(
+              title: 'donation_cart'.tr(context),
+              svgAsset: 'assets/images/svg/donation-cart.svg',
+              onTap: () {
+                navigateTo(context, DontationCartScreen());
+              },
+            ),
+            ActionCard(
+              title: 'about_app'.tr(context),
+              assetImage: 'assets/images/png/about.png',
+              onTap: () {
+                navigateTo(
+                  context,
+                  BlocProvider.value(
+                    value: context.read<ProfileCubit>(),
+                    child: AboutAppScreeen(),
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 40.h),
+            LogoutButton(
+              onLogout: () async {
+                await showConfirmActionSheet(
+                  context,
+                  title: 'logout'.tr(context),
+                  message: 'are_you_sure'.tr(context),
+                  confirmText: 'logout'.tr(context),
+                  cancelText: 'cancel'.tr(context),
+                  onConfirm: () {
+                    context.read<ProfileCubit>().logout();
+                  },
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

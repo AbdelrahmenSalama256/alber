@@ -10,6 +10,7 @@ import 'package:qafeel/core/constants/widgets/print_util.dart';
 import 'package:qafeel/core/cubit/app_cubit.dart';
 import 'package:qafeel/core/network/local_network.dart';
 import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/features/profile/data/repo/profile_repo.dart';
 
 import 'global_state.dart';
 
@@ -20,6 +21,7 @@ class GlobalCubit extends AppCubit<GlobalState> {
 
   void init() {
     loadCachedProfile();
+    refreshProfile();
     PrintUtil.warning(
         "User type is ${sl<CacheHelper>().getDataString(key: AppConstants.userType)}");
     PrintUtil.success(
@@ -154,15 +156,17 @@ class GlobalCubit extends AppCubit<GlobalState> {
   }) {
     if (cachedProfile == null) {
       cachedProfile = CachedProfile(
-        id: 0,
+        id: DateTime.now().millisecondsSinceEpoch,
         name: name ?? '',
         email: email,
         phone: phone,
         membershipId: memberId,
         avatar: avatarPath,
+        displayname: name ?? '',
       );
     } else {
       cachedProfile = cachedProfile!.copyWith(
+        id: cachedProfile!.id,
         name: name,
         email: email,
         phone: phone,
@@ -177,19 +181,32 @@ class GlobalCubit extends AppCubit<GlobalState> {
     cachedProfile = null;
   }
 
+  Future<void> refreshProfile() async {
+    final token = sl<CacheHelper>().getDataString(key: AppConstants.token);
+    if (token == null || token.isEmpty) return;
+    final repo = sl<ProfileRepo>();
+    final result = await repo.getProfile();
+    result.fold(
+      (err) => PrintUtil.error('Failed to refresh profile: $err'),
+      (contact) {
+        updateCachedProfileFromJson(contact.data.user.toJson());
+      },
+    );
+  }
+
   void _persistCachedProfile() {
     if (cachedProfile == null) return;
     final payload = {
       'data': {'user': cachedProfile!.toJson()}
     };
-    sl<CacheHelper>()
-        .setData(AppConstants.userProfile, jsonEncode(payload));
+    sl<CacheHelper>().setData(AppConstants.userProfile, jsonEncode(payload));
   }
 }
 
 class CachedProfile {
   final int id;
   final String name;
+  final String displayname;
   final String? email;
   final String? phone;
   final String? membershipId;
@@ -202,33 +219,45 @@ class CachedProfile {
     this.phone,
     this.membershipId,
     this.avatar,
+    required this.displayname,
   });
 
   CachedProfile copyWith({
+    int? id,
     String? name,
     String? email,
     String? phone,
     String? membershipId,
     String? avatar,
+    String? displayname,
   }) {
     return CachedProfile(
-      id: id,
+      id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
       membershipId: membershipId ?? this.membershipId,
       avatar: avatar ?? this.avatar,
+      displayname: displayname ?? this.displayname,
     );
   }
 
   factory CachedProfile.fromJson(Map<String, dynamic> json) {
+    final rawId = json['id'] ?? json['userId'];
+    final parsedId = rawId is num
+        ? rawId.toInt()
+        : rawId is String
+            ? rawId.hashCode
+            : 0;
     return CachedProfile(
-      id: (json['id'] as num?)?.toInt() ?? 0,
+      id: parsedId,
       name: json['name']?.toString() ?? '',
+      displayname:
+          json['displayName']?.toString() ?? json['name']?.toString() ?? '',
       email: json['email']?.toString(),
       phone: json['mobile']?.toString() ?? json['phone']?.toString(),
       membershipId:
-          json['member_id']?.toString() ?? json['membership_id']?.toString(),
+          json['member_id']?.toString() ?? json['userId']?.toString() ?? '',
       avatar: json['image_url']?.toString() ?? json['image']?.toString(),
     );
   }
@@ -240,5 +269,7 @@ class CachedProfile {
         'mobile': phone,
         'member_id': membershipId,
         'image_url': avatar,
+        'userId': membershipId,
+        'displayName': displayname,
       };
 }

@@ -1,19 +1,24 @@
 // ignore_for_file: constant_identifier_names
 
 class EndPoints {
-  static const String baseUrl = "https://cozy-home.cangrowonline.com/api/";
+  static const String baseUrl = "http://192.168.100.104:3000/api/";
   static const String baseUrlWithoutApi =
-      "https://cozy-home.cangrowonline.com/uploads/";
+      "http://192.168.100.104:3000/uploads/";
   //! Login
-  static const String login = "${baseUrl}login";
-  static const String getProfile = "${baseUrl}contact-details";
+  static const String login = "${baseUrl}v1/auth/login/password";
+  static const String loginWithOtp = "${baseUrl}v1/auth/login/otp";
+  static const String verifyLoginOtp = "${baseUrl}v1/auth/login/otp/verify";
+
+  static const String getProfile = "${baseUrl}v1/users/profile";
   static const String updateProfile = "${baseUrl}profile-update";
 
   //! Register
-  static const String register = "${baseUrl}signup";
+  static const String register = "${baseUrl}v1/auth/register";
+  static const String requestRegisterOtp =
+      "${baseUrl}v1/auth/login/otp/request";
   static const String forgotPassword = "${baseUrl}forget-password";
   //! Logout
-  static const String userLogout = "${baseUrl}logout";
+  static const String userLogout = "${baseUrl}v1/auth/logout";
   static const String deleteAccount = "${baseUrl}auth/account-deletion";
   //! Forget Password
 
@@ -54,6 +59,7 @@ class EndPoints {
   static const String getOrdersDetails = '${baseUrl}order-details';
   static const String cancelOrder = '${baseUrl}cancel-order';
   static const String trackOrder = '${baseUrl}order-tracks';
+  static const String services = "${baseUrl}v1/services";
 
   // ! Offers
   static const String offers = '${baseUrl}offers';
@@ -144,7 +150,6 @@ class ApiKey {
   static const String totalPieces = "total_pieces";
   static const String location = "location";
   static const String branchName = "branch_name";
-  static const String services = "services";
   static const String winch = "winch";
   static const String winsh = "winsh";
   static const String vendor = "vendor";
@@ -171,6 +176,10 @@ class ApiKey {
   static const String remainingDays = "remaining_days";
   static const String verifedEmail = "verifed_email";
   static const String loginBy = "login_by";
+  static const String requestLoginOtp =
+      "https://maxliss.evyx.lol/api/v1/auth/login/otp/request";
+  static const String verifyLoginOtp =
+      "https://maxliss.evyx.lol/api/v1/auth/login/otp/verify";
   static const String avatar = "avatar";
   static const String avatarOriginal = "avatar_original";
   static const String emailVerified = "email_verified";

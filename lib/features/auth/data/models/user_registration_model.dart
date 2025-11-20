@@ -7,6 +7,7 @@ class UserRegistrationModel {
   final String passwordConfirmation;
   final String name;
   final String mobile;
+  final String? gender;
   final String? fcmToken;
   final XFile? image;
 
@@ -17,19 +18,18 @@ class UserRegistrationModel {
     required this.passwordConfirmation,
     required this.name,
     required this.mobile,
+    this.gender,
     this.fcmToken,
     this.image,
   });
 
   Map<String, dynamic> toJson() => {
         'username': username,
+        'displayName': name,
         'email': email,
+        'phone': mobile.startsWith('+') ? mobile : '+$mobile',
         'password': password,
-        'password_confirmation': passwordConfirmation,
-        'name': name,
-        'mobile': mobile,
+        'gender': gender ?? 'unspecified',
         'fcm_token': fcmToken,
-        'image': image?.path.split('/').last,
       };
 }
-

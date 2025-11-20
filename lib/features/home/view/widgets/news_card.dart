@@ -63,6 +63,8 @@ class NewsCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,

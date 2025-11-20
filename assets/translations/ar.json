@@ -1,6 +1,9 @@
-﻿{
+{
   "login": "تسجيل الدخول",
+  "verify": "تحقق",
+  "tap_to_verify": "اضغط للتحقق",
   "enter_phone": "ادخل رقم جوالك  50xxxxxxxxx",
+  "enter_password": "أدخل كلمة المرور",
   "confirm_phone": "تأكيد الجوال",
   "create_account": "إنشاء حساب جديد",
   "guest_login": "الدخول كـ زائر",
@@ -19,6 +22,8 @@
   "name_length": "الاسم يجب أن يكون أكثر من حرفين",
   "otp_required": "رمز التحقق مطلوب",
   "invalid_otp": "رمز التحقق غير صالح",
+  "otp_request_failed": "فشل طلب رمز التحقق، يرجى المحاولة مرة أخرى",
+  "otp_sent_successfully": "تم إرسال رمز التحقق بنجاح",
   "otp_verification_title": "التحقق من رقم الجوال",
   "enter_otp": "ادخل كود التفعيل",
   "continue": "تقدم",
@@ -29,6 +34,7 @@
   "register": "تسجيل",
   "register_success": "تم إنشاء الحساب بنجاح",
   "phone_confirmed_success": "تم إرسال كود التحقق على جوالك",
+  "login_success": "تم تسجيل الدخول بنجاح",
   "otp_verified_success": "تم التحقق من رقم الجوال بنجاح",
   "my_account": "حسابي",
   "recipts": "الفواتير",
@@ -87,7 +93,11 @@
   "phone_number": "رقم الجوال",
   "subject": "الموضوع",
   "topic": "نوع الطلب",
-  "topic_options": ["شكوى", "اقتراح", "استفسار"],
+  "topic_options": [
+    "شكوى",
+    "اقتراح",
+    "استفسار"
+  ],
   "message": "الرسالة",
   "send": "إرسال",
   "gift_service_description": "خدمة لإهداء التبرعات للأهل والأصدقاء في مختلف المناسبات الاجتماعية.",
@@ -168,5 +178,14 @@
   "gallery": "معرض الصور",
   "error_picking_image": "حدث خطأ أثناء اختيار الصورة",
   "phone": "رقم الجوال",
-  "upload_profile_image": "أضف صورة للملف الشخصي"
+  "upload_profile_image": "أضف صورة للملف الشخصي",
+  "username": "اسم المستخدم",
+  "display_name": "الاسم الظاهر",
+  "password": "كلمة المرور",
+  "confirm_password": "تأكيد كلمة المرور",
+  "gender": "النوع",
+  "select_gender": "اختر النوع",
+  "male": "ذكر",
+  "female": "أنثى",
+  "validation_error": "يرجى مراجعة الحقول المطلوبة"
 }

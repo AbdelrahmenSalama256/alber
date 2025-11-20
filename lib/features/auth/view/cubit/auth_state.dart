@@ -14,13 +14,15 @@ class AuthError extends AuthState {
 class AuthPasswordVisibilityChanged extends AuthState {
   final bool isObscure;
   final String fieldType;
-  AuthPasswordVisibilityChanged({required this.isObscure, required this.fieldType});
+  AuthPasswordVisibilityChanged(
+      {required this.isObscure, required this.fieldType});
 }
 
 class AuthCreateAccountSuccess extends AuthState {
   final String message;
   final String emailForVerification;
-  AuthCreateAccountSuccess({required this.message, required this.emailForVerification});
+  AuthCreateAccountSuccess(
+      {required this.message, required this.emailForVerification});
 }
 
 class AuthOtpVerificationLoading extends AuthState {}
@@ -30,15 +32,28 @@ class AuthOtpVerificationSuccess extends AuthState {
   AuthOtpVerificationSuccess({required this.message});
 }
 
+class AuthOtpRequestInProgress extends AuthState {}
+
+class AuthOtpRequested extends AuthState {
+  final String message;
+  AuthOtpRequested({required this.message});
+}
+
 class AuthLoginSuccess extends AuthState {
   final String message;
   AuthLoginSuccess({required this.message});
 }
 
+class AuthVerificationRequired extends AuthState {
+  final String identifier;
+  AuthVerificationRequired(this.identifier);
+}
+
 class AuthForgotPasswordOtpSent extends AuthState {
   final String message;
   final String emailOrPhone;
-  AuthForgotPasswordOtpSent({required this.message, required this.emailOrPhone});
+  AuthForgotPasswordOtpSent(
+      {required this.message, required this.emailOrPhone});
 }
 
 class AuthResetPasswordSuccess extends AuthState {
@@ -49,4 +64,9 @@ class AuthResetPasswordSuccess extends AuthState {
 class AuthAvatarChanged extends AuthState {
   final String imagePath;
   AuthAvatarChanged(this.imagePath);
+}
+
+class AuthGenderChanged extends AuthState {
+  final String gender;
+  AuthGenderChanged(this.gender);
 }

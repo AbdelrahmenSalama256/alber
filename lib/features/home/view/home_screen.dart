@@ -9,6 +9,7 @@ import 'package:qafeel/core/component/custom_toast.dart';
 import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
+import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/core/network/local_network.dart';
 import 'package:qafeel/core/services/auth_return.dart';
@@ -233,14 +234,21 @@ class HomeScreen extends StatelessWidget {
               itemCount: state.services.length,
               itemBuilder: (context, index) {
                 final service = state.services[index];
+                final language = context.read<GlobalCubit>().language;
                 final imagePath = service.image;
                 final color = state.extractedColors[imagePath] ?? Colors.grey;
                 return ServiceCard(
                   imagePath: imagePath,
-                  title: service.title,
+                  title: service.titleForLanguage(language),
                   borderColor: color,
                   onTap: () {
-                    navigateTo(context, ServiceDetailsScreen());
+                    navigateTo(
+                      context,
+                      ServiceDetailsScreen(
+                        service: service,
+                        color: color,
+                      ),
+                    );
                   },
                 );
               },
@@ -273,7 +281,7 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             SizedBox(
-              height: 420.h,
+              height: 330.h,
               child: ListView.separated(
                 clipBehavior: Clip.none,
                 scrollDirection: Axis.horizontal,

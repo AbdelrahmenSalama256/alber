@@ -1,14 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:qafeel/core/constants/app_constant.dart';
+import 'package:qafeel/core/constants/widgets/print_util.dart';
 import 'package:qafeel/core/cubit/app_cubit.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
-import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/core/network/local_network.dart';
+import 'package:qafeel/features/profile/data/models/contact_model.dart';
+import 'package:qafeel/features/profile/data/repo/profile_repo.dart';
 
 import 'profile_state.dart';
 
 class ProfileCubit extends AppCubit<ProfileState> {
-  ProfileCubit() : super(ProfileInitial());
+  final ProfileRepo profileRepo;
+  final GlobalCubit globalCubit;
+  final CacheHelper cacheHelper;
+
+  ProfileCubit({
+    required this.profileRepo,
+    required this.globalCubit,
+    required this.cacheHelper,
+  }) : super(ProfileInitial());
 
   final TextEditingController nameC = TextEditingController();
   final TextEditingController emailC = TextEditingController();
@@ -34,6 +47,12 @@ class ProfileCubit extends AppCubit<ProfileState> {
       totalAmount: "35000",
       totalCount: "350",
       profile: _defaultUser(),
+      isUpdatingProfile: false,
+      pendingAvatar: null,
+      isEmailVerified: true,
+      isPhoneVerified: true,
+      pendingEmail: null,
+      pendingPhone: null,
     ));
   }
 
@@ -52,28 +71,162 @@ class ProfileCubit extends AppCubit<ProfileState> {
   }) {
     final current = state;
     if (current is! ProfileLoaded) return;
+    if (email != null) {
+      updatePendingEmail(email);
+      return;
+    }
+    if (phone != null) {
+      updatePendingPhone(phone);
+      return;
+    }
     final updated = current.profile.copyWith(
-      name: name ?? current.profile.name,
-      memberId: memberId ?? current.profile.memberId,
-      phone: phone ?? current.profile.phone,
-      email: email ?? current.profile.email,
+      name: name,
+      membershipId: memberId,
     );
     emitSafe(current.copyWith(profile: updated));
-    sl<GlobalCubit>().updateCachedProfileValues(
+    globalCubit.updateCachedProfileValues(
       name: name,
       memberId: memberId,
-      phone: phone,
-      email: email,
     );
   }
 
-  void updateProfileImage(String path) {
+  void updatePendingEmail(String email) {
     final current = state;
     if (current is! ProfileLoaded) return;
+    final trimmed = email.trim();
+    if (trimmed.isEmpty) return;
     emitSafe(
-      current.copyWith(profile: current.profile.copyWith(avatarPath: path)),
+      current.copyWith(
+        profile: current.profile.copyWith(email: trimmed),
+        pendingEmail: trimmed,
+        isEmailVerified: false,
+      ),
     );
-    sl<GlobalCubit>().updateCachedProfileValues(avatarPath: path);
+  }
+
+  void updatePendingPhone(String phone) {
+    final current = state;
+    if (current is! ProfileLoaded) return;
+    final trimmed = phone.trim();
+    if (trimmed.isEmpty) return;
+    emitSafe(
+      current.copyWith(
+        profile: current.profile.copyWith(mobile: trimmed),
+        pendingPhone: trimmed,
+        isPhoneVerified: false,
+      ),
+    );
+  }
+
+  Future<void> updateProfileImage(XFile file) async {
+    final current = state;
+    if (current is! ProfileLoaded) return;
+    final originalState = current;
+    emitSafe(
+      current.copyWith(
+        pendingAvatar: file,
+        isUpdatingProfile: true,
+      ),
+    );
+    final result = await profileRepo.updateProfile(avatarFile: file);
+    result.fold(
+      (error) {
+        PrintUtil.error('profile_avatar_update_failed: $error');
+        emitSafe(
+          originalState.copyWith(
+            pendingAvatar: null,
+            isUpdatingProfile: false,
+          ),
+        );
+      },
+      (contact) {
+        final updatedUser = contact.data.user;
+        globalCubit.updateCachedProfileFromJson(updatedUser.toJson());
+        emitSafe(
+          originalState.copyWith(
+            profile: updatedUser,
+            pendingAvatar: null,
+            isUpdatingProfile: false,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateDisplayName(String name) async {
+    final current = state;
+    if (current is! ProfileLoaded) return;
+    final trimmed = name.trim();
+    if (trimmed.isEmpty || trimmed == current.profile.name) return;
+    final originalProfile = current.profile;
+    emitSafe(
+      current.copyWith(
+        profile: originalProfile.copyWith(name: trimmed),
+        isUpdatingProfile: true,
+      ),
+    );
+    final result = await profileRepo.updateProfile(displayName: trimmed);
+    result.fold(
+      (error) {
+        PrintUtil.error('profile_name_update_failed: $error');
+        emitSafe(
+          current.copyWith(
+            profile: originalProfile,
+            isUpdatingProfile: false,
+          ),
+        );
+      },
+      (contact) {
+        final updatedUser = contact.data.user;
+        globalCubit.updateCachedProfileFromJson(updatedUser.toJson());
+        emitSafe(
+          current.copyWith(
+            profile: updatedUser,
+            isUpdatingProfile: false,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateGender(String gender) async {
+    final current = state;
+    if (current is! ProfileLoaded) return;
+    final trimmed = gender.trim();
+    if (trimmed.isEmpty) return;
+    emitSafe(current.copyWith(isUpdatingProfile: true));
+    final result = await profileRepo.updateProfile(gender: trimmed);
+    result.fold(
+      (error) {
+        PrintUtil.error('profile_gender_update_failed: $error');
+        emitSafe(current.copyWith(isUpdatingProfile: false));
+      },
+      (contact) {
+        final updatedUser = contact.data.user;
+        globalCubit.updateCachedProfileFromJson(updatedUser.toJson());
+        emitSafe(
+          current.copyWith(
+            profile: updatedUser,
+            isUpdatingProfile: false,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> logout() async {
+    if (state is! ProfileLoaded) return;
+    emitSafe(ProfileLogoutLoading());
+    final result = await profileRepo.logout();
+    result.fold(
+      (error) => emitSafe(ProfileLogoutError(error)),
+      (message) async {
+        await cacheHelper.removeData(key: AppConstants.userProfile);
+        await cacheHelper.removeData(key: AppConstants.token);
+        globalCubit.clearCachedProfile();
+        emitSafe(ProfileLogoutSuccess(message));
+      },
+    );
   }
 
   void setTopic(String? v) {
@@ -117,24 +270,31 @@ class ProfileCubit extends AppCubit<ProfileState> {
     return "تأسست جمعية البر بجدة في 25/12/1402هـ وهي جمعية خيرية ذات شخصية اعتبارية تشمل خدماتها محافظة جدة وما حولها من القرى , ورئيسها الفخري صاحب السمو الملكي أمير منطقة مكة المكرمة , وتعمل تحت إشراف وزارة الموارد البشرية والتنمية الاجتماعية ومسجلة برقم 62 .";
   }
 
-  ProfileUser _defaultUser() {
-    final cached = sl<GlobalCubit>().cachedProfile;
+  UserModel _defaultUser() {
+    final cached = globalCubit.cachedProfile;
     if (cached != null) {
-      return ProfileUser(
-        name: cached.name,
-        memberId: cached.membershipId ?? 'ID-${cached.id}',
-        phone: cached.phone ?? '',
-        email: cached.email ?? '',
-        avatarPath: cached.avatar,
-      );
+      return UserModel(
+          id: cached.id,
+          name: cached.name,
+          displayname: cached.displayname,
+          email: cached.email,
+          mobile: cached.phone,
+          imageUrl: cached.avatar,
+          membershipId: cached.membershipId,
+          userGuid: cached.membershipId,
+          roles: const [],
+          permissions: const []);
     }
-    return const ProfileUser(
-      name: 'Akram Ahmed',
-      memberId: 'D-280843',
-      phone: '0540936802',
-      email: 'akram.ahmed@share.net.sa',
-      avatarPath: "assets/images/png/profile-user.jpg",
-    );
+    return const UserModel(
+        id: 0,
+        name: 'Akram Ahmed',
+        email: 'akram.ahmed@share.net.sa',
+        mobile: '0540936802',
+        imageUrl: "assets/images/png/profile-user.jpg",
+        membershipId: 'D-280843',
+        userGuid: 'D-280843',
+        roles: [],
+        permissions: []);
   }
 
   String _longPolicy() {

@@ -19,12 +19,17 @@ import 'cubit/auth_cubit.dart';
 import 'cubit/auth_state.dart';
 
 class OtpValidationScreen extends StatelessWidget {
-  const OtpValidationScreen({super.key});
+  final String? identifier;
+  const OtpValidationScreen({super.key, this.identifier});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AuthCubit(),
+      create: (_) {
+        final cubit = sl<AuthCubit>();
+        cubit.loginEmailController.text = identifier?.trim() ?? '';
+        return cubit;
+      },
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
@@ -101,7 +106,7 @@ class OtpValidationScreen extends StatelessWidget {
                                   child: AppTextField(
                                     keyboardType: TextInputType.number,
                                     enabled:
-                                        state is AuthLoading ? false : true,
+                                        state is! AuthOtpVerificationLoading,
                                     controller: cubit.otpController,
                                     hintText: "enter_otp".tr(context),
                                     validator: (value) =>

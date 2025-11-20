@@ -25,9 +25,10 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AuthCubit(),
+      create: (_) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
+          final cubit = context.read<AuthCubit>();
           if (state is AuthSuccess) {
             showToast(
               context,
@@ -41,7 +42,13 @@ class RegisterScreen extends StatelessWidget {
               message: "register_success".tr(context),
               state: ToastStates.success,
             );
-            navigateTo(context, const PhoneConfirmScreen());
+            navigateTo(
+              context,
+              PhoneConfirmScreen(
+                requestOtpOnInit: true,
+                initialIdentifier: cubit.phoneController.text.trim(),
+              ),
+            );
           } else if (state is AuthError) {
             showToast(
               context,
@@ -52,6 +59,7 @@ class RegisterScreen extends StatelessWidget {
         },
         builder: (context, state) {
           final cubit = context.read<AuthCubit>();
+          final isLoading = state is AuthLoading;
           return CustomScaffold(
             hasShape: true,
             body: Align(
@@ -113,15 +121,24 @@ class RegisterScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 AppTextField(
-                                  enabled: state is AuthLoading ? false : true,
+                                  enabled: !isLoading,
+                                  controller: cubit.usernameController,
+                                  hintText: "* ${"username".tr(context)}",
+                                  validator: (value) =>
+                                      Validators.validateRequired(value,
+                                          "username".tr(context), context),
+                                ),
+                                SizedBox(height: 20.h),
+                                AppTextField(
+                                  enabled: !isLoading,
                                   controller: cubit.nameController,
-                                  hintText: "* ${"name".tr(context)}",
+                                  hintText: "* ${"display_name".tr(context)}",
                                   validator: (value) =>
                                       Validators.validateName(value, context),
                                 ),
                                 SizedBox(height: 20.h),
                                 AppTextField(
-                                  enabled: state is AuthLoading ? false : true,
+                                  enabled: !isLoading,
                                   controller: cubit.emailController,
                                   hintText: "email".tr(context),
                                   validator: (value) =>
@@ -129,15 +146,89 @@ class RegisterScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 20.h),
                                 AppTextField(
-                                  enabled: state is AuthLoading ? false : true,
+                                  enabled: !isLoading,
                                   controller: cubit.phoneController,
                                   hintText: "* ${"phone_hint".tr(context)}",
                                   validator: (value) =>
                                       Validators.validatePhone(value, context),
                                 ),
                                 SizedBox(height: 20.h),
+                                DropdownButtonFormField<String>(
+                                  value: cubit.selectedGender,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 16.w,
+                                      vertical: 16.h,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      borderSide: BorderSide(
+                                        color: const Color(0xFF707070),
+                                        width: 0.47.w,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      borderSide: BorderSide(
+                                        color: const Color(0xFF707070),
+                                        width: 0.47.w,
+                                      ),
+                                    ),
+                                  ),
+                                  hint: Text("select_gender".tr(context)),
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: 'male',
+                                      child: Text("male".tr(context)),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'female',
+                                      child: Text("female".tr(context)),
+                                    ),
+                                  ],
+                                  validator: (value) =>
+                                      Validators.validateRequired(
+                                          value, "gender".tr(context), context),
+                                  onChanged: isLoading
+                                      ? null
+                                      : (value) => cubit.setGender(value),
+                                ),
+                                SizedBox(height: 20.h),
+                                AppTextField(
+                                  enabled: !isLoading,
+                                  controller:
+                                      cubit.createAccountPasswordController,
+                                  hintText: "* ${"password".tr(context)}",
+                                  validator: (value) =>
+                                      Validators.validatePassword(
+                                          value, context),
+                                  obscureText: true,
+                                  keyboardType: TextInputType.visiblePassword,
+                                ),
+                                SizedBox(height: 20.h),
+                                AppTextField(
+                                  enabled: !isLoading,
+                                  controller:
+                                      cubit.confirmNewPasswordController,
+                                  hintText:
+                                      "* ${"confirm_password".tr(context)}",
+                                  validator: (value) =>
+                                      Validators.validateConfirmPassword(
+                                          value,
+                                          cubit.createAccountPasswordController
+                                              .text,
+                                          context),
+                                  obscureText: true,
+                                  textInputAction: TextInputAction.done,
+                                  keyboardType: TextInputType.visiblePassword,
+                                ),
+                                SizedBox(height: 20.h),
                                 AppButton(
-                                  isLoading: state is AuthLoading,
+                                  isLoading: isLoading,
                                   text: "register".tr(context),
                                   onPressed: () {
                                     cubit.register();

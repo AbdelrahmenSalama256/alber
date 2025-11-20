@@ -1,8 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:qafeel/core/constants/app_constant.dart';
 import 'package:qafeel/core/database/api/end_points.dart';
 import 'package:qafeel/core/network/local_network.dart';
 import 'package:qafeel/core/services/service_locator.dart';
-import 'package:dio/dio.dart';
 
 class ApiInterceptors extends Interceptor {
   @override
@@ -11,14 +11,14 @@ class ApiInterceptors extends Interceptor {
     RequestInterceptorHandler handler,
   ) {
     String? token = sl<CacheHelper>().getDataString(key: ApiKey.token);
-    String? cookie = sl<CacheHelper>().getDataString(key: AppConstants.cookie);
+    // String? cookie = sl<CacheHelper>().getDataString(key: AppConstants.cookie);
 
     options.headers[ApiKey.authorization] =
         token != null ? 'Bearer $token' : null;
     options.headers["lang"] =
         sl<CacheHelper>().getCachedLanguage() == "ar" ? "ar" : "en";
 
-    options.headers["Cookie"] = "maxliss_session=$cookie";
+    // options.headers["Cookie"] = "maxliss_session=$cookie";
     super.onRequest(options, handler);
   }
 

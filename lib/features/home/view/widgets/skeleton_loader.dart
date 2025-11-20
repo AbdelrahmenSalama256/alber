@@ -6,12 +6,16 @@ class SkeletonLoader extends StatefulWidget {
   final BorderRadius borderRadius;
   final bool isCircular;
 
+  /// NEW → duration for highlight animation
+  final Duration duration;
+
   const SkeletonLoader({
     super.key,
     required this.width,
     required this.height,
     this.borderRadius = BorderRadius.zero,
     this.isCircular = false,
+    this.duration = const Duration(milliseconds: 600), // default
   });
 
   @override
@@ -28,12 +32,12 @@ class _SkeletonLoaderState extends State<SkeletonLoader> {
   }
 
   void _startAnimation() {
-    Future.delayed(const Duration(milliseconds: 600), () {
+    Future.delayed(widget.duration, () {
       if (mounted) {
         setState(() {
           _isHighlighted = !_isHighlighted;
         });
-        _startAnimation();
+        _startAnimation(); // repeat
       }
     });
   }
@@ -45,7 +49,7 @@ class _SkeletonLoaderState extends State<SkeletonLoader> {
         : widget.borderRadius;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 600),
+      duration: widget.duration,
       width: widget.width,
       height: widget.height,
       decoration: BoxDecoration(

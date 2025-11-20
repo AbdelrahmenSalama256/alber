@@ -207,7 +207,10 @@ class _QuickDonationTab extends StatelessWidget {
                     .read<QuickDonationCubit>()
                     .updateSelection(item.id, qty: qty),
                 onInfoTap: () {
-                  navigateTo(context, ServiceDetailsScreen());
+                  navigateTo(
+                    context,
+                    ServiceDetailsScreen(serviceId: item.id),
+                  );
                 },
                 onDonateWithSelection: (amount, qty, _) {
                   final token =

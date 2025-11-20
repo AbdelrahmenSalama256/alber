@@ -8,10 +8,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qafeel/core/component/custom_toast.dart';
 import 'package:qafeel/core/component/widgets/app_button.dart';
 import 'package:qafeel/core/component/widgets/profile_image_picker.dart';
+import 'package:qafeel/core/constants/navigation.dart';
 import 'package:qafeel/core/constants/widgets/custom_scaffold.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/locale/app_loacl.dart';
 import 'package:qafeel/core/services/service_locator.dart';
+import 'package:qafeel/features/auth/view/phone_confirm_screen.dart';
 import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import 'package:qafeel/features/profile/views/cubit/profile_cubit.dart';
 import 'package:qafeel/features/profile/views/cubit/profile_state.dart';
@@ -49,6 +51,7 @@ class _EditProfileBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = state.profile;
+    final memberId = user.membershipId ?? 'ID-${user.userGuid ?? '0000'}';
     final isEditing = state.isEditingProfile;
 
     return SingleChildScrollView(
@@ -78,16 +81,20 @@ class _EditProfileBody extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
             ProfileImagePicker(
-              profileImage: null,
-              initialImage: user.avatarPath,
+              profileImage: state.pendingAvatar,
+              initialImage: user.imageUrl,
               onImageSelected: (file) {
-                context.read<ProfileCubit>().updateProfileImage(file.path);
+                context.read<ProfileCubit>().updateProfileImage(file);
               },
               size: 100,
             ),
+            if (state.isUpdatingProfile) ...[
+              SizedBox(height: 12.h),
+              const LinearProgressIndicator(minHeight: 2),
+            ],
             SizedBox(height: 12.h),
             Text(
-              user.name,
+              user.displayname ?? '',
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -96,7 +103,7 @@ class _EditProfileBody extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              user.email,
+              user.email ?? '',
               style: TextStyle(
                 fontSize: 14.sp,
                 color: AppColors.textGrey,
@@ -111,37 +118,37 @@ class _EditProfileBody extends StatelessWidget {
               isEditing: isEditing,
               inputType: TextInputType.name,
               onSubmit: (value) =>
-                  context.read<ProfileCubit>().updateProfileField(name: value),
+                  context.read<ProfileCubit>().updateDisplayName(value),
             ),
             _buildEditableField(
               context,
               label: "membership_id".tr(context),
-              value: user.memberId,
+              value: memberId,
               svg: "assets/images/svg/security.svg",
-              isEditing: isEditing,
+              isEditing: false,
               inputType: TextInputType.text,
               onSubmit: (value) => context
                   .read<ProfileCubit>()
                   .updateProfileField(memberId: value),
             ),
-            _buildEditableField(
+            _buildContactField(
               context,
               label: "phone".tr(context),
-              value: user.phone,
+              value: state.pendingPhone ?? user.mobile ?? '',
               svg: "assets/images/svg/mob.svg",
+              isVerified: state.isPhoneVerified,
               isEditing: isEditing,
-              inputType: TextInputType.phone,
-              onSubmit: (value) =>
+              onEdit: (value) =>
                   context.read<ProfileCubit>().updateProfileField(phone: value),
             ),
-            _buildEditableField(
+            _buildContactField(
               context,
               label: "email".tr(context),
-              value: user.email,
+              value: state.pendingEmail ?? user.email ?? '',
               svg: "assets/images/svg/emal.svg",
+              isVerified: state.isEmailVerified,
               isEditing: isEditing,
-              inputType: TextInputType.emailAddress,
-              onSubmit: (value) =>
+              onEdit: (value) =>
                   context.read<ProfileCubit>().updateProfileField(email: value),
             ),
             SizedBox(height: 30.h),
@@ -197,6 +204,55 @@ class _EditProfileBody extends StatelessWidget {
               );
             }
           : null,
+    );
+  }
+
+  Widget _buildContactField(
+    BuildContext context, {
+    required String label,
+    required String value,
+    required String svg,
+    required bool isVerified,
+    required bool isEditing,
+    required ValueChanged<String> onEdit,
+  }) {
+    final trimmedValue = value.trim();
+    final displayValue = trimmedValue.isEmpty ? '----' : trimmedValue;
+    final title = isVerified
+        ? displayValue
+        : '$displayValue (${"tap_to_verify".tr(context)})';
+
+    VoidCallback? onTap;
+    if (!isVerified && trimmedValue.isNotEmpty) {
+      onTap = () => _navigateToVerification(context, trimmedValue);
+    } else if (isEditing) {
+      onTap = () => _showEditFieldSheet(
+            context,
+            fieldLabel: label,
+            initialValue: trimmedValue,
+            keyboardType: label.contains('email')
+                ? TextInputType.emailAddress
+                : TextInputType.phone,
+            onSubmit: onEdit,
+          );
+    }
+
+    return ProfileFieldItem(
+      title: title,
+      svgAsset: svg,
+      onTap: onTap,
+    );
+  }
+
+  void _navigateToVerification(BuildContext context, String identifier) {
+    final trimmed = identifier.trim();
+    if (trimmed.isEmpty) return;
+    navigateTo(
+      context,
+      PhoneConfirmScreen(
+        requestOtpOnInit: true,
+        initialIdentifier: trimmed,
+      ),
     );
   }
 

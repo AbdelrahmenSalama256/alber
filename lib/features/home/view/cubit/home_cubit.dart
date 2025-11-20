@@ -8,19 +8,31 @@ import 'package:qafeel/features/home/data/repo/home_repo.dart';
 import 'home_state.dart';
 
 class HomeCubit extends AppCubit<HomeState> {
+  static const Duration _minSkeletonDuration = Duration(milliseconds: 400);
   final HomeRepo homeRepo = sl<HomeRepo>();
+  bool _isFetching = false;
+
   HomeCubit() : super(HomeInitial());
 
-  Future<void> loadHomeData() async {
+  Future<void> loadHomeData({bool forceRefresh = false}) async {
+    if (_isFetching) return;
+    if (state is HomeLoaded && !forceRefresh) return;
+    _isFetching = true;
     emitSafe(HomeLoading());
+    final startedAt = DateTime.now();
 
     try {
-      final res = await homeRepo.fetchHome();
+      const homeServicesLimit = 6;
+      final res = await homeRepo.fetchHome(limit: homeServicesLimit);
 
-      res.fold(
-        (error) => emitSafe(HomeError(error)),
+      await res.fold<Future<void>>(
+        (error) async {
+          await _ensureMinimumSkeletonDuration(startedAt);
+          emitSafe(HomeError(error));
+        },
         (data) async {
-          final extractedColors = await _extractColors(data.services);
+          final colorsFuture = _extractColors(data.services);
+          await _ensureMinimumSkeletonDuration(startedAt);
           emitSafe(
             HomeLoaded(
               sliderImages: data.sliderImages,
@@ -29,14 +41,25 @@ class HomeCubit extends AppCubit<HomeState> {
               donationServices: data.donationServices,
               news: data.news,
               partners: data.partners,
-              extractedColors: extractedColors,
+              extractedColors: const {},
               currentSliderIndex: 0,
             ),
           );
+
+          final extractedColors = await colorsFuture;
+          final latestState = state;
+          if (latestState is HomeLoaded) {
+            emitSafe(
+              latestState.copyWith(extractedColors: extractedColors),
+            );
+          }
         },
       );
     } catch (e) {
+      await _ensureMinimumSkeletonDuration(startedAt);
       emitSafe(HomeError('Failed to load data: $e'));
+    } finally {
+      _isFetching = false;
     }
   }
 
@@ -47,23 +70,61 @@ class HomeCubit extends AppCubit<HomeState> {
     }
   }
 
-  Future<Map<String, Color>> _extractColors(List<ServiceModel> services) async {
-    final Map<String, Color> colors = {};
+  Future<Map<String, Color>> _extractColors(
+    List<ServiceModel> services,
+  ) async {
+    final uniqueImageFutures = <String, Future<Color>>{};
 
-    for (var service in services) {
-      final imagePath = service.image;
-      try {
-        final palette = await PaletteGenerator.fromImageProvider(
-          AssetImage(imagePath),
-          maximumColorCount: 10,
-        );
-        final color = palette.dominantColor?.color ?? Colors.grey;
-        colors[imagePath] = color;
-      } catch (e) {
-        colors[imagePath] = Colors.grey;
-      }
+    for (final service in services) {
+      final key = service.image.trim();
+      if (key.isEmpty) continue;
+      uniqueImageFutures.putIfAbsent(key, () => _generateColor(key));
     }
 
-    return colors;
+    final resolvedColors = <String, Color>{};
+    for (final entry in uniqueImageFutures.entries) {
+      resolvedColors[entry.key] = await entry.value;
+    }
+
+    final serviceColors = <String, Color>{};
+    for (final service in services) {
+      final key = service.image.trim();
+      final color = resolvedColors[key] ?? Colors.grey.shade400;
+      serviceColors[service.id] = color;
+      if (key.isNotEmpty) {
+        serviceColors[key] = color;
+      }
+    }
+    return serviceColors;
+  }
+
+  Future<Color> _generateColor(String imagePath) async {
+    final normalizedPath = imagePath.trim();
+    if (normalizedPath.isEmpty || normalizedPath.toLowerCase().endsWith('.svg')) {
+      return Colors.grey.shade400;
+    }
+
+    final ImageProvider provider = normalizedPath.startsWith('http')
+        ? NetworkImage(normalizedPath)
+        : AssetImage(normalizedPath);
+
+    try {
+      final palette = await PaletteGenerator.fromImageProvider(
+        provider,
+        maximumColorCount: 8,
+      );
+      final dominant = palette.dominantColor?.color;
+      if (dominant == null) return Colors.grey.shade400;
+      return dominant;
+    } catch (_) {
+      return Colors.grey.shade400;
+    }
+  }
+
+  Future<void> _ensureMinimumSkeletonDuration(DateTime startedAt) async {
+    final elapsed = DateTime.now().difference(startedAt);
+    if (elapsed < _minSkeletonDuration) {
+      await Future.delayed(_minSkeletonDuration - elapsed);
+    }
   }
 }

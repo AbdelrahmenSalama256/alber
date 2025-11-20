@@ -74,8 +74,8 @@ class AboutAppScreeen extends StatelessWidget {
                       assetImage: 'assets/images/png/about.png',
                       onTap: () => navigateTo(
                         context,
-                        BlocProvider(
-                          create: (context) => ProfileCubit()..init(),
+                        BlocProvider.value(
+                          value: context.read<ProfileCubit>(),
                           child: AboutUsScreen(),
                         ),
                       ),
@@ -85,8 +85,8 @@ class AboutAppScreeen extends StatelessWidget {
                       svgAsset: "assets/images/svg/security.svg",
                       onTap: () => navigateTo(
                         context,
-                        BlocProvider(
-                          create: (context) => ProfileCubit()..init(),
+                        BlocProvider.value(
+                          value: context.read<ProfileCubit>(),
                           child: TermsConditionsScreen(),
                         ),
                       ),
@@ -96,8 +96,8 @@ class AboutAppScreeen extends StatelessWidget {
                       svgAsset: "assets/images/svg/lock.svg",
                       onTap: () => navigateTo(
                         context,
-                        BlocProvider(
-                          create: (context) => ProfileCubit()..init(),
+                        BlocProvider.value(
+                          value: context.read<ProfileCubit>(),
                           child: PrivacyPolicyScreen(),
                         ),
                       ),
@@ -107,8 +107,8 @@ class AboutAppScreeen extends StatelessWidget {
                       svgAsset: "assets/images/svg/map-marker.svg",
                       onTap: () => navigateTo(
                         context,
-                        BlocProvider(
-                          create: (context) => ProfileCubit()..init(),
+                        BlocProvider.value(
+                          value: context.read<ProfileCubit>(),
                           child: OurLocationsScreen(),
                         ),
                       ),
@@ -118,8 +118,8 @@ class AboutAppScreeen extends StatelessWidget {
                       svgAsset: "assets/images/svg/circle-question.svg",
                       onTap: () => navigateTo(
                         context,
-                        BlocProvider(
-                          create: (context) => ProfileCubit()..init(),
+                        BlocProvider.value(
+                          value: context.read<ProfileCubit>(),
                           child: ContactComplaintsScreen(),
                         ),
                       ),
