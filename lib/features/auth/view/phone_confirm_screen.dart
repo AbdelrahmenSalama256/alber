@@ -222,52 +222,56 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
                                 SizedBox(height: 60.h),
                                 Container(
                                   padding: EdgeInsets.symmetric(vertical: 20.h),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SocialMediaButton(
-                                        icon: SvgPicture.asset(
-                                          "assets/images/svg/yt.svg",
-                                          width: double.infinity,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SocialMediaButton(
+                                          icon: SvgPicture.asset(
+                                            "assets/images/svg/yt.svg",
+                                            width: double.infinity,
+                                          ),
+                                          onPressed: () {},
                                         ),
-                                        onPressed: () {},
-                                      ),
-                                      SocialMediaButton(
-                                        icon: SvgPicture.asset(
-                                          "assets/images/svg/sc.svg",
-                                          width: double.infinity,
+                                        SocialMediaButton(
+                                          icon: SvgPicture.asset(
+                                            "assets/images/svg/sc.svg",
+                                            width: double.infinity,
+                                          ),
+                                          onPressed: () {},
                                         ),
-                                        onPressed: () {},
-                                      ),
-                                      SocialMediaButton(
-                                        icon: SvgPicture.asset(
-                                          "assets/images/svg/ins.svg",
-                                          width: double.infinity,
+                                        SocialMediaButton(
+                                          icon: SvgPicture.asset(
+                                            "assets/images/svg/ins.svg",
+                                            width: double.infinity,
+                                          ),
+                                          onPressed: () {},
                                         ),
-                                        onPressed: () {},
-                                      ),
-                                      SocialMediaButton(
-                                        icon: SvgPicture.asset(
-                                          "assets/images/svg/x.svg",
-                                          width: double.infinity,
+                                        SocialMediaButton(
+                                          icon: SvgPicture.asset(
+                                            "assets/images/svg/x.svg",
+                                            width: double.infinity,
+                                          ),
+                                          onPressed: () {},
                                         ),
-                                        onPressed: () {},
-                                      ),
-                                      SocialMediaButton(
-                                        icon: SvgPicture.asset(
-                                          "assets/images/svg/fb.svg",
-                                          width: double.infinity,
+                                        SocialMediaButton(
+                                          icon: SvgPicture.asset(
+                                            "assets/images/svg/fb.svg",
+                                            width: double.infinity,
+                                          ),
+                                          onPressed: () {},
                                         ),
-                                        onPressed: () {},
-                                      ),
-                                      SocialMediaButton(
-                                        icon: SvgPicture.asset(
-                                          "assets/images/svg/in.svg",
-                                          width: double.infinity,
+                                        SocialMediaButton(
+                                          icon: SvgPicture.asset(
+                                            "assets/images/svg/in.svg",
+                                            width: double.infinity,
+                                          ),
+                                          onPressed: () {},
                                         ),
-                                        onPressed: () {},
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],

@@ -2,25 +2,29 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/component/widgets/app_button.dart';
+import 'package:qafeel/core/constants/app_colors.dart';
 import 'package:qafeel/core/cubit/global_cubit.dart';
 import 'package:qafeel/core/services/service_locator.dart';
 
 class ConfirmActionSheet extends StatelessWidget {
   final String title;
-  final String message;
+  final String? message;
   final String confirmText;
   final String cancelText;
   final VoidCallback onConfirm;
+  final Widget? customContent;
+  final bool showConfirm;
 
   const ConfirmActionSheet({
     super.key,
     required this.title,
-    required this.message,
+    this.message,
     required this.confirmText,
     required this.cancelText,
     required this.onConfirm,
+    this.customContent,
+    this.showConfirm = true,
   });
 
   @override
@@ -46,7 +50,8 @@ class ConfirmActionSheet extends StatelessWidget {
                     color: AppColors.black.withOpacity(0.2),
                   ),
                 ],
-                border: Border(top: BorderSide(color: AppColors.primary, width: 2.w)),
+                border: Border(
+                    top: BorderSide(color: AppColors.primary, width: 2.w)),
                 borderRadius: BorderRadius.circular(radiusXl.r),
               ),
               child: Column(
@@ -71,31 +76,39 @@ class ConfirmActionSheet extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 12.h),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(radiusMd.r),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(12.w),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(radiusMd.r),
-                          border: Border(bottom: BorderSide(color: AppColors.primary, width: 1.w)),
-                        ),
-                        child: Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: AppColors.textGrey,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            height: 1.7,
+
+                  // Show message or custom content
+                  if (message != null && customContent == null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(radiusMd.r),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(12.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(radiusMd.r),
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: AppColors.primary, width: 1.w)),
+                          ),
+                          child: Text(
+                            message!,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textGrey,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              height: 1.7,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+
+                  if (customContent != null) customContent!,
+
                   SizedBox(height: 16.h),
                   Row(
                     children: [
@@ -106,16 +119,17 @@ class ConfirmActionSheet extends StatelessWidget {
                           onPressed: () => Navigator.of(context).pop(false),
                         ),
                       ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: AppButton(
-                          text: confirmText,
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                            onConfirm();
-                          },
+                      if (showConfirm) SizedBox(width: 12.w),
+                      if (showConfirm)
+                        Expanded(
+                          child: AppButton(
+                            text: confirmText,
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                              onConfirm();
+                            },
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ],
@@ -131,10 +145,12 @@ class ConfirmActionSheet extends StatelessWidget {
 Future<bool?> showConfirmActionSheet(
   BuildContext context, {
   required String title,
-  required String message,
+  String? message,
   required String confirmText,
   required String cancelText,
   required VoidCallback onConfirm,
+  Widget? customContent,
+  bool showConfirm = true,
 }) {
   return showModalBottomSheet<bool>(
     context: context,
@@ -146,6 +162,8 @@ Future<bool?> showConfirmActionSheet(
       confirmText: confirmText,
       cancelText: cancelText,
       onConfirm: onConfirm,
+      customContent: customContent,
+      showConfirm: showConfirm,
     ),
   );
 }

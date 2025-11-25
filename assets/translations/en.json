@@ -183,5 +183,12 @@
   "camera": "Camera",
   "gallery": "Gallery",
   "error_picking_image": "Error picking image",
-  "phone": "Phone Number"
+  "phone": "Phone Number",
+  "something_went_wrong": "Something went wrong",
+  "please_try_again_later": "Please try again later",
+  "retry": "Retry",
+  "select_language": "Select Language",
+  "language": "Language",
+  "english": "English",
+  "arabic": "Arabic"
 }

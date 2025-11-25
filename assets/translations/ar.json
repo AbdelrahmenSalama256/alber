@@ -93,11 +93,7 @@
   "phone_number": "رقم الجوال",
   "subject": "الموضوع",
   "topic": "نوع الطلب",
-  "topic_options": [
-    "شكوى",
-    "اقتراح",
-    "استفسار"
-  ],
+  "topic_options": ["شكوى", "اقتراح", "استفسار"],
   "message": "الرسالة",
   "send": "إرسال",
   "gift_service_description": "خدمة لإهداء التبرعات للأهل والأصدقاء في مختلف المناسبات الاجتماعية.",
@@ -187,5 +183,12 @@
   "select_gender": "اختر النوع",
   "male": "ذكر",
   "female": "أنثى",
-  "validation_error": "يرجى مراجعة الحقول المطلوبة"
+  "validation_error": "يرجى مراجعة الحقول المطلوبة",
+  "something_went_wrong": "حدث خطأ ما، يرجى المحاولة مرة أخرى",
+  "please_try_again_later": "يرجى المحاولة مرة أخرى لاحقاً",
+  "retry": "إعادة المحاولة",
+  "select_language": "اختر اللغة",
+  "language": "اللغة",
+  "english": "الإنجليزية",
+  "arabic": "العربية"
 }

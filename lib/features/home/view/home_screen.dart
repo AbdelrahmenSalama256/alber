@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,7 +47,10 @@ class HomeScreen extends StatelessWidget {
           return CustomScaffold(
             hasShape: false,
             appBar: const CustomTopBar(isHome: true),
-            body: _buildBody(context, state),
+            body: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              child: _buildBody(context, state),
+            ),
           );
         },
       ),
@@ -60,7 +64,40 @@ class HomeScreen extends StatelessWidget {
 
     if (state is HomeError) {
       return Center(
-        child: Text(state.message),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              CupertinoIcons.exclamationmark_circle,
+              size: 60.sp,
+              color: AppColors.error,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              "something_went_wrong".tr(context),
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "please_try_again_later".tr(context),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(height: 20),
+            AppButton(
+              onPressed: () {
+                context.read<HomeCubit>().loadHomeData();
+              },
+              text: "retry".tr(context),
+            ),
+          ],
+        ),
       );
     }
 

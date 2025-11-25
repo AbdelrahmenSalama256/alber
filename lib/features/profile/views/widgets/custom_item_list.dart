@@ -19,6 +19,7 @@ class ActionCard extends StatelessWidget {
   final Color? iconColor;
   final List<Color>? gradient;
   final EdgeInsetsGeometry? margin;
+  final Widget? trailing; // New trailing widget
 
   const ActionCard({
     super.key,
@@ -32,13 +33,14 @@ class ActionCard extends StatelessWidget {
     this.iconColor,
     this.gradient,
     this.margin,
+    this.trailing, // Added trailing parameter
   }) : assert(
           (icon != null ? 1 : 0) +
                   (assetImage != null ? 1 : 0) +
                   (svgAsset != null ? 1 : 0) +
-                  (imagePath != null ? 1 : 0) ==
+                  (imagePath != null ? 1 : 0) <=
               1,
-          'Provide exactly ONE of icon, assetImage, svgAsset, or imagePath.',
+          'Provide only ONE of icon, assetImage, svgAsset, or imagePath.',
         );
 
   @override
@@ -75,10 +77,8 @@ class ActionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    _buildTrailingIcon(),
-                    SizedBox(
-                      width: 10.w,
-                    ),
+                    _buildLeadingIcon(),
+                    SizedBox(width: 10.w),
                     Expanded(
                       child: Text(
                         title,
@@ -89,6 +89,19 @@ class ActionCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (trailing != null) ...[
+                      SizedBox(width: 8.w),
+                      trailing!,
+                    ],
+                    // Default chevron icon if no trailing provided
+                    if (trailing == null) ...[
+                      SizedBox(width: 8.w),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16.w,
+                        color: AppColors.textSecondary.withOpacity(0.6),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -99,9 +112,25 @@ class ActionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTrailingIcon() {
+  Widget _buildLeadingIcon() {
     final double size = iconSize ?? 26.sp;
     final Widget child;
+
+    // If no icon type is provided, show a default container
+    if (icon == null &&
+        assetImage == null &&
+        svgAsset == null &&
+        imagePath == null) {
+      return Container(
+        width: 44.w,
+        height: 44.w,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+      );
+    }
+
     if (icon != null) {
       child =
           Icon(icon, size: size, color: iconColor ?? const Color(0xFF3C3C3C));

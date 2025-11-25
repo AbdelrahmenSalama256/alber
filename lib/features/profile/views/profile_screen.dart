@@ -15,6 +15,7 @@ import 'package:qafeel/features/home/view/widgets/custom_top_bar.dart';
 import 'package:qafeel/features/profile/views/about_app_screen.dart';
 import 'package:qafeel/features/profile/views/donation_history_screen.dart';
 import 'package:qafeel/features/profile/views/edit_profile_screen.dart';
+import 'package:qafeel/features/profile/views/widgets/language_selector_sheet.dart';
 import 'package:qafeel/features/profile/views/widgets/logout_button.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -26,6 +27,10 @@ import 'widgets/donation_info_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  void _showLanguageSelector(BuildContext context) {
+    LanguageSelectorSheet.show(context: context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +82,9 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
     final profile = state.profile;
     final avatar = profile.imageUrl;
+    final globalCubit = context.read<GlobalCubit>();
+    final currentLanguage = globalCubit.language;
+
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -169,6 +177,30 @@ class ProfileScreen extends StatelessWidget {
                 navigateTo(context, DontationCartScreen());
               },
             ),
+            // Language Changer Card
+            ActionCard(
+              title: 'language'.tr(context),
+              svgAsset: 'assets/images/svg/language-translate.svg',
+              trailing: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.3),
+                  ),
+                ),
+                child: Text(
+                  currentLanguage == 'en' ? 'EN' : 'AR',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              onTap: () => _showLanguageSelector(context),
+            ),
             ActionCard(
               title: 'about_app'.tr(context),
               assetImage: 'assets/images/png/about.png',
@@ -232,7 +264,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
             ...List.generate(
-                4,
+                5, // Increased to 5 for the new language option
                 (i) => Padding(
                       padding: EdgeInsets.only(bottom: 12.h),
                       child: SkeletonLoader(
